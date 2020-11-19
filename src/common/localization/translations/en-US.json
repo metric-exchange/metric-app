@@ -70,10 +70,7 @@
         },
         "language_selector" : {
             "title" : "Language",
-            "option" : {
-                "english" : "English",
-                "french" : "French"
-            }
+            "language" : "English"
         }
     }
 }

@@ -4,10 +4,10 @@
         <div class="language-selection-line">{ this.i18next.t('language_selector.title') }</div>
         <label class="language-selection-line">
             <select onchange={ setLanguage }>
-                <option each={option in config.supported}
-                        selected={this.i18next.language === option.lng}
-                        value={option.lng}>
-                    { this.i18next.t(option.id) }
+                <option each={lng in config.supported}
+                        selected={this.i18next.language === lng[0]}
+                        value={lng[0]}>
+                    { lng[1].translation.language_selector.language }
                 </option>
             </select>
         </label>
@@ -15,13 +15,11 @@
 
     <script>
         import './language_selector.css'
+        import {supportedLanguages} from "../../../common/localization/localize";
 
         export default {
             config: {
-                supported: [
-                    {lng: 'en-US', id: 'language_selector.option.english'},
-                    {lng: 'fr-FR', id: 'language_selector.option.french'}
-                ]
+                supported: Object.entries(supportedLanguages)
             },
             setLanguage(e) {
                 this.i18next.changeLanguage(e.target.value)

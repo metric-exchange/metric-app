@@ -1,0 +1,76 @@
+{
+    "translation" : {
+        "token_selector": {
+            "input": {
+                "message": "請輸入代幣名或合約地址"
+            },
+            "close": {
+                "alt" : "關閉代幣選擇窗口"
+            }
+        },
+        "theme_switch": {
+            "dark_mode" : "深色",
+            "on" : "開啟",
+            "off": "關閉"
+        },
+        "header": {
+            "farm" : "挖礦",
+            "swap" : "兌換",
+            "about" : "關於"
+        },
+        "notice": {
+            "message": "Metric采用0x中繼網絡提供基於Uniswap的掛單交易."
+        },
+        "footer": {
+            "build_by_finance" : "BUILD Finance產品",
+            "documentation" : "文檔",
+            "twitter" : "Twitter",
+            "discord" : "Discord",
+            "medium" : "Medium"
+        },
+        "my_order_list" : {
+            "title" : "我的訂單",
+            "header" : {
+                "type" : "類型",
+                "amount_filled" : "數量/已完成{{token.symbol}}",
+                "expires_in" : "將過期時間"
+            },
+            "order" : {
+                "cancel" : "取消"
+            }
+        },
+        "wallet" : {
+            "balance" : "錢包余額: {{balance}}",
+            "connect_wallet" : "連接錢包"
+        },
+        "order": {
+            "type" : {
+                "sell" : "賣出",
+                "buy" : "買入"
+            },
+            "price": "價格：{{token.symbol}}",
+            "amount" : "數量：{{token.symbol}}",
+            "amount_simple" : "數量",
+            "total" : "總額：{{token.symbol}}",
+            "fee" : "費用",
+            "you_get" : "您將獲得",
+            "swap_fee" : "兌換費用",
+            "swap" : "兌換",
+            "select_token" : "選擇代幣",
+            "select_token_caret" : "選擇代幣˅",
+            "metric_balance" : "METRIC代幣余額",
+            "no_fee" : "免手續費🥳"
+        },
+        "submit" : {
+            "insufficient_balance" : "余額不足",
+            "must_be_greater_than" : "必須超過{{token.volume_limit}} {{token.symbol}}",
+            "approve": "批準{{token.symbol}}",
+            "approving" : "正在批準{{token.symbol}}",
+            "place_order" : "發送訂單"
+        },
+        "language_selector" : {
+            "title" : "選擇語言",
+            "language" : "简體中文"
+        }
+    }
+}

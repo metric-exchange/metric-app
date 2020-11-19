@@ -1,0 +1,76 @@
+{
+    "translation" : {
+        "token_selector": {
+            "input": {
+                "message": "请输入代币名或合约地址"
+            },
+            "close": {
+                "alt" : "关闭代币选择窗口"
+            }
+        },
+        "theme_switch": {
+            "dark_mode" : "深色",
+            "on" : "开启",
+            "off": "关闭"
+        },
+        "header": {
+            "farm" : "挖矿",
+            "swap" : "兑换",
+            "about" : "关于"
+        },
+        "notice": {
+            "message": "Metric采用0x中继网络提供基于Uniswap的挂单交易."
+        },
+        "footer": {
+            "build_by_finance" : "BUILD Finance产品",
+            "documentation" : "文档",
+            "twitter" : "Twitter",
+            "discord" : "Discord",
+            "medium" : "Medium"
+        },
+        "my_order_list" : {
+            "title" : "我的订单",
+            "header" : {
+                "type" : "类型",
+                "amount_filled" : "数量/已完成{{token.symbol}}",
+                "expires_in" : "将过期时间"
+            },
+            "order" : {
+                "cancel" : "取消"
+            }
+        },
+        "wallet" : {
+            "balance" : "钱包余额: {{balance}}",
+            "connect_wallet" : "连接钱包"
+        },
+        "order": {
+            "type" : {
+                "sell" : "卖出",
+                "buy" : "买入"
+            },
+            "price": "价格：{{token.symbol}}",
+            "amount" : "数量：{{token.symbol}}",
+            "amount_simple" : "数量",
+            "total" : "总额：{{token.symbol}}",
+            "fee" : "费用",
+            "you_get" : "您将获得",
+            "swap_fee" : "兑换费用",
+            "swap" : "兑换",
+            "select_token" : "选择代币",
+            "select_token_caret" : "选择代币˅",
+            "metric_balance" : "METRIC代币余额",
+            "no_fee" : "免手续费🥳"
+        },
+        "submit" : {
+            "insufficient_balance" : "余额不足",
+            "must_be_greater_than" : "必须超过{{token.volume_limit}} {{token.symbol}}",
+            "approve": "批准{{token.symbol}}",
+            "approving" : "正在批准{{token.symbol}}",
+            "place_order" : "发送订单"
+        },
+        "language_selector" : {
+            "title" : "选择语言",
+            "language" : "繁体中文"
+        }
+    }
+}

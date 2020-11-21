@@ -158,10 +158,10 @@
                 }
             },
             onTokenAllowancesUpdate() {
-                this.update()
+                this.refreshOrderMessage()
             },
             onTokenBalancesUpdate() {
-                this.update()
+                this.refreshOrderMessage()
             },
             closeTokenSelector() {
                 this.state.showTokenSelector = false

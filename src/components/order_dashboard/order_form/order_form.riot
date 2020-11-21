@@ -1,6 +1,8 @@
 <order-form>
-
-    <div id="order-form">
+    <div class="order-form-loader" if={ state.isLoadingTokens }>
+        <loader/>
+    </div>
+    <div id="order-form" if={ !state.isLoadingTokens }>
     
         <div class="order-line order-inputs">
            <div class="token-selector button clickable" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</div>
@@ -8,8 +10,8 @@
         </div>
 
         <div class="order-line order-buttons">
-            <div id="buy-button" class="buy-button button clickable" onclick={ setBuyOrderType }>{ this.i18next.t('order.type.buy') }</div>
-            <div id="sell-button" class="sell-button button clickable" onclick={ setSellOrderType }>{ this.i18next.t('order.type.sell') }</div>
+            <div id="buy-button" class="buy-button button clickable" onclick={ setBuyOrderTypeAndRefresh }>{ this.i18next.t('order.type.buy') }</div>
+            <div id="sell-button" class="sell-button button clickable" onclick={ setSellOrderTypeAndRefresh }>{ this.i18next.t('order.type.sell') }</div>
         </div>
 
         <div class="order-line order-param-values">
@@ -55,9 +57,10 @@
 
         import './order_form.css'
         import TokenSelector from '../../token_selector/token_selector.riot'
+        import Loader from '../../loader/loader.riot'
         import {
             registerForTokenAllowancesUpdate,
-            registerForTokenBalancesUpdate,
+            registerForTokenBalancesUpdate, registerForTokenListUpdate,
             tokensList
         } from "../../../common/token_fetch";
         import {
@@ -72,7 +75,8 @@
 
         export default {
             components: {
-                TokenSelector
+                TokenSelector,
+                Loader
             },
             config: {
                 buyOrderType: "BUY",
@@ -85,17 +89,37 @@
                 price: NaN,
                 isOutputTokenApproved: false,
                 isInputTokenApproved: false,
-                showTokenSelector: false
+                showTokenSelector: false,
+                isLoadingTokens: true
             },
-            onBeforeMount(props) {
+            onBeforeMount() {
                 this.state.orderType = this.config.buyOrderType
-
+                this.updateTokens()
+                this.setOrderMessage()
+            },
+            async onMounted() {
+                registerForTokenAllowancesUpdate(this)
+                registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
-                
-                if (props.inputTokenAddress !== undefined && props.inputTokenAddress !== null) {
+                if (!this.state.isLoadingTokens) {
+                    await this.setBuyOrderTypeAndRefresh()
+                }
+            },
+            onBeforeUpdate() {
+                if (this.state.inputToken === null || this.state.outputToken === null) {
+                    this.updateTokens()
+                    this.setOrderMessage()
+                    router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
+                }
+            },
+            async onUpdated() {
+                await this.setBuyOrderType()
+            },
+            updateTokens() {
+                if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {
 
                     let tokenFromRoute =
-                        tokensList().find(t => t.address.toLowerCase() === props.inputTokenAddress.toLowerCase())
+                        tokensList().find(t => t.address.toLowerCase() === this.props.inputTokenAddress.toLowerCase())
 
                     if (tokenFromRoute !== undefined && tokenFromRoute !== null) {
                         this.state.inputToken = tokenFromRoute
@@ -103,29 +127,24 @@
                     }
                 }
 
-                if (props.outputTokenAddress !== undefined && props.outputTokenAddress !== null) {
+                if (this.props.outputTokenAddress !== undefined && this.props.outputTokenAddress !== null) {
                     let tokenFromRoute =
-                        tokensList().find(t => t.address.toLowerCase() === props.outputTokenAddress.toLowerCase())
+                        tokensList().find(t => t.address.toLowerCase() === this.props.outputTokenAddress.toLowerCase())
 
                     if (tokenFromRoute !== undefined && tokenFromRoute !== null) {
                         this.state.outputToken = tokenFromRoute
                         setQuoteToken(this.state.outputToken)
                     }
                 }
-
-                router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
-
-                this.setOrderMessage()
-            },
-            async onMounted() {
-                registerForTokenAllowancesUpdate(this)
-                registerForTokenBalancesUpdate(this)
-                await this.setBuyOrderType()
+                if (this.state.inputToken !== null && this.state.outputToken !== null) {
+                    this.state.isLoadingTokens = false
+                }
             },
             onOrderPriceUpdate(price) {
                 this.state.price = price
                 document.getElementById("order-price-input").value = price
                 this.updateSubmitButtonState()
+                this.refreshOrderMessage()
             },
             listenToSelectorCloseClick(e) {
                 if(this.state.showTokenSelector) {
@@ -181,10 +200,12 @@
             updateAmount(e) {
                 this.update({ amount: parseFloat(e.target.value) })
                 this.updateSubmitButtonState()
+                this.refreshOrderMessage()
             },
             updatePrice(e) {
                 this.update({ price: parseFloat(e.target.value) })
                 this.updateSubmitButtonState()
+                this.refreshOrderMessage()
             },
             updateSubmitButtonState() {
                 let button = document.getElementById("place-order-button")
@@ -197,7 +218,6 @@
                     button.classList.add("clickable")
                     button.onclick = this.checkApprovalAndSubmitOrder
                 }
-                this.refreshOrderMessage()
             },
             async setBuyOrderType() {
                 this.state.orderType = this.config.buyOrderType
@@ -207,12 +227,17 @@
                 this.updateSubmitButtonState()
                 this.removeInputAmountClickableState()
             },
-            async setSellOrderType() {
+            async setBuyOrderTypeAndRefresh() {
+                await this.setBuyOrderType()
+                this.refreshOrderMessage()
+            },
+            async setSellOrderTypeAndRefresh() {
                 this.state.orderType = this.config.sellOrderType
                 document.getElementById("sell-button").classList.remove("active-button")
                 document.getElementById("buy-button").classList.remove("active-button")
                 document.getElementById("sell-button").classList.add("active-button")
                 this.updateSubmitButtonState()
+                this.refreshOrderMessage()
                 this.addInputAmountClickableState()
             },
             addInputAmountClickableState() {
@@ -228,6 +253,7 @@
             setMaxInputAmount() {
                 this.update({ amount: this.state.inputToken.balance })
                 this.updateSubmitButtonState()
+                this.refreshOrderMessage()
                 document.getElementById("order-amount-input").value = this.state.inputToken.balance
             },
             async checkApprovalAndSubmitOrder() {

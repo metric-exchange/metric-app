@@ -1,5 +1,5 @@
 <order-book>
-    <loader class="order-book-loader" if={ state.isLoadingOrders }/>
+    <loader if={ state.isLoadingOrders }/>
     <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
         <table class="orders" cellspacing="0">
             <thead class="order-book-columns">

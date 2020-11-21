@@ -85,7 +85,12 @@
                 this.clearFilter()
             },
             async filterTokenSearch() {
-                let filter = this.$("#token-selector input").value.toLowerCase()
+                let filter = null
+                let input = this.$("#token-selector input")
+
+                if (input !== undefined) {
+                    filter = this.$("#token-selector input").value.toLowerCase()
+                }
 
                 if (filter !== null && filter.length === 0) {
                     filter = null

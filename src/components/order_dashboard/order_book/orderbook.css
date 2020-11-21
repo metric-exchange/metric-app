@@ -46,10 +46,6 @@
     width: 30%;
 }
 
-.order-book .order-book-loader {
-    align-content: center;
-}
-
 @media(min-width: 600px) {
     .orders{
         width: 410px;

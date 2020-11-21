@@ -32,6 +32,10 @@
     border-radius: 3px;
 }
 
+.order-form .order-form-loader {
+    padding-left: 45%;
+}
+
 .order-buttons {
     display: grid;
     grid-template-columns: auto auto;

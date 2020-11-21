@@ -1,6 +1,6 @@
 <order-dashboard>
 
-    <div class="dashboard" if={ tokensAvailable() }>
+    <div class="dashboard">
 
         <div class="order-form">
             <order-form input-token-address={ state.inputTokenAddress } output-token-address={ state.outputTokenAddress } />
@@ -41,10 +41,6 @@
                 registerForTokenListUpdate(this)
                 this.state.inputTokenAddress = props.inputTokenAddress
                 this.state.outputTokenAddress = props.outputTokenAddress
-            },
-            tokensAvailable() {
-                return findTokenWithAddress(this.state.inputTokenAddress) !== undefined &&
-                    findTokenWithAddress(this.state.outputTokenAddress) !== undefined
             },
             async onTokenListUpdate() {
                 let token = await findOrAddTokenWithAddress(this.state.inputTokenAddress)

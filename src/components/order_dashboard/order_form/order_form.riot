@@ -10,7 +10,7 @@
         </div>
 
         <div class="order-line order-buttons">
-            <div id="buy-button" class="buy-button button clickable" onclick={ setBuyOrderTypeAndRefresh }>{ this.i18next.t('order.type.buy') }</div>
+            <div id="buy-button" class="buy-button button clickable active-button" onclick={ setBuyOrderTypeAndRefresh }>{ this.i18next.t('order.type.buy') }</div>
             <div id="sell-button" class="sell-button button clickable" onclick={ setSellOrderTypeAndRefresh }>{ this.i18next.t('order.type.sell') }</div>
         </div>
 
@@ -73,14 +73,13 @@
         import { router } from '@riotjs/route'
         import {registerForOrderPriceUpdates} from "../../../common/prices/OrderPriceManager";
 
+        let buyOrderType = "BUY"
+        let sellOrderType = "SELL"
+
         export default {
             components: {
                 TokenSelector,
                 Loader
-            },
-            config: {
-                buyOrderType: "BUY",
-                sellOrderType: "SELL"
             },
             state: {
                 inputToken: null,
@@ -90,10 +89,10 @@
                 isOutputTokenApproved: false,
                 isInputTokenApproved: false,
                 showTokenSelector: false,
-                isLoadingTokens: true
+                isLoadingTokens: true,
+                orderType: buyOrderType
             },
             onBeforeMount() {
-                this.state.orderType = this.config.buyOrderType
                 this.updateTokens()
                 this.setOrderMessage()
             },
@@ -102,7 +101,7 @@
                 registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
                 if (!this.state.isLoadingTokens) {
-                    await this.setBuyOrderTypeAndRefresh()
+                    await this.refreshOrderMessage()
                 }
             },
             onBeforeUpdate() {
@@ -111,9 +110,6 @@
                     this.setOrderMessage()
                     router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
                 }
-            },
-            async onUpdated() {
-                await this.setBuyOrderType()
             },
             updateTokens() {
                 if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {
@@ -219,20 +215,20 @@
                     button.onclick = this.checkApprovalAndSubmitOrder
                 }
             },
+            async setBuyOrderTypeAndRefresh() {
+                await this.setBuyOrderType()
+                this.refreshOrderMessage()
+            },
             async setBuyOrderType() {
-                this.state.orderType = this.config.buyOrderType
+                this.state.orderType = buyOrderType
                 document.getElementById("sell-button").classList.remove("active-button")
                 document.getElementById("buy-button").classList.remove("active-button")
                 document.getElementById("buy-button").classList.add("active-button")
                 this.updateSubmitButtonState()
                 this.removeInputAmountClickableState()
             },
-            async setBuyOrderTypeAndRefresh() {
-                await this.setBuyOrderType()
-                this.refreshOrderMessage()
-            },
             async setSellOrderTypeAndRefresh() {
-                this.state.orderType = this.config.sellOrderType
+                this.state.orderType = sellOrderType
                 document.getElementById("sell-button").classList.remove("active-button")
                 document.getElementById("buy-button").classList.remove("active-button")
                 document.getElementById("sell-button").classList.add("active-button")
@@ -331,10 +327,10 @@
                 return amount * calculateMetricFee()
             },
             isBuyOrder() {
-                return this.state.orderType === this.config.buyOrderType
+                return this.state.orderType === buyOrderType
             },
             isSellOrder() {
-                return this.state.orderType === this.config.sellOrderType
+                return this.state.orderType === sellOrderType
             },
             async isApproved() {
                 if (this.isBuyOrder()) {

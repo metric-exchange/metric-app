@@ -33,8 +33,7 @@ a {
     width: 100%;
     top: 50px;
     padding-bottom: 7px;
-    position: fixed;
-    z-index: 50;
+    position: absolute;
     color: var(--token-selector-table-text-color);
     background-color: var(--main-background-color);
 }
@@ -44,7 +43,7 @@ a {
    height: 50px;
    position: fixed;
    top: 0;
-   z-index: 1000;
+   z-index: 1;
    background-color: var(--main-background-color);
 }
 

@@ -1,11 +1,11 @@
 import EthIcon from './eth.png'
 import HypeIcon from './hype.png'
-import {accountAddress, isWalletConnected} from "./wallet_manager";
-import {Erc20ContractProxy} from "./erc20_contract_proxy";
+import {accountAddress, isWalletConnected} from "./wallet/wallet_manager";
+import {Erc20Abi, Erc20ContractProxy} from "./erc20_contract_proxy";
 import {fetchJson} from "./json_api_fetch";
-import {fetch0xAllowanceForToken} from "./0x_orders_proxy";
 import {CustomTokenManager} from "./tokens/CustomsTokenManager";
 import {Token} from "./tokens/token";
+import {zeroXContractAddresses} from "./0x_order_book_proxy";
 
 
 export function registerForTokenListUpdate(item) {
@@ -47,69 +47,64 @@ export function updateTokenAllowance(address, allowance) {
     token.allowance = formatAmount(allowance / (10 ** token.decimals))
 }
 
-export async function fetchTokensAllowances() {
-
-    await Promise.all(
-        tokens.map( async (token) => {
-            let allowance = await fetchTokenAllowance(token)
-            if (token.allowance !== allowance) {
-                token.allowance = allowance
-                await Promise.all(
-                    allowancesRegister.map(item => item.onTokenAllowancesUpdate())
-                )
-            }
-        })
-    )
-
-    setTimeout(fetchTokensAllowances, 10000)
+export async function fetchTokensInfo() {
+    await executeBatch(0)
 }
 
-export async function fetchTokensBalances() {
+async function executeBatch(batchIndex) {
+    if (isWalletConnected() && batchIndex*100 < tokens.length) {
+        let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
+        let batch = new window.web3.BatchRequest();
+        for (let index = batchIndex*100; index < Math.min((batchIndex+1)*100, tokens.length); index++) {
+            let token = tokens[index]
+            let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
+            batch.add(
+                contract
+                    .methods
+                    .balanceOf(accountAddress())
+                    .call
+                    .request({from: accountAddress()}, (err, b) => updateBalance(index, b))
+            );
+            batch.add(
+                contract
+                    .methods
+                    .allowance(accountAddress(), zeroXAllowanceTargetAddress)
+                    .call
+                    .request({from: accountAddress()}, (err, b) => updateAllowance(index, b))
+            );
+        }
+        await batch.execute();
 
-    await Promise.all(
-        tokens.map(async (token) => {
-            let balance = await fetchTokenBalance(token)
-            if (token.balance !== balance) {
-                token.balance = balance
-                await Promise.all(
-                    balancesRegister.map(item => item.onTokenBalancesUpdate())
-                )
-            }
-        })
-    )
-
-    setTimeout(fetchTokensBalances, 10000)
+        setTimeout(() => executeBatch(batchIndex+1), 10000)
+    } else {
+        setTimeout(() => executeBatch(0), 60000)
+    }
 }
 
-async function fetchTokenBalance(token) {
-
-    let tokenBalance = 0
-
-    if (isWalletConnected()) {
-        if (token.symbol.toLowerCase() === "eth") {
-            tokenBalance = formatAmount(await window.web3.eth.getBalance(accountAddress()))
-        } else {
-            let contract = Erc20ContractProxy.erc20Contract(token.address)
-            tokenBalance = formatAmount(await contract.methods.balanceOf(accountAddress()).call())
+async function updateBalance(index, balance) {
+    if (isNaN(balance) === false) {
+        let newBalance = balance / (10 ** tokens[index].decimals)
+        if (newBalance !== tokens[index].balance) {
+            console.log("update balance", tokens[index].symbol, newBalance)
+            tokens[index].balance = newBalance
+            await Promise.all(
+                balancesRegister.map(item => item.onTokenBalancesUpdate())
+            )
         }
     }
-
-    return formatAmount(tokenBalance) / (10**token.decimals)
 }
 
-async function fetchTokenAllowance(token) {
-
-    let tokenAllowance = 0
-
-    if (isWalletConnected()) {
-        if (token.symbol.toLowerCase() !== "eth") {
-            if (token.balance > 0) {
-                tokenAllowance = await fetch0xAllowanceForToken(token.address)
-            }
+async function updateAllowance(index, allowance) {
+    if (isNaN(allowance) === false) {
+        let newAllowance = allowance / (10 ** tokens[index].decimals)
+        if (newAllowance !== tokens[index].allowance) {
+            console.log("update allowance", tokens[index].symbol, newAllowance)
+            tokens[index].allowance = newAllowance
+            await Promise.all(
+                allowancesRegister.map(item => item.onTokenAllowancesUpdate())
+            )
         }
     }
-
-    return formatAmount(tokenAllowance) / (10**token.decimals)
 }
 
 function formatAmount(amount) {

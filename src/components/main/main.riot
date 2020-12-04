@@ -64,12 +64,11 @@
         import {synchronizeOrderBook} from "../../common/0x_order_book_proxy";
         import {
             disableToken,
-            fetchTokensAllowances,
-            fetchTokensBalances,
+            fetchTokensInfo,
             loadTokenList,
             tokensList
         } from "../../common/token_fetch";
-        import {initWeb3} from "../../common/wallet_manager";
+        import {initWeb3} from "../../common/wallet/wallet_manager";
         import {Router, Route, setBase} from "@riotjs/route";
         import {initLocalizations} from "../../common/localization/localize";
 
@@ -91,8 +90,7 @@
                 await initWeb3()
                 await loadTokenList()
 
-                fetchTokensBalances()
-                fetchTokensAllowances()
+                fetchTokensInfo()
                 synchronizeOrderBook()
 
                 if (this.isOrderBookFeatureEnabled()) {

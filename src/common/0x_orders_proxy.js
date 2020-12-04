@@ -1,6 +1,6 @@
 import {BigNumber, providerUtils} from '@0x/utils';
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
-import {accountAddress, getContractWrapper, getProvider} from './wallet_manager'
+import {accountAddress, getContractWrapper, getProvider} from './wallet/wallet_manager'
 import {Erc20ContractProxy, fetchTokenAllowance} from "./erc20_contract_proxy";
 import {getBidsMatching, getReplayClient, zeroXContractAddresses} from "./0x_order_book_proxy";
 import {isTokenAmountOverLimit, tokensList, updateTokenAllowance} from "./token_fetch";

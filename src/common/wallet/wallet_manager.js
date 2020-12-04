@@ -1,9 +1,7 @@
-import Web3 from 'web3'
 import {MetamaskSubprovider} from "@0x/subproviders";
 import {providerUtils} from "@0x/utils";
 import {ContractWrappers} from "@0x/contract-wrappers";
-
-let defaultWSUrl = "wss://mainnet.infura.io/ws/v3/12522e5176814bfda74dd672929641a3"
+import {connectToWallet, hasCashedProvider, web3ModalPovider} from "./web3Modal";
 
 export let walletAddress = undefined
 
@@ -18,36 +16,32 @@ export function isWalletConnected() {
 }
 
 export async function initWeb3() {
-    if (Web3.givenProvider !== undefined && Web3.givenProvider !== null) {
-
-        window.web3 = new Web3(Web3.givenProvider)
+    if (hasCashedProvider()) {
         await connectWallet();
-
-        Web3.givenProvider.on("accountsChanged", (accounts) => {
-            updateAccountAddress(accounts)
-        })
-
-    } else {
-        window.web3 = new Web3(new Web3.providers.WebsocketProvider(defaultWSUrl))
     }
-
 }
 
 export async function connectWallet() {
-    if (Web3.givenProvider !== undefined && Web3.givenProvider !== null) {
 
-        await Web3.givenProvider.enable().catch(error => {
-            console.error(error)
-        })
+    await connectToWallet();
 
-        let accounts = await window.web3.eth.getAccounts()
-        updateAccountAddress(accounts)
+    console.log("getting accounts")
+    const accounts = await window.web3.eth.getAccounts();
+    updateAccountAddress(accounts);
+
+    if (web3ModalPovider !== undefined && web3ModalPovider !== null) {
+        web3ModalPovider.on("accountsChanged", (accounts) => {
+            updateAccountAddress(accounts);
+        });
+
     }
 }
 
 export function updateAccountAddress(accounts) {
-    walletAddress = accounts[0]
-    walletEventListeners.forEach(item => item.onWalletChanges())
+    if (accounts !== undefined && accounts.length > 0) {
+        walletAddress = accounts[0]
+        walletEventListeners.forEach(item => item.onWalletChanges())
+    }
 }
 
 export function getProvider() {
@@ -58,7 +52,7 @@ export function getProvider() {
 }
 
 function initProvider() {
-    providerEngine = new MetamaskSubprovider(window.web3.currentProvider)
+    providerEngine = new MetamaskSubprovider(web3ModalPovider)
 }
 
 export async function getContractWrapper() {

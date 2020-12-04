@@ -1,5 +1,5 @@
 import {HttpClient} from "@0x/connect";
-import {getProvider} from "./wallet_manager";
+import {getProvider} from "./wallet/wallet_manager";
 import {BigNumber, providerUtils} from "@0x/utils";
 import {isTokenAmountOverLimit, tokensList} from "./token_fetch";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
@@ -30,7 +30,7 @@ export async function synchronizeOrderBook() {
         await updateOrderBook()
     }
 
-    setTimeout(synchronizeOrderBook, 1000)
+    setTimeout(synchronizeOrderBook, 10000)
 }
 
 export async function setBaseToken(token) {

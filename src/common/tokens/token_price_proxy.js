@@ -1,4 +1,4 @@
-import {fetchJson} from "./json_api_fetch";
+import {fetchJson} from "../json_api_fetch";
 
 export async function getTokenUsdPrice(address, symbol) {
     let id = tokenId(address, symbol)

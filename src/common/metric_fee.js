@@ -1,4 +1,4 @@
-import {tokensList} from "./token_fetch";
+import {tokensList} from "./tokens/token_fetch";
 
 export let MetricReferralAddress = "0x52427b0035F494a21a0A4A1AbE04d679f789c821"
 

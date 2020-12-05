@@ -1,11 +1,12 @@
 import EthIcon from './eth.png'
 import HypeIcon from './hype.png'
-import {accountAddress, isWalletConnected} from "./wallet/wallet_manager";
-import {Erc20Abi, Erc20ContractProxy} from "./erc20_contract_proxy";
-import {fetchJson} from "./json_api_fetch";
-import {CustomTokenManager} from "./tokens/CustomsTokenManager";
-import {Token} from "./tokens/token";
-import {zeroXContractAddresses} from "./0x_order_book_proxy";
+import UpdownIcon from './updown.jpg'
+import {accountAddress, isWalletConnected} from "../wallet/wallet_manager";
+import {Erc20Abi, Erc20ContractProxy} from "../erc20_contract_proxy";
+import {fetchJson} from "../json_api_fetch";
+import {CustomTokenManager} from "./CustomsTokenManager";
+import {Token} from "./token";
+import {zeroXContractAddresses} from "../0x_order_book_proxy";
 
 
 export function registerForTokenListUpdate(item) {
@@ -235,6 +236,26 @@ let defaultTokens = [
         decimals: 18,
         symbol: "HYPE",
         logoURI: HypeIcon,
+        balance: 0,
+        allowance: 0,
+        volume_limit: -1,
+        disabled: false
+    },
+    {
+        address: "0xb7412e57767ec30a76a4461d408d78b36688409c",
+        decimals: 18,
+        symbol: "bCRED",
+        logoURI: "https://",
+        balance: 0,
+        allowance: 0,
+        volume_limit: -1,
+        disabled: false
+    },
+    {
+        address: "0xfbfaf8d8e5d82e87b80578fd348f60fb664e9390",
+        decimals: 18,
+        symbol: "UPDOWN",
+        logoURI: UpdownIcon,
         balance: 0,
         allowance: 0,
         volume_limit: -1,

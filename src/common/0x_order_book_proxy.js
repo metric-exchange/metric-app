@@ -1,7 +1,7 @@
 import {HttpClient} from "@0x/connect";
 import {getProvider} from "./wallet/wallet_manager";
 import {BigNumber, providerUtils} from "@0x/utils";
-import {isTokenAmountOverLimit, tokensList} from "./token_fetch";
+import {isTokenAmountOverLimit, tokensList} from "./tokens/token_fetch";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
 
 export function registerForOrderBookUpdateEvents(object) {

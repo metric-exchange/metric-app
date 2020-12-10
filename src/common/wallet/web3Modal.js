@@ -10,6 +10,21 @@ export async function connectToWallet() {
     window.web3 = new Web3(web3ModalPovider);
 }
 
+export function clearWalletProvider() {
+    web3Modal.clearCachedProvider();
+}
+
+export async function trySwitchWallet(onSuccess) {
+    let oldProvider = web3Modal.cachedProvider
+    web3Modal.clearCachedProvider();
+    try {
+        await connectToWallet()
+        await onSuccess()
+    } catch (e) {
+        web3Modal.setCachedProvider(oldProvider)
+    }
+}
+
 export function hasCashedProvider() {
     return web3Modal.cachedProvider !== ''
 }
@@ -25,6 +40,6 @@ const providerOptions = {
 
 const web3Modal = new Web3Modal({
     network: "mainnet",
-    cacheProvider: false,
+    cacheProvider: true,
     providerOptions
 });

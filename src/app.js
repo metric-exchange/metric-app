@@ -3,7 +3,7 @@ import '@riotjs/hot-reload'
 import { component, install } from 'riot'
 import jquery from "jquery";
 import { addToken } from "./common/tokens/token_fetch";
-import { accountAddress, connectWallet, updateAccountAddress, isWalletConnected } from './common/wallet/wallet_manager'
+import { accountAddress, connectWallet, switchWallet, updateAccountAddress, isWalletConnected } from './common/wallet/wallet_manager'
 import { isDarkThemeSet, isLightThemeSet, initTheme } from './common/theme_manager'
 
 export default (window.$ = window.jQuery = jquery);
@@ -19,6 +19,7 @@ install(c => {
 
     c.accountAddress = accountAddress
     c.connectWallet = connectWallet
+    c.switchWallet = switchWallet
     c.updateAccountAddress = updateAccountAddress
 
     c.addToken = addToken

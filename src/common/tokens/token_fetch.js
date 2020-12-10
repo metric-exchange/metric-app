@@ -52,11 +52,15 @@ export async function fetchTokensInfo() {
     await executeBatch(0)
 }
 
+let tokenBatchSize = 500
+let firstTokenBalanceRefreshExecuted = false
+let firstTokenAllowanceRefreshExecuted = false
+
 async function executeBatch(batchIndex) {
-    if (isWalletConnected() && batchIndex*100 < tokens.length) {
+    if (isWalletConnected() && batchIndex*tokenBatchSize < tokens.length) {
         let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
         let batch = new window.web3.BatchRequest();
-        for (let index = batchIndex*100; index < Math.min((batchIndex+1)*100, tokens.length); index++) {
+        for (let index = batchIndex*tokenBatchSize; index < Math.min((batchIndex+1)*tokenBatchSize, tokens.length); index++) {
             let token = tokens[index]
             let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
             batch.add(
@@ -66,19 +70,27 @@ async function executeBatch(batchIndex) {
                     .call
                     .request({from: accountAddress()}, (err, b) => updateBalance(index, b))
             );
-            batch.add(
-                contract
-                    .methods
-                    .allowance(accountAddress(), zeroXAllowanceTargetAddress)
-                    .call
-                    .request({from: accountAddress()}, (err, b) => updateAllowance(index, b))
-            );
+            if (token.balance > 0) {
+                firstTokenAllowanceRefreshExecuted = true
+                batch.add(
+                    contract
+                        .methods
+                        .allowance(accountAddress(), zeroXAllowanceTargetAddress)
+                        .call
+                        .request({from: accountAddress()}, (err, b) => updateAllowance(index, b))
+                );
+            }
+            firstTokenBalanceRefreshExecuted = true
         }
         await batch.execute();
 
-        setTimeout(() => executeBatch(batchIndex+1), 10000)
+        setTimeout(() => executeBatch(batchIndex+1), 5000)
     } else {
-        setTimeout(() => executeBatch(0), 60000)
+        if (firstTokenBalanceRefreshExecuted && firstTokenAllowanceRefreshExecuted) {
+            setTimeout(() => executeBatch(0), 60000)
+        } else {
+            setTimeout(() => executeBatch(0), 5000)
+        }
     }
 }
 

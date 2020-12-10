@@ -34,11 +34,11 @@
 
         <div class="order-line order-info">
             <div>{ this.i18next.t('order.fee') }</div>
-            <label>{ formattedFeeAmount() } { state.outputToken.symbol }</label>
+            <label>{ formattedFeeAmount() } { sentToken().symbol }</label>
         </div>
         <div class="order-line order-info">
             <div>{ this.i18next.t('order.you_get') }</div>
-            <label>{ formattedTotalAmount() } { state.outputToken.symbol }</label>
+            <label>{ formattedTotalAmount() } { receivedToken().symbol }</label>
         </div>
 
         <div id ="place-order-button" class="order-line button">
@@ -313,15 +313,43 @@
                 let amount = this.inputAmount()
                 return (isNaN(amount) ? 0 : amount) * (isNaN(this.state.price) ? 0 : this.state.price)
             },
+            sentAmount() {
+                let amount = 0
+                if (this.isBuyOrder()) {
+                    amount = this.outputAmount()
+                } else {
+                    amount = this.inputAmount()
+                }
+                return isNaN(amount) ? 0 : amount
+            },
+            receivedAmount() {
+                let amount = 0
+                if (this.isBuyOrder()) {
+                    amount = this.inputAmount()
+                } else {
+                    amount = this.outputAmount()
+                }
+                return isNaN(amount) ? 0 : amount
+            },
+            receivedToken() {
+                if (this.isBuyOrder()) {
+                    return this.state.inputToken
+                } else {
+                    return this.state.outputToken
+                }
+            },
+            sentToken() {
+                if (this.isBuyOrder()) {
+                    return this.state.outputToken
+                } else {
+                    return this.state.inputToken
+                }
+            },
             formattedTotalAmount() {
-                return ((this.outputAmount() - this.feeAmount())).toFixed(3)
+                return ((this.receivedAmount() - this.applyFee(this.receivedAmount()))).toFixed(3)
             },
             formattedFeeAmount() {
-                return this.feeAmount().toFixed(3)
-            },
-            feeAmount() {
-                let amount = this.outputAmount()
-                return this.applyFee((isNaN(amount) ? 0 : amount))
+                return this.applyFee(this.sentAmount()).toFixed(3)
             },
             applyFee(amount) {
                 return amount * calculateMetricFee()

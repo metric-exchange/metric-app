@@ -1,13 +1,33 @@
 <settings>
 
-    <div class="dropdown" onclick={ toggleDropDown } id="settings-icon">
-        <div class="dropdown-logo">
-           
-        </div>
+    <div class="identicon">
+        <a if={ this.isWalletConnected() }
+           class="identicon-address"
+           href="https://etherscan.io/address/{ this.accountAddress() }"
+           target="_blank">
+            <span>{ state.obfuscatedAccount }</span>
+        </a>
+        <a if={ !this.isWalletConnected() }
+           class="identicon-address"
+           onclick={ this.connectWallet }>
+            <span>{ this.i18next.t('wallet.connect_wallet') }</span>
+        </a>
+        <img    onclick={ toggleDropDown }
+                id="identicon-image"
+                class="identicon-image"
+                src={ state.blocky }
+                alt="blocky"
+        />
     </div>
 
     <div style={ isClicked() ? "display:block" : 'display:none'} >
         <div class="dropdown-content" id="settings-dropdown">
+            <div if={ this.isWalletConnected() }
+                 class="wallet-switch"
+                 onclick={ this.switchWallet }
+            >
+                { this.i18next.t('wallet.change_wallet') }
+            </div>
             <language-selector/>
             <theme-switch/>
         </div>
@@ -17,6 +37,8 @@
         import './settings.css'
         import ThemeSwitch from '../theme-switch/theme-switch.riot'
         import LanguageSelector from '../language_selector/language-selector.riot'
+        import {accountAddress, registerForWalletChanges} from "../../../common/wallet/wallet_manager";
+        import makeBlockie from 'ethereum-blockies-base64';
 
         export default {
             components: {
@@ -25,46 +47,44 @@
             },
             state: {
                 icon: Image,
-                dropDownClicked: false
+                dropDownClicked: false,
+                address: "0x0000000000000000000000000000000000000000",
+                obfuscatedAccount: null,
+                blocky: null
+            },
+            onBeforeUpdate() {
+                this.handleAccounts()
+            },
+            onWalletChanges() {
+                this.handleAccounts()
+                this.update()
             },
             onMounted() {
+                registerForWalletChanges(this)
                 document.addEventListener('click', function (e) {
                     var dropdown = document.getElementById('settings-dropdown');
-                    var icon = document.getElementById('settings-icon');
+                    var icon = document.getElementById('identicon-image');
                     
-                    if (!icon.contains(e.target) && !dropdown.contains(e.target) && this.isClicked()) {
+                    if (!icon.contains(e.target) && this.isClicked() && !dropdown.contains(e.target)) {
                         this.toggleDropDown();
                     }
                 }.bind(this));
-
-                const smallDevice = window.matchMedia('(min-width: 600px)')
-
-                smallDevice.addListener(this.handleDeviceChange);
-
-                this.handleDeviceChange(smallDevice)
             },
             isClicked() {
                 return this.state.dropDownClicked
             },
             toggleDropDown() {
-                var device = window.matchMedia('(min-width: 600px)');
-
-                    if(!device.matches){
-                        return;
-                    }
-
                 this.state.dropDownClicked = !this.state.dropDownClicked
                 this.update()
             },
-            handleDeviceChange(e){
-                if (e.matches){
-                    this.state.dropDownClicked = false
-                }
-                else{
-                    this.state.dropDownClicked = true
+            handleAccounts() {
+
+                if (accountAddress() !== undefined) {
+                    this.state.address = accountAddress()
                 }
 
-                this.update()
+                this.state.obfuscatedAccount = this.state.address.substr(0, 8) + '...' + this.state.address.substr(38, 40)
+                this.state.blocky = makeBlockie(this.state.address)
             }
         }
     </script>

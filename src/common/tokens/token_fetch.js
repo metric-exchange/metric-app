@@ -6,7 +6,7 @@ import {Erc20Abi, Erc20ContractProxy} from "../erc20_contract_proxy";
 import {fetchJson} from "../json_api_fetch";
 import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
-import {zeroXContractAddresses} from "../0x_order_book_proxy";
+import {zeroXContractAddresses} from "../0x/0x_order_book_proxy";
 
 
 export function registerForTokenListUpdate(item) {
@@ -52,7 +52,7 @@ export async function fetchTokensInfo() {
     await executeBatch(0)
 }
 
-let tokenBatchSize = 500
+let tokenBatchSize = 100
 let firstTokenBalanceRefreshExecuted = false
 let firstTokenAllowanceRefreshExecuted = false
 
@@ -84,12 +84,12 @@ async function executeBatch(batchIndex) {
         }
         await batch.execute();
 
-        setTimeout(() => executeBatch(batchIndex+1), 5000)
+        setTimeout(() => executeBatch(batchIndex+1), 1000)
     } else {
         if (firstTokenBalanceRefreshExecuted && firstTokenAllowanceRefreshExecuted) {
             setTimeout(() => executeBatch(0), 60000)
         } else {
-            setTimeout(() => executeBatch(0), 5000)
+            setTimeout(() => executeBatch(0), 1000)
         }
     }
 }

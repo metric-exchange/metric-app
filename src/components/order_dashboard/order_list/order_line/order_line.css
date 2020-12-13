@@ -1,0 +1,32 @@
+
+.cancel-order {
+    cursor: pointer;
+    color: var(--main-text-color);
+    text-decoration: underline;
+}
+
+.opened-price-switch-button {
+    cursor: pointer;
+    background-image: var(--price-switch-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    transform: rotate(0deg);
+    transition: 0.5s;
+}
+
+.opened-price-switch-button:active {
+    transform: rotate(180deg);
+    transition:  0s;
+}
+
+.order-pair {
+    display: grid;
+    grid-template-columns: 43% 10% 43%;
+    grid-gap: 2%;
+    align-items: center;
+    justify-items: left;
+    width: 100%;
+}

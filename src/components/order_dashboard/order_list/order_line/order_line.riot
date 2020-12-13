@@ -1,0 +1,90 @@
+
+<order-line>
+
+    <div class="my-orders my-orders-line" if={ state.makerToken !== undefined && state.takerToken !== undefined }>
+        <div class="order-pair">
+            <div>{ state.makerToken.symbol }</div>
+            <div>&#8594;</div>
+            <div>{ state.takerToken.symbol }</div>
+        </div>
+        <div class="order-list-big-screen-column ask">{ makerTotalAmount(props.order).toFixed(3) }</div>
+        <div class="bid">{ takerAmount(props.order).toFixed(3) }</div>
+        <div>{ filledTakerPercentage(props.order).toFixed(2) }%</div>
+        <div>{ orderPrice(props.order).toFixed(3) }</div>
+        <div class="order-list-big-screen-column">{ getDateDiff(props.order.order.expirationTimeSeconds) }</div>
+        <div class="cancel-order" onclick={ this.cancelOrder }>{ this.i18next.t('my_order_list.order.cancel') }</div>
+    </div>
+
+    <script>
+        import './order_line.css'
+        import {tokensList} from "../../../../common/tokens/token_fetch";
+        import {ZeroXOrdersProxy} from "../../../../common/0x/0x_orders_proxy";
+        import moment from 'moment';
+        import {supportedLanguages} from "../../../../common/localization/localize";
+
+        export default {
+            state: {
+                makerToken: undefined,
+                takerToken: undefined,
+                priceDirectionReverted: false
+            },
+            onBeforeMount() {
+                let prefixLen = "0xf47261b0000000000000000000000000".length
+                let makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
+                let takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
+                this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === makerAddress)
+                this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === takerAddress)
+            },
+            async cancelOrder() {
+                await ZeroXOrdersProxy.cancelOrder(this.props.order)
+            },
+            makerTotalAmount(order) {
+                return order.order.makerAssetAmount
+                    .dividedBy(10**this.state.makerToken.decimals)
+            },
+            makerAmount(order) {
+                return order.order.makerAssetAmount
+                    .minus(order.order.makerFee)
+                    .dividedBy(10**this.state.makerToken.decimals)
+            },
+            takerAmount(order) {
+                return order.order.takerAssetAmount
+                    .minus(order.order.takerFee)
+                    .dividedBy(10**this.state.takerToken.decimals)
+            },
+            filledTakerPercentage(order) {
+                let remaining = parseInt(order.metaData.remainingFillableTakerAssetAmount)
+                return order.order.takerAssetAmount
+                    .minus(remaining)
+                    .multipliedBy(100)
+                    .dividedBy(order.order.takerAssetAmount)
+            },
+            orderPrice(order) {
+                if (this.state.priceDirectionReverted) {
+                    return this.makerAmount(order) / this.takerAmount(order)
+                } else {
+                    return this.takerAmount(order) / this.makerAmount(order)
+                }
+            },
+            revertPriceDirection() {
+                this.update({priceDirectionReverted : !this.state.priceDirectionReverted})
+            },
+            priceCouple() {
+                if (this.state.priceDirectionReverted) {
+                    return `${this.state.takerToken.symbol}/${this.state.makerToken.symbol}`
+                } else {
+                    return `${this.state.makerToken.symbol}/${this.state.takerToken.symbol}`
+                }
+            },
+            getDateDiff(timestampSeconds) {
+                let langId = this.i18next.language
+                let lang = supportedLanguages[langId]
+                moment.locale(langId, { relativeTime: lang.translation.relativeTime});
+                return moment(timestampSeconds * 1000).fromNow()
+            }
+        }
+    </script>
+
+</order-line>
+
+

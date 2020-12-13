@@ -6,23 +6,10 @@
             </a>
         </div>
 
-        <input type="checkbox" class="menu-btn" id="menu-btn" />
-        <label for="menu-btn" class="menu-icon" id="main-toggle"><span class="nav-icon"/></label>
+        <div class="header-settings">
+            <settings/>
+        </div>
 
-        <ul class="menu-nav">
-            <li>
-                <ul class="header-links" id="top-nav" if={ !isOrderBookFeatureEnabled() }>
-                    <li><a href="https://metric.exchange/">{ this.i18next.t('header.swap') }</a></li>
-                    <li><a href="https://stake.metric.exchange/">{ this.i18next.t('header.farm') }</a></li>
-                    <li><a href="https://medium.com/@BUILD_Finance/introducing-metric-community-owned-dex-aggregator-a1cff8b8100d" target="_blank">{ this.i18next.t('header.about') }</a></li>
-                </ul>
-                <hr/>
-                <ul class="header-settings">
-                    <li><blocky/></li>
-                    <li><settings/></li>
-                </ul>
-            </li>
-        </ul>
     </header>
 
     <div class="notice">
@@ -58,10 +45,9 @@
     <script>
         import './main.css'
         import Settings from './settings/settings.riot'
-        import Blocky from './blocky/blocky.riot'
         import Swap from '../swap_dashboard/swap_menue/swap.riot'
         import OrderDashboard from '../order_dashboard/order_dashboard.riot'
-        import {synchronizeOrderBook} from "../../common/0x_order_book_proxy";
+        import {synchronizeOrderBook} from "../../common/0x/0x_order_book_proxy";
         import {
             disableToken,
             fetchTokensInfo,
@@ -77,7 +63,6 @@
                 Route,
                 Router,
                 Settings,
-                Blocky,
                 Swap,
                 OrderDashboard
             },

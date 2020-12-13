@@ -5,44 +5,59 @@
     <div id="order-form" if={ !state.isLoadingTokens }>
     
         <div class="order-line order-inputs">
-           <div class="token-selector button clickable" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</div>
-           <div class="token-selector button clickable" onclick={ openOutputTokenSelector }>{ state.outputToken.symbol } ˅</div>
-        </div>
-
-        <div class="order-line order-buttons">
-            <div id="buy-button" class="buy-button button clickable active-button" onclick={ setBuyOrderTypeAndRefresh }>{ this.i18next.t('order.type.buy') }</div>
-            <div id="sell-button" class="sell-button button clickable" onclick={ setSellOrderTypeAndRefresh }>{ this.i18next.t('order.type.sell') }</div>
-        </div>
-
-        <div class="order-line order-param-values">
-            <div>{ this.i18next.t('order.amount_simple') }</div>
-            <div id="input-balance-amount" class="wallet-amount">{ this.i18next.t('wallet.balance', {balance: formatWalletBalance(state.inputToken.balance)}) }</div>
-        </div>
-        <div class="order-line order-input">
-            <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="0"/>
-            <label>{ state.inputToken.symbol }</label>
+            <div class="token-selector button clickable" onclick={ openInputTokenSelector }>
+                { state.inputToken.symbol } ˅
+            </div>
+            <div class="switch-button-image" onclick={ switchDirection }></div>
+            <div class="token-selector button clickable" onclick={ openOutputTokenSelector }>
+                { state.outputToken.symbol } ˅
+            </div>
         </div>
 
         <div class="order-line order-param-values">
             <div>{ this.i18next.t('order.price') }</div>
-            <div class="wallet-amount">{ this.i18next.t('wallet.balance', {balance: formatWalletBalance(state.outputToken.balance)}) }</div>
         </div>
-        <div class="order-line order-input">
-            <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="0"/>
-            <label>{ state.outputToken.symbol }</label>
+        <div class="order-line exchange-price">
+            <div class="order-input">
+                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="0"/>
+                <label if={!state.priceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
+                <label if={state.priceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
+            </div>
+            <div class="order-input">
+                <div class="price-switch-button" onclick={ changePriceDirection }></div>
+            </div>
+        </div>
+
+        <div class="order-line order-param-values">
+            <div>{ this.i18next.t('order.amount_simple') }</div>
+        </div>
+        <div class="order-line exchange-price">
+            <div class="order-input">
+                <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="0"/>
+                <label class="label-amount">{ state.inputToken.symbol }</label>
+            </div>
+            <div class="order-input">
+                <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
+            </div>
         </div>
 
         <div class="order-line order-info">
             <div>{ this.i18next.t('order.fee') }</div>
             <label>{ formattedFeeAmount() } { sentToken().symbol }</label>
         </div>
+
+        <div class="order-line order-info">
+            <div>{ this.i18next.t('order.you_pay') }</div>
+            <label>{ formatSentAmount() } { sentToken().symbol }</label>
+        </div>
+
         <div class="order-line order-info">
             <div>{ this.i18next.t('order.you_get') }</div>
             <label>{ formattedTotalAmount() } { receivedToken().symbol }</label>
         </div>
 
         <div id ="place-order-button" class="order-line button">
-            { state.submitMessage }
+            { this.i18next.t(state.submitMessage, state.submitMessageParams) }
         </div>
 
         <div id="token-selector-box" style="display:none" }>
@@ -66,15 +81,12 @@
         import {
             setBaseToken,
             setQuoteToken
-        } from "../../../common/0x_order_book_proxy";
-        import {ZeroXOrdersProxy} from "../../../common/0x_orders_proxy";
+        } from "../../../common/0x/0x_order_book_proxy";
+        import {ZeroXOrdersProxy} from "../../../common/0x/0x_orders_proxy";
         import { BigNumber } from '@0x/utils';
         import {calculateMetricFee, MetricReferralAddress} from "../../../common/metric_fee";
         import { router } from '@riotjs/route'
         import {registerForOrderPriceUpdates} from "../../../common/prices/OrderPriceManager";
-
-        let buyOrderType = "BUY"
-        let sellOrderType = "SELL"
 
         export default {
             components: {
@@ -90,7 +102,7 @@
                 isInputTokenApproved: false,
                 showTokenSelector: false,
                 isLoadingTokens: true,
-                orderType: buyOrderType
+                priceDirectionReverted: false
             },
             onBeforeMount() {
                 this.updateTokens()
@@ -110,6 +122,23 @@
                     this.setOrderMessage()
                     router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
                 }
+            },
+            changePriceDirection() {
+                if (!isNaN(this.state.price) && this.state.price > 0) {
+                    this.state.priceDirectionReverted = !this.state.priceDirectionReverted
+                    this.refreshPrice(1 / this.state.price)
+                }
+            },
+            switchDirection() {
+                let input = this.state.inputToken
+                let output = this.state.outputToken
+
+                setBaseToken(output)
+                setQuoteToken(input)
+
+                this.state.inputToken = output
+                this.state.outputToken = input
+                this.resetInputAmount(null)
             },
             updateTokens() {
                 if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {
@@ -137,6 +166,13 @@
                 }
             },
             onOrderPriceUpdate(price) {
+                if (this.state.priceDirectionReverted && price > 0) {
+                    this.refreshPrice(1 / price)
+                } else {
+                    this.refreshPrice(price)
+                }
+            },
+            refreshPrice(price) {
                 this.state.price = price
                 document.getElementById("order-price-input").value = price
                 this.updateSubmitButtonState()
@@ -220,18 +256,10 @@
                 this.refreshOrderMessage()
             },
             async setBuyOrderType() {
-                this.state.orderType = buyOrderType
-                document.getElementById("sell-button").classList.remove("active-button")
-                document.getElementById("buy-button").classList.remove("active-button")
-                document.getElementById("buy-button").classList.add("active-button")
                 this.updateSubmitButtonState()
                 this.removeInputAmountClickableState()
             },
             async setSellOrderTypeAndRefresh() {
-                this.state.orderType = sellOrderType
-                document.getElementById("sell-button").classList.remove("active-button")
-                document.getElementById("buy-button").classList.remove("active-button")
-                document.getElementById("sell-button").classList.add("active-button")
                 this.updateSubmitButtonState()
                 this.refreshOrderMessage()
                 this.addInputAmountClickableState()
@@ -247,10 +275,13 @@
                 element.onclick = null
             },
             setMaxInputAmount() {
-                this.update({ amount: this.state.inputToken.balance })
+                this.resetInputAmount(this.state.inputToken.balance)
+            },
+            resetInputAmount(amount) {
+                this.update({ amount: amount })
                 this.updateSubmitButtonState()
                 this.refreshOrderMessage()
-                document.getElementById("order-amount-input").value = this.state.inputToken.balance
+                document.getElementById("order-amount-input").value = amount
             },
             async checkApprovalAndSubmitOrder() {
                 if (await this.isApproved()) {
@@ -261,11 +292,7 @@
                 this.refreshOrderMessage()
             },
             async requestApprovalAndSubmitOrder() {
-                if (this.isBuyOrder()) {
-                    await this.sendApprovalForTokenAndSubmitOrder(this.state.outputToken)
-                } else {
-                    await this.sendApprovalForTokenAndSubmitOrder(this.state.inputToken)
-                }
+                await this.sendApprovalForTokenAndSubmitOrder(this.state.inputToken)
             },
             async sendApprovalForTokenAndSubmitOrder(token) {
                 this.setApprovalMessage(token)
@@ -290,20 +317,11 @@
                 let inputAmount = this.inputAmount() * (10 ** this.state.inputToken.decimals)
                 let outputAmount = this.outputAmount() * (10 ** this.state.outputToken.decimals)
 
-                if (this.isSellOrder()) {
-                    return {
-                        makerAssetAmount: new BigNumber(inputAmount),
-                        makerAssetAddress: this.state.inputToken.address,
-                        takerAssetAmount: new BigNumber(outputAmount),
-                        takerAssetAddress: this.state.outputToken.address
-                    }
-                } else {
-                    return {
-                        makerAssetAmount: new BigNumber(outputAmount),
-                        makerAssetAddress: this.state.outputToken.address,
-                        takerAssetAmount: new BigNumber(inputAmount),
-                        takerAssetAddress: this.state.inputToken.address
-                    }
+                return {
+                    makerAssetAmount: new BigNumber(inputAmount),
+                    makerAssetAddress: this.state.inputToken.address,
+                    takerAssetAmount: new BigNumber(outputAmount),
+                    takerAssetAddress: this.state.outputToken.address
                 }
             },
             inputAmount() {
@@ -311,42 +329,36 @@
             },
             outputAmount() {
                 let amount = this.inputAmount()
-                return (isNaN(amount) ? 0 : amount) * (isNaN(this.state.price) ? 0 : this.state.price)
+                return (isNaN(amount) ? 0 : amount) * this.orderPrice()
+            },
+            orderPrice() {
+                let price = (isNaN(this.state.price) || this.state.price == null) ? 0 : this.state.price
+
+                if (price > 0 && this.state.priceDirectionReverted) {
+                    return 1 / price
+                } else {
+                    return price
+                }
             },
             sentAmount() {
-                let amount = 0
-                if (this.isBuyOrder()) {
-                    amount = this.outputAmount()
-                } else {
-                    amount = this.inputAmount()
-                }
-                return isNaN(amount) ? 0 : amount
+                let amount = this.inputAmount()
+                return (isNaN(amount) || amount == null) ? 0 : amount
             },
             receivedAmount() {
-                let amount = 0
-                if (this.isBuyOrder()) {
-                    amount = this.inputAmount()
-                } else {
-                    amount = this.outputAmount()
-                }
-                return isNaN(amount) ? 0 : amount
+                let amount = this.outputAmount()
+                return (isNaN(amount) || amount == null) ? 0 : amount
             },
             receivedToken() {
-                if (this.isBuyOrder()) {
-                    return this.state.inputToken
-                } else {
-                    return this.state.outputToken
-                }
+                return this.state.outputToken
             },
             sentToken() {
-                if (this.isBuyOrder()) {
-                    return this.state.outputToken
-                } else {
-                    return this.state.inputToken
-                }
+                return this.state.inputToken
             },
             formattedTotalAmount() {
                 return ((this.receivedAmount() - this.applyFee(this.receivedAmount()))).toFixed(3)
+            },
+            formatSentAmount() {
+                return this.sentAmount().toFixed(3)
             },
             formattedFeeAmount() {
                 return this.applyFee(this.sentAmount()).toFixed(3)
@@ -354,37 +366,31 @@
             applyFee(amount) {
                 return amount * calculateMetricFee()
             },
-            isBuyOrder() {
-                return this.state.orderType === buyOrderType
-            },
-            isSellOrder() {
-                return this.state.orderType === sellOrderType
-            },
             async isApproved() {
-                if (this.isBuyOrder()) {
-                    return await ZeroXOrdersProxy.is0xApprovedForToken(this.state.outputToken.address, this.outputAmount() * (10 ** this.state.outputToken.decimals))
-                } else {
-                    return await ZeroXOrdersProxy.is0xApprovedForToken(this.state.inputToken.address, this.inputAmount() * (10 ** this.state.inputToken.decimals))
-                }
+                return await ZeroXOrdersProxy.is0xApprovedForToken(this.state.inputToken.address, this.inputAmount() * (10 ** this.state.inputToken.decimals))
             },
             setApprovalMessage(token) {
-                this.update({submitMessage: this.i18next.t("submit.approving", {token: token})})
+                this.update({
+                    submitMessage: "submit.approving",
+                    submitMessageParams: {token: token}
+                })
             },
             setOrderMessage() {
                 if (!this.isValidInputs()) {
-                    this.state.submitMessage = this.i18next.t("submit.place_order")
+                    this.state.submitMessage = "submit.place_order"
+                    this.state.submitMessageParams = {}
                 } else if (!this.isValidOrder()) {
-                    this.state.submitMessage = this.i18next.t("submit.must_be_greater_than", {token: this.state.outputToken})
+                    this.state.submitMessage = "submit.must_be_greater_than"
+                    this.state.submitMessageParams = {token: this.state.outputToken}
                 } else if (!this.isSufficientBalance()) {
-                    this.state.submitMessage = this.i18next.t("submit.insufficient_balance")
+                    this.state.submitMessage = "submit.insufficient_balance"
+                    this.state.submitMessageParams = {}
                 } else if(!this.maybeIsApproved()) {
-                    if (this.isBuyOrder()) {
-                        this.state.submitMessage = this.i18next.t("submit.approve", {token: this.state.outputToken})
-                    }else {
-                        this.state.submitMessage = this.i18next.t("submit.approve", {token: this.state.inputToken})
-                    }
+                    this.state.submitMessage = "submit.approve"
+                    this.state.submitMessageParams = {token: this.state.inputToken}
                 } else {
-                    this.state.submitMessage = this.i18next.t("submit.place_order")
+                    this.state.submitMessage = "submit.place_order"
+                    this.state.submitMessageParams = {}
                 }
             },
             refreshOrderMessage() {
@@ -392,29 +398,21 @@
                 this.update()
             },
             maybeIsApproved() {
-                if (this.isBuyOrder()) {
-                    return tokensList().find(t => t.symbol === this.state.outputToken.symbol).allowance >= this.outputAmount()
-                } else {
-                    return tokensList().find(t => t.symbol === this.state.inputToken.symbol).allowance >= this.inputAmount()
-                }
+                return tokensList().find(t => t.symbol === this.state.inputToken.symbol).allowance >= this.inputAmount()
             },
             isValidOrder() {
                 let isAmountAboveThreshold = (this.outputAmount() > this.state.outputToken.volume_limit)
                 return this.isValidInputs() && isAmountAboveThreshold
             },
             isValidInputs() {
-                return !isNaN(this.state.price) && !isNaN(this.state.amount)
+                return !isNaN(this.state.price) &&
+                    !isNaN(this.state.amount) &&
+                    this.state.amount > 0 &&
+                    this.state.price > 0
             },
             isSufficientBalance() {
-                let balance = 0
-                let amount = 0
-                if (this.isBuyOrder()) {
-                    balance = tokensList().find(t => t.symbol === this.state.outputToken.symbol).balance
-                    amount = this.outputAmount()
-                } else {
-                    balance = tokensList().find(t => t.symbol === this.state.inputToken.symbol).balance
-                    amount = this.inputAmount()
-                }
+                let balance = tokensList().find(t => t.symbol === this.state.inputToken.symbol).balance
+                let amount = this.inputAmount()
 
                 return balance >= amount
             },

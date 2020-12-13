@@ -10,20 +10,20 @@
             </tr>
             </thead>
             <tbody>
-            <tr each={ask in state.asks} class="ask order" onclick={ setOrderPrice }>
-                <td>{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
-                <td>{ ask.price }</td>
-                <td>{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
+            <tr each={ask in state.asks} class="order" onclick={ setOrderPrice }>
+                <td class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
+                <td class="order-price">{ ask.price }</td>
+                <td class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
             </tr>
             <tr id="orders-separator" class="order" onclick={ setOrderPrice }>
                 <td/>
                 <td>{ state.midMarketPrice }</td>
                 <td/>
             </tr>
-            <tr each={bid in state.bids} class="bid order" onclick={ setOrderPrice }>
-                <td>{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
-                <td>{ bid.price }</td>
-                <td>{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
+            <tr each={bid in state.bids} class="order" onclick={ setOrderPrice }>
+                <td class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
+                <td class="order-price">{ bid.price }</td>
+                <td class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
             </tr>
             </tbody>
         </table>
@@ -38,7 +38,7 @@
             getOrderBookAsks,
             getOrderBookBids, getQuoteToken, registerForBaseTokenChange,
             registerForOrderBookUpdateEvents
-        } from "../../../common/0x_order_book_proxy";
+        } from "../../../common/0x/0x_order_book_proxy";
 
         import {BigNumber} from '@0x/utils';
         import {getTokenUsdPrice} from "../../../common/tokens/token_price_proxy";

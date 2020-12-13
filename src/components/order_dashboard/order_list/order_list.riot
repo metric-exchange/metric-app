@@ -1,188 +1,54 @@
 <order-list>
     <div class="order-list-title">{ this.i18next.t('my_order_list.title') }</div>
-    <div class="empty-order-list" if={ state.isLoadingOrders }>
-        <loader />
-    </div>
-    <div class="filled-order-list" if={ !state.isLoadingOrders }>
+    <div class="filled-order-list">
         <div class="order-list-canvas">
-            <table class="my-orders">
-                <thead>
-                <tr>
-                    <th>{ this.i18next.t('my_order_list.header.type') }</th>
-                    <th>{ this.i18next.t('order.price', { token: state.outputToken }) }</th>
-                    <th>{ this.i18next.t('my_order_list.header.amount_filled', { token: state.inputToken }) }</th>
-                    <th class="order-list-big-screen-column">{ this.i18next.t('order.total', {token: state.outputToken}) }</th>
-                    <th class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr each={ order in state.asks } key={ order.metaData.orderHash } id={ order.metaData.orderHash }>
-                    <td>{ this.i18next.t('order.type.sell') }</td>
-                    <td>{ sellPrice(order) }</td>
-                    <td>{ safeRound(order.order.makerAssetAmount.dividedBy(10 ** state.inputToken.decimals)) } / { safeRound(filledMakerAmount(order))}</td>
-                    <td class="order-list-big-screen-column">{ safeRound(order.order.takerAssetAmount.dividedBy(10 ** state.outputToken.decimals)) }</td>
-                    <td class="order-list-big-screen-column">{ getDateDiff(order.order.expirationTimeSeconds) }</td>
-                    <td class="cancel-order" onclick={ this.cancelOrder }>{ this.i18next.t('my_order_list.order.cancel') }</td>
-                </tr>
-                <tr each={ order in state.bids } key={ order.metaData.orderHash } id={ order.metaData.orderHash }>
-                    <td>{ this.i18next.t('order.type.buy') }</td>
-                    <td>{ buyPrice(order) }</td>
-                    <td>{ safeRound(order.order.takerAssetAmount.dividedBy(10 ** state.inputToken.decimals)) } / { safeRound(filledTakerAmount(order)) }</td>
-                    <td class="order-list-big-screen-column">{ safeRound(order.order.makerAssetAmount.dividedBy(10 ** state.outputToken.decimals)) }</td>
-                    <td class="order-list-big-screen-column">{ getDateDiff(order.order.expirationTimeSeconds) }</td>
-                    <td class="cancel-order" onclick={ this.cancelOrder }>{ this.i18next.t('my_order_list.order.cancel') }</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="my-orders-line my-orders-header">
+                <div>{ this.i18next.t('my_order_list.header.pair') }</div>
+                <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.cost') }</div>
+                <div>{ this.i18next.t('my_order_list.header.amount') }</div>
+                <div>{ this.i18next.t('my_order_list.header.filled') }</div>
+                <div>{ this.i18next.t('order.price') }</div>
+                <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</div>
+            </div>
+            <order-line each={ order in state.orders } key={ order.metaData.orderHash } order={ order } />
         </div>
     </div>
 
     <script>
         import './order_list.css'
         import Loader from '../../loader/loader.riot'
-        import {accountAddress, isWalletConnected} from "../../../common/wallet/wallet_manager";
+        import OrderLine from './order_line/order_line.riot'
+        import {isWalletConnected} from "../../../common/wallet/wallet_manager";
         import {
-            getBaseToken,
-            getOrderBookAsks,
-            getOrderBookBids, getQuoteToken, registerForBaseTokenChange,
-            registerForOrderBookUpdateEvents
-        } from "../../../common/0x_order_book_proxy";
-        import {ZeroXOrdersProxy} from "../../../common/0x_orders_proxy";
-        import {BigNumber} from '@0x/utils'
+            registerForUserOrderUpdates,
+            synchronizeUserOrders,
+            userOrders
+        } from "../../../common/0x/0x_user_orders";
 
         export default {
             components: {
-                Loader
+                Loader,
+                OrderLine
             },
-            state:{
-                asks: [],
-                bids: [],
-                isLoadingOrders: true
+            state: {
+                orders: []
             },
-
-            onBeforeMount() {
-                this.state.inputToken = getBaseToken()
-                this.state.outputToken = getQuoteToken()
-            },
-
             onMounted() {
-                registerForBaseTokenChange(this)
-                registerForOrderBookUpdateEvents(this)
+                registerForUserOrderUpdates(this)
+                synchronizeUserOrders()
             },
-
-            onBaseTokenUpdate() {
-                this.update({
-                    isLoadingOrders: true
-                });
-            },
-
-            buyPrice(order) {
-                return this.safeRound(
-                    order.order.makerAssetAmount
-                    .dividedBy(10**this.state.outputToken.decimals)
-                    .dividedBy(order.order.takerAssetAmount)
-                    .multipliedBy(10**this.state.inputToken.decimals)
-                )
-            },
-
-            sellPrice(order) {
-                return this.safeRound(
-                    order.order.takerAssetAmount
-                    .dividedBy(10**this.state.outputToken.decimals)
-                    .dividedBy(order.order.makerAssetAmount)
-                    .multipliedBy(10**this.state.inputToken.decimals)
-                )
-            },
-
-            safeRound(n) {
-              return n.toFixed(3, BigNumber.ROUND_DOWN)
-            },
-
-            async onOrderBookUpdate() {
-                this.state.inputToken = getBaseToken()
-                this.state.outputToken = getQuoteToken()
+            async onUserOrderUpdates() {
 
                 if (isWalletConnected()) {
-
-                    this.state.asks =
-                        getOrderBookAsks(false)
-                            .filter(order => {
-                                return order.order.makerAddress.toLowerCase() === accountAddress().toLowerCase() ||
-                                    order.order.takerAddress.toLowerCase() === accountAddress().toLowerCase()
-                            })
-
-                    this.state.bids =
-                        getOrderBookBids(false)
-                            .filter(order => {
-                                return order.order.makerAddress.toLowerCase() === accountAddress().toLowerCase() ||
-                                    order.order.takerAddress.toLowerCase() === accountAddress().toLowerCase()
-                            })
-
+                    this.state.orders = userOrders()
                 } else {
-                    this.state.asks = []
-                    this.state.bids = []
+                    this.state.orders = []
                 }
 
                 await this.update({
                     isLoadingOrders: false
                 })
-
-            },
-
-            async cancelOrder(e) {
-                let orderHash = e.target.parentElement.getAttribute("id")
-                let order = this.state.bids.concat(this.state.asks).find(o => o.metaData.orderHash === orderHash)
-
-                await ZeroXOrdersProxy.cancelOrder(order)
-            },
-
-            getDateDiff(timestampSeconds) {
-                let now = new Date();
-                let expiryDate = new Date(timestampSeconds * 1000);
-
-                let diffm = Math.trunc((expiryDate - now) / ( 60 * 1000));
-                let diffH = Math.trunc(diffm / 60);
-                let diffD = Math.trunc(diffH / 24);
-                let diffM = Math.trunc(diffD / 30);
-                let diffY = Math.trunc(diffM / 12);
-
-                let formattedDiff = ""
-                if (diffY > 0) {
-                    formattedDiff = formattedDiff.concat(`${diffY}y`)
-                }
-                if (diffM - diffY*12 > 0) {
-                    formattedDiff = formattedDiff.concat(' ', `${diffM - diffY*12}m`)
-                }
-                if (diffD - diffM*30 > 0) {
-                    formattedDiff = formattedDiff.concat(' ', `${diffD - diffM*30}d`)
-                }
-                if (diffH - diffD*24 > 0) {
-                    formattedDiff = formattedDiff.concat(' ', `${diffH - diffD*24}h`)
-                }
-                if (diffm - diffH*60 > 0) {
-                    formattedDiff = formattedDiff.concat(' ', `${diffm - diffH*60}m`)
-                }
-
-                return formattedDiff
-            },
-            filledMakerAmount(order) {
-                let remaining = new BigNumber(parseInt(order.metaData.remainingFillableTakerAssetAmount))
-                let filledTakerAmount =
-                    order.order.takerAssetAmount
-                        .minus(remaining)
-                        .dividedBy(10 ** this.state.outputToken.decimals)
-
-                return order.order.makerAssetAmount
-                    .multipliedBy(filledTakerAmount)
-                    .dividedBy(order.order.takerAssetAmount)
-            },
-            filledTakerAmount(order) {
-                let remaining = new BigNumber(parseInt(order.metaData.remainingFillableTakerAssetAmount))
-                return order.order.takerAssetAmount
-                    .minus(remaining)
-                    .dividedBy(10 ** this.state.inputToken.decimals)
             }
-
         }
 
     </script>

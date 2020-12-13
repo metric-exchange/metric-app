@@ -19,7 +19,7 @@
             "about" : "關於"
         },
         "notice": {
-            "message": "Metric采用0x中繼網絡提供基於Uniswap的掛單交易."
+            "message": "Metric采用0x中繼網絡提供基於Uniswap的掛單交易"
         },
         "footer": {
             "build_by_finance" : "BUILD Finance產品",
@@ -32,8 +32,11 @@
             "title" : "我的訂單",
             "header" : {
                 "type" : "類型",
-                "amount_filled" : "數量/已完成{{token.symbol}}",
-                "expires_in" : "將過期時間"
+                "amount" : "數量",
+                "filled" : "已完成",
+                "expires_in" : "將過期時間",
+                "pair" : "雙",
+                "cost" : "花費"
             },
             "order" : {
                 "cancel" : "取消"
@@ -41,7 +44,8 @@
         },
         "wallet" : {
             "balance" : "錢包余額: {{balance}}",
-            "connect_wallet" : "連接錢包"
+            "connect_wallet" : "連接錢包",
+            "change_wallet" : "找錢包"
         },
         "order": {
             "type" : {
@@ -54,12 +58,15 @@
             "total" : "總額：{{token.symbol}}",
             "fee" : "費用",
             "you_get" : "您將獲得",
+            "you_pay" : "你要付錢",
             "swap_fee" : "兌換費用",
             "swap" : "兌換",
             "select_token" : "選擇代幣",
             "select_token_caret" : "選擇代幣˅",
             "metric_balance" : "METRIC代幣余額",
-            "no_fee" : "免手續費🥳"
+            "no_fee" : "免手續費🥳",
+            "max_amount" : "最大",
+            "price_direction" : "{{base.symbol}} 對於 {{quote.symbol}}"
         },
         "submit" : {
             "insufficient_balance" : "余額不足",
@@ -71,6 +78,21 @@
         "language_selector" : {
             "title" : "選擇語言",
             "language" : "繁体中文"
+        },
+        "relativeTime" : {
+            "future" : "於 %s",
+            "past" : "%s 前",
+            "s" : "幾秒鐘",
+            "m" : "等一下",
+            "mm" : "%d 分鐘",
+            "h" : "一小時",
+            "hh" : "%d 小時",
+            "d" : "一天",
+            "dd" : "%d 天",
+            "M" : "一個月",
+            "MM" : "%d 月",
+            "y" : "一年",
+            "yy" : "%d 歲"
         }
     }
 }

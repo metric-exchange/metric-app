@@ -1,12 +1,15 @@
 :root {
   --brand-logo: url("logo-dark.svg");
   --swap-button-image: url("switch-button-dark.svg");
+  --exchange-button-image: url("exchange_button_dark.svg");
+  --price-switch-image: url("price_switch_dark.svg");
   --main-background-color: #303030;
   --main-text-color: #FFFFFF;
 
   --swap-form-background-color: #181A1B;
   --swap-from-border-color: #181A1B;
   --swap-button-background-color: #21302D;
+  --exchange-button-background-color: #21302D;
   --swap-button-text-color: #60FFD9;
   --swap-direction-title-color: #A3A3A3;
 
@@ -40,12 +43,15 @@
 [data-theme="light"] {
   --brand-logo: url("logo-light.svg");
   --swap-button-image: url("switch-button-light.svg");
+  --exchange-button-image: url("exchange_button_light.svg");
+  --price-switch-image: url("price_switch_light.svg");
   --main-background-color: #F9F9F9;
   --main-text-color: #000000;
 
   --swap-form-background-color: #FFFFFF;
   --swap-from-border-color: #F9F9F9;
   --swap-button-background-color: #000000;
+  --exchange-button-background-color: #F9F9F9;
   --swap-button-text-color: #FFFFFF;
   --swap-direction-title-color: #000000;
 

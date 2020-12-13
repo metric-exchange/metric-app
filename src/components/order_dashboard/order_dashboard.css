@@ -69,6 +69,8 @@
 @media(min-width: 600px){
     .dashboard {
         grid-template-columns: auto auto;
+        justify-content: center;
+        place-items: stretch;
     }
 
     .order-form {
@@ -85,6 +87,8 @@
 @media(min-width: 1000px){
     .dashboard {
         grid-template-columns: auto auto;
+        justify-content: center;
+        place-items: stretch;
     }
 
     .order-form {

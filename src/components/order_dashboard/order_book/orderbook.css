@@ -26,6 +26,10 @@
     color: #CC3F3F;
 }
 
+.order-price {
+    color: var(--token-selector-table-text-color)
+}
+
 .order:hover {
     background-color: var(--main-background-color);
     cursor: pointer;

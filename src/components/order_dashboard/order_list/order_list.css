@@ -15,7 +15,7 @@
     line-height: 25px;
 }
 
-.my-orders thead th {
+.my-orders-header {
     line-height: 40px;
     text-align: left;
     color: var(--token-selector-table-text-color);
@@ -27,19 +27,14 @@
     background: var(--token-selector-background-color);
 }
 
-.my-orders th,td {
-    width: 25%;
+.my-orders-line {
+    display: grid;
+    grid-template-columns: 30% 20% 15% 20% 15%;
 }
 
 .order-list-canvas {
     height: 240px;
     overflow-y: scroll;
-}
-
-.cancel-order {
-    cursor: pointer;
-    color: var(--main-text-color);
-    text-decoration: underline;
 }
 
 .order-list-big-screen-column {
@@ -48,9 +43,9 @@
 
 @media(min-width: 1000px) {
     .order-list-big-screen-column {
-        display: table-cell;
+        display: unset;
     }
-    .my-orders th,td {
-        width: 20%;
+    .my-orders-line {
+        grid-template-columns: 20% 14% 14% 14% 14% 14% 10%;
     }
 }

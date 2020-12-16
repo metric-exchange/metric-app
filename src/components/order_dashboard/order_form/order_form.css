@@ -89,21 +89,25 @@
     color: var(--token-selector-box-text-color)  ;
 }
 
-.switch-button-image {
+.order-switch-button-image {
+    display: block;
     cursor: pointer;
     background-image: var(--exchange-button-image);
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
-    transform: rotate(0deg);
     transition: 0.5s;
+    -webkit-transition: 0.5s;
     padding-top: 10px;
 }
 
-.switch-button-image:active {
+.order-switch-button-image:active {
+    display: block;
     transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
     transition:  0s;
+    -webkit-transition: 0s;
 }
 
 .order-form .active-button {
@@ -112,20 +116,24 @@
 }
 
 .price-switch-button {
+    display: block;
     cursor: pointer;
     background-image: var(--price-switch-image);
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
-    transform: rotate(0deg);
     transition: 0.5s;
+    -webkit-transition: 0.5s;
     position: absolute;
 }
 
 .price-switch-button:active {
+    position: absolute;
     transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
     transition:  0s;
+    -webkit-transition: 0s;
 }
 
 .max-amount {

@@ -10,7 +10,15 @@
                 <div>{ this.i18next.t('order.price') }</div>
                 <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</div>
             </div>
-            <order-line each={ order in state.orders } key={ order.metaData.orderHash } order={ order } />
+            <div class="empty-order-list" if={ state.isLoadingOrders }>
+                <loader />
+            </div>
+            <order-line
+                    if={ !state.isLoadingOrders }
+                    each={ order in state.orders }
+                    key={ order.metaData.orderHash }
+                    order={ order }
+            />
         </div>
     </div>
 
@@ -31,7 +39,8 @@
                 OrderLine
             },
             state: {
-                orders: []
+                orders: [],
+                isLoadingOrders: true
             },
             onMounted() {
                 registerForUserOrderUpdates(this)
@@ -45,9 +54,7 @@
                     this.state.orders = []
                 }
 
-                await this.update({
-                    isLoadingOrders: false
-                })
+                this.update({isLoadingOrders: false})
             }
         }
 

@@ -68,14 +68,11 @@
             },
             async onBeforeMount() {
                 await initLocalizations()
-            },
-            async onMounted() {
                 document.title = "Metric Exchange"
 
                 await initWeb3()
                 await loadTokenList()
 
-                fetchTokensInfo()
                 synchronizeOrderBook()
 
                 if (this.isOrderBookFeatureEnabled()) {
@@ -83,8 +80,8 @@
                 }
 
                 setBase(`/`)
-
-                this.update()
+            },
+            async onMounted() {
                 this.i18next.on("languageChanged", (lng, ns) => {
                     this.update()
                 })

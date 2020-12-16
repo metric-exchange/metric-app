@@ -59,6 +59,9 @@
                 this.handleAccounts()
                 this.update()
             },
+            onBeforeMount() {
+                this.handleAccounts()
+            },
             onMounted() {
                 registerForWalletChanges(this)
                 document.addEventListener('click', function (e) {
@@ -81,6 +84,8 @@
 
                 if (accountAddress() !== undefined) {
                     this.state.address = accountAddress()
+                } else {
+                    this.state.address = "0x0000000000000000000000000000000000000000"
                 }
 
                 this.state.obfuscatedAccount = this.state.address.substr(0, 8) + '...' + this.state.address.substr(38, 40)

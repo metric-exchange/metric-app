@@ -8,6 +8,12 @@ import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
 import {zeroXContractAddresses} from "../0x/0x_order_book_proxy";
 
+export function resetTokensInfo() {
+    tokens.forEach(t => {
+        t.balance = 0
+        t.allowance = 0
+    })
+}
 
 export function registerForTokenListUpdate(item) {
     register.push(item)
@@ -48,54 +54,39 @@ export function updateTokenAllowance(address, allowance) {
     token.allowance = formatAmount(allowance / (10 ** token.decimals))
 }
 
-export async function fetchTokensInfo() {
-    await executeBatch(0)
+let tokenBatchSize = 100
+
+export async function fetchTokensInfo(address) {
+    await executeBatch(address, 0)
 }
 
-let tokenBatchSize = 100
-let firstTokenBalanceRefreshExecuted = false
-let firstTokenAllowanceRefreshExecuted = false
-
-async function executeBatch(batchIndex) {
-    if (isWalletConnected() && batchIndex*tokenBatchSize < tokens.length) {
-        let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
-        let batch = new window.web3.BatchRequest();
-        for (let index = batchIndex*tokenBatchSize; index < Math.min((batchIndex+1)*tokenBatchSize, tokens.length); index++) {
-            let token = tokens[index]
-            let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
-            batch.add(
-                contract
-                    .methods
-                    .balanceOf(accountAddress())
-                    .call
-                    .request({from: accountAddress()}, (err, b) => updateBalance(index, b))
-            );
-            if (token.balance > 0) {
-                firstTokenAllowanceRefreshExecuted = true
+async function executeBatch(address, batchIndex) {
+    if (isWalletConnected() && address === accountAddress()) {
+        if (batchIndex*tokenBatchSize < tokens.length) {
+            let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
+            let batch = new window.web3.BatchRequest();
+            for (let index = batchIndex*tokenBatchSize; index < Math.min((batchIndex+1)*tokenBatchSize, tokens.length); index++) {
+                let token = tokens[index]
+                let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
                 batch.add(
                     contract
                         .methods
-                        .allowance(accountAddress(), zeroXAllowanceTargetAddress)
+                        .balanceOf(address)
                         .call
-                        .request({from: accountAddress()}, (err, b) => updateAllowance(index, b))
+                        .request({from: address}, (err, b) => updateBalance(index, address, b))
                 );
             }
-            firstTokenBalanceRefreshExecuted = true
-        }
-        await batch.execute();
+            await batch.execute();
 
-        setTimeout(() => executeBatch(batchIndex+1), 1000)
-    } else {
-        if (firstTokenBalanceRefreshExecuted && firstTokenAllowanceRefreshExecuted) {
-            setTimeout(() => executeBatch(0), 60000)
+            setTimeout(() => executeBatch(address, batchIndex+1), 1000)
         } else {
-            setTimeout(() => executeBatch(0), 1000)
+            setTimeout(() => executeBatch(address, 0), 60000)
         }
     }
 }
 
-async function updateBalance(index, balance) {
-    if (isNaN(balance) === false) {
+async function updateBalance(index, address, balance) {
+    if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = balance / (10 ** tokens[index].decimals)
         if (newBalance !== tokens[index].balance) {
             console.log("update balance", tokens[index].symbol, newBalance)
@@ -104,11 +95,20 @@ async function updateBalance(index, balance) {
                 balancesRegister.map(item => item.onTokenBalancesUpdate())
             )
         }
+        if (newBalance > 0) {
+            let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
+            let contract = new window.web3.eth.Contract(Erc20Abi, tokens[index].address);
+            let allowance = await contract
+                .methods
+                .allowance(address, zeroXAllowanceTargetAddress)
+                .call()
+            await updateAllowance(index, address, allowance)
+        }
     }
 }
 
-async function updateAllowance(index, allowance) {
-    if (isNaN(allowance) === false) {
+async function updateAllowance(index, address, allowance) {
+    if (isWalletConnected() && address === accountAddress() && isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** tokens[index].decimals)
         if (newAllowance !== tokens[index].allowance) {
             console.log("update allowance", tokens[index].symbol, newAllowance)

@@ -9,13 +9,17 @@ export function registerForUserOrderUpdates(item) {
     register.push(item)
 }
 
-export async function synchronizeUserOrders() {
+export async function synchronizeUserOrders(userAddress) {
     if (isWalletConnected()) {
-        orders = await retrieveUserOrders(accountAddress())
-        await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
+        if (userAddress === accountAddress()) {
+            orders = await retrieveUserOrders(accountAddress())
+            await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
+        }
     }
 
-    setTimeout(synchronizeUserOrders, 10000)
+    if (!isWalletConnected() || (userAddress === accountAddress())) {
+        setTimeout(() => synchronizeUserOrders(userAddress), 10000)
+    }
 }
 
 async function retrieveUserOrders(address) {

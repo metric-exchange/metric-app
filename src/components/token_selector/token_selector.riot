@@ -23,12 +23,14 @@
         import UnknownTokenDarkImage from './unknown-token-dark.svg'
         import './token_selector.css'
         import {
+            fetchTokensInfo,
             findOrAddTokenWithAddress, registerForTokenBalancesUpdate,
-            registerForTokenListUpdate,
+            registerForTokenListUpdate, resetTokensInfo,
             tokensList
         } from "../../common/tokens/token_fetch";
         import {registerForThemeUpdates} from "../../common/theme_manager";
         import { BigNumber } from '@0x/utils'
+        import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../common/wallet/wallet_manager";
 
         export default {
             config: {
@@ -49,7 +51,18 @@
                 registerForThemeUpdates(this)
                 registerForTokenListUpdate(this)
                 registerForTokenBalancesUpdate(this)
+                registerForWalletChanges(this)
+                if (isWalletConnected()) {
+                    fetchTokensInfo(accountAddress())
+                }
                 this.updateTheme()
+            },
+            onWalletChanges() {
+                resetTokensInfo()
+                if (isWalletConnected()) {
+                    fetchTokensInfo(accountAddress())
+                }
+                this.update()
             },
             async onTokenListUpdate() {
                 await this.filterTokenSearch()

@@ -26,7 +26,11 @@
         import './order_list.css'
         import Loader from '../../loader/loader.riot'
         import OrderLine from './order_line/order_line.riot'
-        import {isWalletConnected} from "../../../common/wallet/wallet_manager";
+        import {
+            accountAddress,
+            isWalletConnected,
+            registerForWalletChanges
+        } from "../../../common/wallet/wallet_manager";
         import {
             registerForUserOrderUpdates,
             synchronizeUserOrders,
@@ -44,7 +48,16 @@
             },
             onMounted() {
                 registerForUserOrderUpdates(this)
-                synchronizeUserOrders()
+                registerForWalletChanges(this)
+                if (isWalletConnected()) {
+                    synchronizeUserOrders(accountAddress())
+                }
+            },
+            onWalletChanges() {
+                this.update({orders: [], isLoadingOrders: true})
+                if (isWalletConnected()) {
+                    synchronizeUserOrders(accountAddress())
+                }
             },
             async onUserOrderUpdates() {
 

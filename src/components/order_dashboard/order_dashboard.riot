@@ -3,11 +3,16 @@
     <div class="dashboard">
 
         <div class="order-form">
-            <order-form input-token-address={ state.inputTokenAddress } output-token-address={ state.outputTokenAddress } />
+            <order-form
+                input-token-address={ state.inputTokenAddress }
+                output-token-address={ state.outputTokenAddress }
+                is-price-direction-reverted={ state.isPriceDirectionReverted }
+                toggle-priceDirection={ togglePriceDirection }
+            />
         </div>
 
         <div class="order-book">
-            <order-book/>
+            <order-book is-price-direction-reverted={ state.isPriceDirectionReverted } />
         </div>
 
         <div class="order-list">
@@ -35,7 +40,8 @@
             },
             state: {
                 inputTokenAddress: null,
-                outputTokenAddress: null
+                outputTokenAddress: null,
+                isPriceDirectionReverted: false
             },
             onBeforeMount(props) {
                 registerForTokenListUpdate(this)
@@ -57,6 +63,9 @@
                     this.state.outputTokenAddress = tokensList().find(t => t.symbol.toLowerCase() === "metric").address
                 }
                 this.update()
+            },
+            togglePriceDirection() {
+                this.update({ isPriceDirectionReverted: !this.state.isPriceDirectionReverted })
             }
         }
 

@@ -47,6 +47,9 @@
             "connect_wallet" : "Connectez un wallet",
             "change_wallet" : "Changer de wallet"
         },
+        "order_book" : {
+            "title" : "ORDERES OUVERTS"
+        },
         "order": {
             "type" : {
                 "sell" : "Vente",

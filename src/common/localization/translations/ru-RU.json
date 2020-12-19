@@ -47,6 +47,9 @@
             "connect_wallet" : "Подключить кошелёк",
             "change_wallet" : "Сменить кошелек"
         },
+        "order_book" : {
+            "title" : "книга заказов"
+        },
         "order": {
             "type" : {
                 "sell" : "Продажа",

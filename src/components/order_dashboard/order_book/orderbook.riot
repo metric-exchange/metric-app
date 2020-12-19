@@ -1,32 +1,37 @@
 <order-book>
-    <loader if={ state.isLoadingOrders }/>
-    <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
-        <table class="orders" cellspacing="0">
-            <thead class="order-book-columns">
-            <tr id="order-book-header">
-                <th>{ this.i18next.t('order.amount', { token: state.inputToken }) }</th>
-                <th>{ this.i18next.t('order.price', { token: state.outputToken }) }</th>
-                <th>{ this.i18next.t('order.total', { token: state.outputToken }) }</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr each={ask in state.asks} class="order" onclick={ setOrderPrice }>
-                <td class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
-                <td class="order-price">{ ask.price }</td>
-                <td class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
-            </tr>
-            <tr id="orders-separator" class="order" onclick={ setOrderPrice }>
-                <td/>
-                <td>{ state.midMarketPrice }</td>
-                <td/>
-            </tr>
-            <tr each={bid in state.bids} class="order" onclick={ setOrderPrice }>
-                <td class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
-                <td class="order-price">{ bid.price }</td>
-                <td class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="order-book-body">
+        <div class="order-book-title">{ this.i18next.t('order_book.title') }</div>
+        <div class="order-book-content">
+            <loader if={ state.isLoadingOrders }/>
+            <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
+                <table class="orders" cellspacing="0">
+                    <thead class="order-book-columns">
+                    <tr id="order-book-header">
+                        <th>{ this.i18next.t('order.amount', { token: state.inputToken }) }</th>
+                        <th>{ this.i18next.t('order.price', { token: priceToken() }) }</th>
+                        <th>{ this.i18next.t('order.total', { token: state.outputToken }) }</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr each={ask in state.asks} class="order" onclick={ (e) => setOrderPrice(ask.price) }>
+                        <td class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
+                        <td class="order-price">{ formatPrice(ask.price) }</td>
+                        <td class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
+                    </tr>
+                    <tr id="orders-separator" class="order" onclick={ (e) => setOrderPrice(state.midMarketPrice) }>
+                        <td/>
+                        <td>{ formatPrice(state.midMarketPrice) }</td>
+                        <td/>
+                    </tr>
+                    <tr each={bid in state.bids} class="order" onclick={ (e) => setOrderPrice(bid.price) }>
+                        <td class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
+                        <td class="order-price">{ formatPrice(bid.price) }</td>
+                        <td class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -163,7 +168,7 @@
                     if (baseTokenUsdPrice > 0 && quoteTokenUsdPrice > 0) {
                         return (baseTokenUsdPrice / quoteTokenUsdPrice).toFixed(this.config.displayedDecimalPoints)
                     } else {
-                        return ""
+                        return null
                     }
                 }
             },
@@ -183,9 +188,23 @@
                     }
                 }
             },
-            setOrderPrice(e) {
-                let price = parseFloat(e.target.parentElement.cells[1].textContent)
-                updateOrderPrice(price)
+            setOrderPrice(price) {
+                updateOrderPrice(parseFloat(price))
+            },
+            formatPrice(price) {
+                let formattedPrice = parseFloat(price)
+                if (this.props.isPriceDirectionReverted) {
+                    formattedPrice = price > 0 ? 1 / price : 0
+                }
+
+                return formattedPrice.toFixed(this.config.displayedDecimalPoints)
+            },
+            priceToken() {
+                if (this.props.isPriceDirectionReverted) {
+                    return this.state.inputToken
+                } else {
+                    return this.state.outputToken
+                }
             }
         }
 

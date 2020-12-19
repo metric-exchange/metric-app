@@ -1,7 +1,7 @@
 @import "../../theme_colors/colors.css";
 
 #order-table-canvas {
-    height: 480px;
+    height: 415px;
     width: 370px;
     overflow-y: scroll;
 }
@@ -48,6 +48,25 @@
 
 .orders th,td {
     width: 30%;
+}
+
+.order-book-body {
+    display: grid;
+    grid-template-rows: 5% 95%;
+    height: 476px;
+    width: 415px;
+    padding: 20px;
+}
+
+.order-book-title {
+    color: var(--token-selector-table-text-color);
+    line-height: 32px;
+}
+
+.order-book-content {
+    display: grid;
+    place-content: center;
+    align-content: center;
 }
 
 @media(min-width: 600px) {

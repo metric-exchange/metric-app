@@ -47,6 +47,9 @@
             "connect_wallet" : "連接錢包",
             "change_wallet" : "找錢包"
         },
+        "order_book" : {
+            "title" : "訂購書"
+        },
         "order": {
             "type" : {
                 "sell" : "賣出",

@@ -42,6 +42,9 @@
                 "cancel" : "Cancel"
             }
         },
+        "order_book" : {
+            "title" : "ORDER BOOK"
+        },
         "wallet" : {
             "balance" : "Wallet: {{balance}}",
             "connect_wallet" : "Connect wallet",

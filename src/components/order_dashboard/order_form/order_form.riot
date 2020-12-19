@@ -107,20 +107,15 @@
             onBeforeMount() {
                 this.updateTokens()
                 this.setOrderMessage()
+                router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
             },
             async onMounted() {
                 registerForTokenAllowancesUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
+
                 if (!this.state.isLoadingTokens) {
                     await this.refreshOrderMessage()
-                }
-            },
-            onBeforeUpdate() {
-                if (this.state.inputToken === null || this.state.outputToken === null) {
-                    this.updateTokens()
-                    this.setOrderMessage()
-                    router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
                 }
             },
             changePriceDirection() {

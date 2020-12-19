@@ -80,8 +80,8 @@ async function submitOrder(order, referralAddress, feePercentage) {
                 takerAssetData,
                 await zeroXContractAddresses().then(a => a.exchange),
                 {
-                    makerFee: (myUnfilledMakerAmount * feePercentage).toString(),
-                    takerFee: (myUnfilledTakerAmount * feePercentage).toString(),
+                    makerFee: `${myUnfilledMakerAmount.multipliedBy(feePercentage)}`,
+                    takerFee: `${myUnfilledTakerAmount.multipliedBy(feePercentage)}`,
                     feeRecipientAddress: referralAddress,
                 }
             )

@@ -8,7 +8,7 @@
             <div class="token-selector button clickable" onclick={ openInputTokenSelector }>
                 { state.inputToken.symbol } ˅
             </div>
-            <div class="order-switch-button-image" onclick={ switchDirection } ontouchstart=""></div>
+            <div class="order-switch-button-image transition-start" onclick={ switchDirection }></div>
             <div class="token-selector button clickable" onclick={ openOutputTokenSelector }>
                 { state.outputToken.symbol } ˅
             </div>
@@ -24,7 +24,7 @@
                 <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
             </div>
             <div class="order-input">
-                <div class="price-switch-button" onclick={ changePriceDirection } ontouchstart=""></div>
+                <div class="price-switch-button transition-half-start" onclick={ changePriceDirection }></div>
             </div>
         </div>
 
@@ -120,8 +120,10 @@
             changePriceDirection() {
                 this.switchPrice(this.state.price)
                 this.props.togglePriceDirection()
+                e.target.classList.toggle("transition-half-start")
+                e.target.classList.toggle("transition-half-rotate")
             },
-            switchDirection() {
+            switchDirection(e) {
                 let input = this.state.inputToken
                 let output = this.state.outputToken
 
@@ -131,6 +133,9 @@
                 this.state.inputToken = output
                 this.state.outputToken = input
                 this.resetInputAmount(null)
+
+                e.target.classList.toggle("transition-rotate")
+                e.target.classList.toggle("transition-start")
             },
             updateTokens() {
                 if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {

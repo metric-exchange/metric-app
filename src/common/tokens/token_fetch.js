@@ -54,18 +54,16 @@ export function updateTokenAllowance(address, allowance) {
     token.allowance = formatAmount(allowance / (10 ** token.decimals))
 }
 
-let tokenBatchSize = 100
-
 export async function fetchTokensInfo(address) {
-    await executeBatch(address, 0)
+    await executeBatch(address, 0, 100, 1000)
 }
 
-async function executeBatch(address, batchIndex) {
+async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
     if (isWalletConnected() && address === accountAddress()) {
-        if (batchIndex*tokenBatchSize < tokens.length) {
+        if (batchIndex*batchSize < tokens.length) {
             let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
             let batch = new window.web3.BatchRequest();
-            for (let index = batchIndex*tokenBatchSize; index < Math.min((batchIndex+1)*tokenBatchSize, tokens.length); index++) {
+            for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
                 let token = tokens[index]
                 let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
                 batch.add(
@@ -78,9 +76,9 @@ async function executeBatch(address, batchIndex) {
             }
             await batch.execute();
 
-            setTimeout(() => executeBatch(address, batchIndex+1), 1000)
+            setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
         } else {
-            setTimeout(() => executeBatch(address, 0), 60000)
+            setTimeout(() => executeBatch(address, 0, batchSize, 10000), 60000)
         }
     }
 }
@@ -89,7 +87,7 @@ async function updateBalance(index, address, balance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = balance / (10 ** tokens[index].decimals)
         if (newBalance !== tokens[index].balance) {
-            console.log("update balance", tokens[index].symbol, newBalance)
+            console.debug("update balance", tokens[index].symbol, newBalance)
             tokens[index].balance = newBalance
             await Promise.all(
                 balancesRegister.map(item => item.onTokenBalancesUpdate())
@@ -111,7 +109,7 @@ async function updateAllowance(index, address, allowance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** tokens[index].decimals)
         if (newAllowance !== tokens[index].allowance) {
-            console.log("update allowance", tokens[index].symbol, newAllowance)
+            console.debug("update allowance", tokens[index].symbol, newAllowance)
             tokens[index].allowance = newAllowance
             await Promise.all(
                 allowancesRegister.map(item => item.onTokenAllowancesUpdate())
@@ -142,8 +140,7 @@ export async function loadTokenList()
                     address: t.address,
                     symbol: t.symbol,
                     decimals: t.decimals,
-                    logoURI: t.logoURI,
-                    volume_limit: -1
+                    logoURI: t.logoURI
                 })
             })
         })
@@ -153,12 +150,8 @@ export async function loadTokenList()
     )
 }
 
-export function isTokenAmountOverLimit(token, amount) {
-    return amount.isGreaterThan(token.volume_limit * (10 ** token.decimals))
-}
-
 export function addToken(token) {
-    if (tokens.find(t => t.symbol === token.symbol) === undefined) {
+    if (tokens.find(t => t.address.toLowerCase() === token.address.toLowerCase()) === undefined) {
         tokens.push(token)
     }
 }
@@ -171,7 +164,6 @@ export async function addTokenWithAddress(address) {
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
         token.balance = 0
         token.allowance = 0
-        token.volume_limit = -1
 
         customTokensManager.addToken(new Token(token.symbol, token.address, token.decimals))
 
@@ -180,8 +172,7 @@ export async function addTokenWithAddress(address) {
         register.map(item => item.onTokenListUpdate())
 
     } catch (e) {
-        console.log(e.message)
-        console.log("Invalid token address:", address)
+        console.error("Invalid token address:", address)
     }
 }
 
@@ -195,8 +186,7 @@ function initTokenList() {
             address: t.address,
             symbol: t.symbol,
             decimals: t.decimals,
-            logoURI: t.logoURI,
-            volume_limit: -1
+            logoURI: t.logoURI
         })
     })
 
@@ -210,7 +200,6 @@ let defaultTokens = [
         logoURI: "https://etherscan.io/token/images/build_32.png",
         balance: 0,
         allowance: 0,
-        volume_limit: -1,
         disabled: false
     },
     {
@@ -220,7 +209,6 @@ let defaultTokens = [
         logoURI: "https://etherscan.io/token/images/metric_32.png",
         balance: 0,
         allowance: 0,
-        volume_limit: -1,
         disabled: false
     },
     {
@@ -230,7 +218,6 @@ let defaultTokens = [
         logoURI: EthIcon,
         balance: 0,
         allowance: 0,
-        volume_limit: -1,
         disabled: false
     },
     {
@@ -240,7 +227,6 @@ let defaultTokens = [
         logoURI: "https://etherscan.io/token/images/MCDDai_32.png",
         balance: 0,
         allowance: 0,
-        volume_limit: 10,
         disabled: false
     },
     {
@@ -250,7 +236,6 @@ let defaultTokens = [
         logoURI: HypeIcon,
         balance: 0,
         allowance: 0,
-        volume_limit: -1,
         disabled: false
     },
     {
@@ -260,7 +245,6 @@ let defaultTokens = [
         logoURI: "https://",
         balance: 0,
         allowance: 0,
-        volume_limit: -1,
         disabled: false
     },
     {
@@ -270,7 +254,6 @@ let defaultTokens = [
         logoURI: UpdownIcon,
         balance: 0,
         allowance: 0,
-        volume_limit: -1,
         disabled: false
     }
 ]

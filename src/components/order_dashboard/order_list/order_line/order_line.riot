@@ -12,7 +12,16 @@
         <div>{ filledTakerPercentage(props.order).toFixed(2) }%</div>
         <div>{ orderPrice(props.order).toFixed(3) }</div>
         <div class="order-list-big-screen-column">{ getDateDiff(props.order.order.expirationTimeSeconds) }</div>
-        <div class="cancel-order" onclick={ this.cancelOrder }>{ this.i18next.t('my_order_list.order.cancel') }</div>
+        <div class="order-list-big-screen-column">
+            <a class="order-recipient"
+                href="https://etherscan.io/address/{ props.order.order.takerAddress }"
+                target="_blank">
+                { takerAddress() }
+            </a>
+        </div>
+        <div class="cancel-order">
+            <img src={ config.closeImage } onclick={ this.cancelOrder } alt={ this.i18next.t('order.cancel') }/>
+        </div>
     </div>
 
     <script>
@@ -21,14 +30,24 @@
         import {ZeroXOrdersProxy} from "../../../../common/0x/0x_orders_proxy";
         import moment from 'moment';
         import {supportedLanguages} from "../../../../common/localization/localize";
+        import Image from '../../../token_selector/close.svg'
 
         export default {
+            config: {
+              closeImage: Image
+            },
             state: {
                 makerToken: undefined,
                 takerToken: undefined,
                 priceDirectionReverted: false
             },
             onBeforeMount() {
+                this.initTokens()
+            },
+            onBeforeUpdate() {
+                this.initTokens()
+            },
+            initTokens() {
                 let prefixLen = "0xf47261b0000000000000000000000000".length
                 let makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
                 let takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
@@ -81,6 +100,14 @@
                 let lang = supportedLanguages[langId]
                 moment.locale(langId, { relativeTime: lang.translation.relativeTime});
                 return moment(timestampSeconds * 1000).fromNow()
+            },
+            takerAddress() {
+                let address = this.props.order.order.takerAddress
+                if ( address === "0x0000000000000000000000000000000000000000") {
+                    return null
+                } else {
+                    return address.substr(0, 4) + '...' + address.substr(38, 40)
+                }
             }
         }
     </script>

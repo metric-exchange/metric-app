@@ -4,8 +4,8 @@
 
         <div class="order-form">
             <order-form
-                input-token-address={ state.inputTokenAddress }
-                output-token-address={ state.outputTokenAddress }
+                input-token-address={ props.inputTokenAddress }
+                output-token-address={ props.outputTokenAddress }
                 is-price-direction-reverted={ state.isPriceDirectionReverted }
                 toggle-priceDirection={ togglePriceDirection }
             />
@@ -26,11 +26,6 @@
         import OrderForm from './order_form/order_form.riot'
         import OrderBook from './order_book/orderbook.riot'
         import OrderList from './order_list/order_list.riot'
-        import {
-            findOrAddTokenWithAddress, findTokenWithAddress,
-            registerForTokenListUpdate,
-            tokensList
-        } from "../../common/tokens/token_fetch";
 
         export default {
             components: {
@@ -39,30 +34,7 @@
                 OrderList
             },
             state: {
-                inputTokenAddress: null,
-                outputTokenAddress: null,
                 isPriceDirectionReverted: false
-            },
-            onBeforeMount(props) {
-                registerForTokenListUpdate(this)
-                this.state.inputTokenAddress = props.inputTokenAddress
-                this.state.outputTokenAddress = props.outputTokenAddress
-            },
-            async onTokenListUpdate() {
-                let token = await findOrAddTokenWithAddress(this.state.inputTokenAddress)
-                if (token !== undefined) {
-                    this.state.inputTokenAddress = token.address
-                } else {
-                    this.state.inputTokenAddress = tokensList().find(t => t.symbol.toLowerCase() === "metric").address
-                }
-
-                token = await findOrAddTokenWithAddress(this.state.outputTokenAddress)
-                if (token !== undefined) {
-                    this.state.outputTokenAddress = token.address
-                } else {
-                    this.state.outputTokenAddress = tokensList().find(t => t.symbol.toLowerCase() === "metric").address
-                }
-                this.update()
             },
             togglePriceDirection() {
                 this.update({ isPriceDirectionReverted: !this.state.isPriceDirectionReverted })

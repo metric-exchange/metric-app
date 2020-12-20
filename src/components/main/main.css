@@ -7,7 +7,6 @@ html, body {
     font-family: 'Roboto Mono', monospace;
     color: var(--main-text-color);
     width: 100%;
-    min-height: 100vh;
 }
 
 * {
@@ -56,7 +55,7 @@ a {
     height: 50px;
     padding-left:20px;
     padding-right: 20px;
-    width: 50%;
+    width: 20%;
 }
 
 .brand-logo {
@@ -80,14 +79,49 @@ a {
     -ms-flex-pack: distribute;
     justify-content: flex-end;
     margin-right: 20px;
-    width: 50%;
+    width: 20%;
+}
+
+.header-links{
+    width: 60%;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    align-items: center;
+    justify-items: center;
+    color: var(--footer-text-color);
+}
+
+.header-links a, .header-links a:hover, .header-links a:visited {
+    color: var(--footer-text-color);
+    font-size: 12px;
+    margin: 0 5px;
+}
+
+.header-links a:hover {
+    color: var(--main-text-color);
 }
 
 #footer {
+    display: none;
     position: absolute;
     bottom: 0;
     height: 110px;
     width: 100%;
+}
+
+@media (max-width: 1000px) {
+    .header-links{
+        display: none;
+    }
+    .header-settings{
+        width: 50%;
+    }
+    .header-logo {
+        width: 50%;
+    }
+    #footer {
+        display: block;
+    }
 }
 
 #footer .footer-content{

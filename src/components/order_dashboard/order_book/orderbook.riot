@@ -3,33 +3,27 @@
         <div class="order-book-title">{ this.i18next.t('order_book.title') }</div>
         <div class="order-book-content">
             <loader if={ state.isLoadingOrders }/>
+            <div class="order-book-columns orders-header" if={ !state.isLoadingOrders }>
+                <div>{ this.i18next.t('order.amount', { token: state.inputToken }) }</div>
+                <div>{ this.i18next.t('order.price', { token: priceToken() }) }</div>
+                <div>{ this.i18next.t('order.total', { token: state.outputToken }) }</div>
+            </div>
             <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
-                <table class="orders" cellspacing="0">
-                    <thead class="order-book-columns">
-                    <tr id="order-book-header">
-                        <th>{ this.i18next.t('order.amount', { token: state.inputToken }) }</th>
-                        <th>{ this.i18next.t('order.price', { token: priceToken() }) }</th>
-                        <th>{ this.i18next.t('order.total', { token: state.outputToken }) }</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr each={ask in state.asks} class="order" onclick={ (e) => setOrderPrice(ask.price) }>
-                        <td class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
-                        <td class="order-price">{ formatPrice(ask.price) }</td>
-                        <td class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
-                    </tr>
-                    <tr id="orders-separator" class="order" onclick={ (e) => setOrderPrice(state.midMarketPrice) }>
-                        <td/>
-                        <td>{ formatPrice(state.midMarketPrice) }</td>
-                        <td/>
-                    </tr>
-                    <tr each={bid in state.bids} class="order" onclick={ (e) => setOrderPrice(bid.price) }>
-                        <td class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</td>
-                        <td class="order-price">{ formatPrice(bid.price) }</td>
-                        <td class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div each={ask in state.asks} class="order order-book-columns" onclick={ (e) => setOrderPrice(ask.price) }>
+                    <div class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="order-price">{ ask.price }</div>
+                    <div class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                </div>
+                <div id="orders-separator" class="order-book-columns" onclick={ (e) => setOrderPrice(state.midMarketPrice) }>
+                    <div/>
+                    <div>{ state.midMarketPrice }</div>
+                    <div/>
+                </div>
+                <div each={bid in state.bids} class="order order-book-columns" onclick={ (e) => setOrderPrice(bid.price) }>
+                    <div class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="order-price">{ bid.price }</div>
+                    <div class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                </div>
             </div>
         </div>
     </div>
@@ -61,6 +55,7 @@
                 bids: [],
                 midMarketPrice: null,
                 triggerScrollToView: true,
+                oldPriceDirectionState: false,
                 isLoadingOrders: true
             },
             onBeforeMount() {
@@ -82,7 +77,17 @@
 
                 await this.fetchOrderBook(this.state.inputToken, this.state.outputToken)
             },
-            onUpdated() {
+            onBeforeUpdate() {
+                if (this.oldPriceDirectionState !== this.props.isPriceDirectionReverted) {
+                    this.isLoadingOrders = true
+                }
+            },
+            async onUpdated() {
+                if (this.oldPriceDirectionState !== this.props.isPriceDirectionReverted) {
+                    this.oldPriceDirectionState = this.props.isPriceDirectionReverted
+                    this.isLoadingOrders = true
+                    await this.fetchOrderBook(this.state.inputToken, this.state.outputToken)
+                }
                 if (this.state.triggerScrollToView && !this.state.isLoadingOrders) {
                     this.scrollOrderBookIntoView()
                 }
@@ -102,7 +107,7 @@
                             let remainingMakerAmount = makerAmount.multipliedBy(remainingTakerAmount).dividedBy(takerAmount)
 
                             return {
-                                price: takerAmount.dividedBy(makerAmount).toFixed(this.config.displayedDecimalPoints, BigNumber.ROUND_UP),
+                                price: this.calculatePrice(takerAmount, makerAmount, BigNumber.ROUND_UP),
                                 volumeMaker: remainingTakerAmount,
                                 volumeTaker: remainingMakerAmount
                             }
@@ -117,7 +122,7 @@
                             let remainingMakerAmount = makerAmount.multipliedBy(remainingTakerAmount).dividedBy(takerAmount)
 
                             return {
-                                price: makerAmount.dividedBy(takerAmount).toFixed(this.config.displayedDecimalPoints, BigNumber.ROUND_DOWN),
+                                price: this.calculatePrice(makerAmount, takerAmount, BigNumber.ROUND_DOWN),
                                 volumeMaker: remainingMakerAmount,
                                 volumeTaker: remainingTakerAmount
                             }
@@ -155,6 +160,14 @@
                 }
             },
 
+            calculatePrice(quote, base, rounding) {
+                if (!this.props.isPriceDirectionReverted) {
+                    return quote.dividedBy(base).toFixed(this.config.displayedDecimalPoints, rounding)
+                } else {
+                    return base.dividedBy(quote).toFixed(this.config.displayedDecimalPoints, 1 - rounding)
+                }
+            },
+
             async midMarketPrice() {
                 if (this.state.asks.length > 0 && this.state.bids.length > 0) {
                     let bestAsk = this.state.asks.slice(-1)[0]
@@ -166,27 +179,14 @@
                     let quoteTokenUsdPrice = await getTokenUsdPrice(this.state.outputToken.address, this.state.outputToken.symbol)
 
                     if (baseTokenUsdPrice > 0 && quoteTokenUsdPrice > 0) {
-                        return (baseTokenUsdPrice / quoteTokenUsdPrice).toFixed(this.config.displayedDecimalPoints)
+                        return this.formatPrice((baseTokenUsdPrice / quoteTokenUsdPrice).toFixed(this.config.displayedDecimalPoints))
                     } else {
                         return null
                     }
                 }
             },
             scrollOrderBookIntoView() {
-                let tableHeader = document.getElementById("order-book-header");
-                let orderBookSeparator = document.getElementById("orders-separator");
-                let visibleOrderBookRegion = document.getElementById("order-table-canvas");
-
-                let tableHeaderSize = $(tableHeader).height();
-                let containerHeight = $(visibleOrderBookRegion).height() - tableHeaderSize;
-
-                if (orderBookSeparator !== null) {
-                    let elemTop = orderBookSeparator.offsetTop - tableHeaderSize;
-
-                    if (elemTop > containerHeight) {
-                        $(visibleOrderBookRegion).scrollTop(elemTop - containerHeight / 2);
-                    }
-                }
+                document.getElementById("orders-separator").scrollIntoView({behavior: "smooth", block: "center"});
             },
             setOrderPrice(price) {
                 updateOrderPrice(parseFloat(price))

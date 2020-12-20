@@ -36,7 +36,8 @@
                 "filled" : "Заполнено",
                 "expires_in" : "Срок истечения заявки",
                 "pair" : "пара",
-                "cost" : "расходы"
+                "cost" : "расходы",
+                "recipient" : "получатель"
             },
             "order" : {
                 "cancel" : "Отмена"
@@ -69,11 +70,12 @@
             "metric_balance" : "Ваш баланс METRIC",
             "no_fee" : "Без комиссии 🥳",
             "max_amount" : "Макс",
-            "price_direction" : "{{base.symbol}} на {{quote.symbol}}"
+            "price_direction" : "{{base.symbol}} на {{quote.symbol}}",
+            "valid_until" : "действует до",
+            "recipient_address_placeholder" : "адрес получателя (необязательно)"
         },
         "submit" : {
             "insufficient_balance" : "НЕДОСТАТОЧНЫЙ БАЛАНС",
-            "must_be_greater_than" : "НЕОБХОДИМО >{{token.volume_limit}} {{token.symbol}}",
             "approve": "УТВЕРДИТЬ {{token.symbol}}",
             "approving" : "Идёт утверждение {token.symbol}}",
             "place_order" : "РАЗМЕСТИТЬ ЗАКАЗ"

@@ -36,7 +36,8 @@
                 "filled" : "已完成",
                 "expires_in" : "将过期时间",
                 "pair" : "双",
-                "cost" : "花费"
+                "cost" : "花费",
+                "recipient" : "接受者"
             },
             "order" : {
                 "cancel" : "取消"
@@ -69,11 +70,12 @@
             "metric_balance" : "METRIC代币余额",
             "no_fee" : "免手续费🥳",
             "max_amount" : "最大",
-            "price_direction" : "{{base.symbol}} 每 {{quote.symbol}}"
+            "price_direction" : "{{base.symbol}} 每 {{quote.symbol}}",
+            "valid_until" : "有效期至",
+            "recipient_address_placeholder" : "收件人地址（可选）"
         },
         "submit" : {
             "insufficient_balance" : "余额不足",
-            "must_be_greater_than" : "必须超过{{token.volume_limit}} {{token.symbol}}",
             "approve": "批准{{token.symbol}}",
             "approving" : "正在批准{{token.symbol}}",
             "place_order" : "发送订单"

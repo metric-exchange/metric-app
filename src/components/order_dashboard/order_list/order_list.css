@@ -15,6 +15,10 @@
     line-height: 25px;
 }
 
+.my-orders:hover {
+    background-color: var(--main-background-color);
+}
+
 .my-orders-header {
     line-height: 40px;
     text-align: left;
@@ -29,11 +33,11 @@
 
 .my-orders-line {
     display: grid;
-    grid-template-columns: 30% 20% 15% 20% 15%;
+    grid-template-columns: 35% 20% 15% 20% 10%;
 }
 
 .order-list-canvas {
-    height: 240px;
+    height: 190px;
     overflow-y: scroll;
 }
 
@@ -46,6 +50,6 @@
         display: unset;
     }
     .my-orders-line {
-        grid-template-columns: 20% 14% 14% 14% 14% 14% 10%;
+        grid-template-columns: 20% 13% 13% 13% 13% 13% 12% 3%;
     }
 }

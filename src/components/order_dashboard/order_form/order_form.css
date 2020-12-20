@@ -1,7 +1,14 @@
 @import "../../theme_colors/colors.css";
 
-.order-line {
-    margin-top: 25px;
+#order-form {
+    display: grid;
+    grid-gap: 27px;
+}
+
+.order-validity-input {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    align-items: end;
 }
 
 .order-line label {
@@ -105,8 +112,8 @@
 .transition-start {
     transition: 0.5s;
     -webkit-transition: 0.5s;
-    transform: rotate(-360deg);
-    -webkit-transform: rotate(-360deg);
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
 }
 
 .transition-rotate {
@@ -137,8 +144,8 @@
 .transition-half-start {
     transition: 0.5s;
     -webkit-transition: 0.5s;
-    transform: rotate(-180deg);
-    -webkit-transform: rotate(-180deg);
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
 }
 
 .transition-half-rotate {
@@ -165,6 +172,10 @@
     grid-template-columns: auto auto;
     justify-items: center;
     grid-gap: 10%;
+}
+
+.order-valid-until-label {
+    padding-bottom: 8px;
 }
 
 @media(min-width: 600px) {

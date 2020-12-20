@@ -1,8 +1,12 @@
 
 .cancel-order {
+    display: grid;
+    align-items: center;
     cursor: pointer;
-    color: var(--main-text-color);
-    text-decoration: underline;
+}
+
+.cancel-order img {
+    height: 10px;
 }
 
 .opened-price-switch-button {
@@ -29,4 +33,10 @@
     align-items: center;
     justify-items: left;
     width: 100%;
+}
+
+.order-recipient {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--main-text-color);
 }

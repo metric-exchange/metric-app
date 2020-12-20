@@ -8,7 +8,7 @@
     row-gap: 20px;
     margin-left: 25%;
     margin-right: 25%;
-    margin-top: 100px;
+    margin-top: 70px;
 }
 
 .order-form {
@@ -27,7 +27,6 @@
     grid-column: 1;
     grid-row: 1;
     width: 340px;
-    height: 456px;
 }
 
 .order-book {
@@ -82,7 +81,6 @@
     }
 
 }
-
 
 @media(min-width: 1000px){
     .dashboard {

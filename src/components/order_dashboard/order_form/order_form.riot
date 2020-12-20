@@ -3,7 +3,7 @@
         <loader/>
     </div>
     <div id="order-form" if={ !state.isLoadingTokens }>
-    
+
         <div class="order-line order-inputs">
             <div class="token-selector button clickable" onclick={ openInputTokenSelector }>
                 { state.inputToken.symbol } ˅
@@ -14,12 +14,9 @@
             </div>
         </div>
 
-        <div class="order-line order-param-values">
-            <div>{ this.i18next.t('order.price') }</div>
-        </div>
         <div class="order-line exchange-price">
             <div class="order-input">
-                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="0"/>
+                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }" value={ state.price }/>
                 <label if={!props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
                 <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
             </div>
@@ -28,16 +25,37 @@
             </div>
         </div>
 
-        <div class="order-line order-param-values">
-            <div>{ this.i18next.t('order.amount_simple') }</div>
-        </div>
         <div class="order-line exchange-price">
             <div class="order-input">
-                <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="0"/>
+                <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.amount_simple') }"/>
                 <label class="label-amount">{ state.inputToken.symbol }</label>
             </div>
             <div class="order-input">
                 <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
+            </div>
+        </div>
+
+        <div class="order-line order-validity-input">
+            <div class="order-input order-valid-until-label">
+                { this.i18next.t('order.valid_until') }
+            </div>
+            <div class="order-input">
+                <input id="order-expiry-date-input"
+                       type="datetime-local"
+                       onkeyup={ updateExpiryTime }
+                       value={ state.expiryTime }
+                />
+            </div>
+        </div>
+
+        <div class="order-line">
+            <div class="order-input">
+                <input id="order-taker-address-input"
+                       type="text"
+                       onkeyup={ updateRecipientAddress }
+                       placeholder="{ this.i18next.t('order.recipient_address_placeholder') }"
+                       value={ state.recipientAddress }
+                />
             </div>
         </div>
 
@@ -87,6 +105,7 @@
         import {calculateMetricFee, MetricReferralAddress} from "../../../common/metric_fee";
         import { router } from '@riotjs/route'
         import {registerForOrderPriceUpdates} from "../../../common/prices/OrderPriceManager";
+        import moment from 'moment';
 
         export default {
             components: {
@@ -97,33 +116,50 @@
                 inputToken: null,
                 outputToken: null,
                 amount: NaN,
-                price: NaN,
+                price: null,
                 isOutputTokenApproved: false,
                 isInputTokenApproved: false,
                 showTokenSelector: false,
-                isLoadingTokens: true
+                isLoadingTokens: true,
+                expiryTime: moment().add(1, 'years').format("yyyy-MM-DDTHH:mm"),
+                recipientAddress: null
             },
             onBeforeMount() {
                 this.updateTokens()
                 this.setOrderMessage()
-                router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
             },
             async onMounted() {
+                registerForTokenListUpdate(this)
                 registerForTokenAllowancesUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
 
                 if (!this.state.isLoadingTokens) {
-                    await this.refreshOrderMessage()
+                    this.refreshOrderMessage()
                 }
             },
-            changePriceDirection() {
+            onTokenListUpdate() {
+                this.updateTokens()
+                this.setOrderMessage()
+            },
+            updateRecipientAddress(e) {
+                this.state.recipientAddress = e.target.value
+            },
+            updateExpiryTime(e) {
+                this.state.expiryTime = e.target.value
+            },
+            changePriceDirection(e) {
                 this.switchPrice(this.state.price)
                 this.props.togglePriceDirection()
                 e.target.classList.toggle("transition-half-start")
                 e.target.classList.toggle("transition-half-rotate")
             },
             switchDirection(e) {
+
+                if (this.props.isPriceDirectionReverted) {
+                    this.props.togglePriceDirection()
+                }
+
                 let input = this.state.inputToken
                 let output = this.state.outputToken
 
@@ -134,8 +170,13 @@
                 this.state.outputToken = input
                 this.resetInputAmount(null)
 
+                router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
+
                 e.target.classList.toggle("transition-rotate")
                 e.target.classList.toggle("transition-start")
+
+                this.resetInputs()
+
             },
             updateTokens() {
                 if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {
@@ -158,8 +199,10 @@
                         setQuoteToken(this.state.outputToken)
                     }
                 }
+
                 if (this.state.inputToken !== null && this.state.outputToken !== null) {
                     this.state.isLoadingTokens = false
+                    router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
                 }
             },
             onOrderPriceUpdate(price) {
@@ -176,7 +219,7 @@
                 if (price > 0) {
                     newPrice = 1 / price
                 }
-                this.setPrice(newPrice)
+                this.setPrice(isNaN(newPrice) ? null : newPrice)
             },
             setPrice(price) {
                 this.state.price = price
@@ -226,12 +269,13 @@
                     await setQuoteToken(token)
                     this.state.outputToken = token
                 }
-
                 router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
 
                 this.refreshOrderMessage()
-
                 this.closeTokenSelector()
+
+                this.update()
+                this.resetInputs()
             },
             updateAmount(e) {
                 this.update({ amount: parseFloat(e.target.value) })
@@ -245,11 +289,11 @@
             },
             updateSubmitButtonState() {
                 let button = document.getElementById("place-order-button")
-                if (!this.isValidOrder() || !this.isSufficientBalance()) {
+                if (!this.isValidInputs() || !this.isSufficientBalance()) {
                     button.classList.remove("active-button")
                     button.classList.remove("clickable")
                     button.onclick = null
-                } else if (this.isValidOrder() && !button.classList.contains("active-button")) {
+                } else if (this.isValidInputs() && !button.classList.contains("active-button")) {
                     button.classList.add("active-button")
                     button.classList.add("clickable")
                     button.onclick = this.checkApprovalAndSubmitOrder
@@ -288,7 +332,7 @@
                 document.getElementById("order-amount-input").value = amount
             },
             async checkApprovalAndSubmitOrder() {
-                if (await this.isApproved()) {
+                if (this.isApproved()) {
                     await this.sendOrder()
                 } else {
                     await this.requestApprovalAndSubmitOrder()
@@ -321,12 +365,19 @@
                 let inputAmount = this.inputAmount() * (10 ** this.state.inputToken.decimals)
                 let outputAmount = this.outputAmount() * (10 ** this.state.outputToken.decimals)
 
-                return {
+                let order = {
                     makerAssetAmount: new BigNumber(inputAmount),
                     makerAssetAddress: this.state.inputToken.address,
                     takerAssetAmount: new BigNumber(outputAmount),
-                    takerAssetAddress: this.state.outputToken.address
+                    takerAssetAddress: this.state.outputToken.address,
+                    expirationTimeSeconds: moment(this.state.expiryTime).unix(),
                 }
+
+                if (this.state.recipientAddress != null) {
+                    order.takerAddress = this.state.recipientAddress
+                }
+
+                return order
             },
             inputAmount() {
                 return this.state.amount
@@ -370,9 +421,6 @@
             applyFee(amount) {
                 return amount * calculateMetricFee()
             },
-            async isApproved() {
-                return await ZeroXOrdersProxy.is0xApprovedForToken(this.state.inputToken.address, this.inputAmount() * (10 ** this.state.inputToken.decimals))
-            },
             setApprovalMessage(token) {
                 this.update({
                     submitMessage: "submit.approving",
@@ -383,13 +431,10 @@
                 if (!this.isValidInputs()) {
                     this.state.submitMessage = "submit.place_order"
                     this.state.submitMessageParams = {}
-                } else if (!this.isValidOrder()) {
-                    this.state.submitMessage = "submit.must_be_greater_than"
-                    this.state.submitMessageParams = {token: this.state.outputToken}
                 } else if (!this.isSufficientBalance()) {
                     this.state.submitMessage = "submit.insufficient_balance"
                     this.state.submitMessageParams = {}
-                } else if(!this.maybeIsApproved()) {
+                } else if(!this.isApproved()) {
                     this.state.submitMessage = "submit.approve"
                     this.state.submitMessageParams = {token: this.state.inputToken}
                 } else {
@@ -401,12 +446,8 @@
                 this.setOrderMessage()
                 this.update()
             },
-            maybeIsApproved() {
+            isApproved() {
                 return tokensList().find(t => t.symbol === this.state.inputToken.symbol).allowance >= this.inputAmount()
-            },
-            isValidOrder() {
-                let isAmountAboveThreshold = (this.outputAmount() > this.state.outputToken.volume_limit)
-                return this.isValidInputs() && isAmountAboveThreshold
             },
             isValidInputs() {
                 return !isNaN(this.state.price) &&
@@ -422,6 +463,12 @@
             },
             formatWalletBalance(amount) {
                 return new BigNumber(amount).toFixed(3, BigNumber.ROUND_DOWN)
+            },
+            resetInputs() {
+                this.state.recipientAddress = null
+                this.state.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
+                this.setPrice(null)
+                this.resetInputAmount(null)
             }
         }
 

@@ -36,7 +36,8 @@
                 "filled" : "Filled",
                 "expires_in" : "Expires in",
                 "cost" : "Cost",
-                "pair" : "Pair"
+                "pair" : "Pair",
+                "recipient" : "Recipient"
             },
             "order" : {
                 "cancel" : "Cancel"
@@ -69,11 +70,12 @@
             "metric_balance" : "METRIC balance",
             "no_fee" : "No fees 🥳",
             "max_amount" : "MAX",
-            "price_direction" : "{{base.symbol}} per {{quote.symbol}}"
+            "price_direction" : "{{base.symbol}} per {{quote.symbol}}",
+            "valid_until" : "Valid Until",
+            "recipient_address_placeholder" : "Recipient address (optional)"
         },
         "submit" : {
             "insufficient_balance" : "INSUFFICIENT BALANCE",
-            "must_be_greater_than" : "MUST BE >{{token.volume_limit}} {{token.symbol}}",
             "approve": "APPROVE {{token.symbol}}",
             "approving" : "APPROVING {{token.symbol}}",
             "place_order" : "PLACE ORDER"

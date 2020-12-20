@@ -4,15 +4,19 @@
             <div class="brand-logo"></div>
         </div>
 
+        <div class="header-links">
+           <a href="http://letsbuild.finance/" target="_blank">{ this.i18next.t('footer.build_by_finance') }</a>
+           <a href="https://docs.letsbuild.finance/metric-exchange/" target="_blank">{ this.i18next.t('footer.documentation') }</a>
+           <a href="https://twitter.com/metricexchange" target="_blank">{ this.i18next.t('footer.twitter') }</a>
+           <a href="https://discord.gg/FN3sNSE" target="_blank">{ this.i18next.t('footer.discord') }</a>
+           <a href="https://build-finance.medium.com" target="_blank">{ this.i18next.t('footer.medium') }</a>
+        </div>
+
         <div class="header-settings">
             <settings/>
         </div>
 
     </header>
-
-    <div class="notice">
-        { this.i18next.t("notice.message") }
-    </div>
 
     <div class="main-content">
       <swap if={ !isOrderBookFeatureEnabled() }/>
@@ -20,9 +24,6 @@
       <router if={ isOrderBookFeatureEnabled() }>
           <route path="/#/:inputAddress/:outputAddress">
               <order-dashboard input-token-address={ route.params.inputAddress } output-token-address={ route.params.outputAddress }/>
-          </route>
-          <route path="/#/:inputAddress">
-              <order-dashboard input-token-address={ route.params.inputAddress } output-token-address={ defaultOutputTokenAddress() }/>
           </route>
           <route path="/">
               <order-dashboard input-token-address={ defaultInputTokenAddress() } output-token-address={ defaultOutputTokenAddress() }/>

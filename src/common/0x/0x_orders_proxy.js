@@ -1,9 +1,9 @@
-import {BigNumber, providerUtils} from '@0x/utils';
+import {BigNumber} from '@0x/utils';
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
 import {accountAddress, getContractWrapper, getProvider} from '../wallet/wallet_manager'
 import {Erc20ContractProxy, fetchTokenAllowance} from "../erc20_contract_proxy";
 import {getBidsMatching, getReplayClient, zeroXContractAddresses} from "./0x_order_book_proxy";
-import {isTokenAmountOverLimit, tokensList, updateTokenAllowance} from "../tokens/token_fetch";
+import {updateTokenAllowance} from "../tokens/token_fetch";
 import {getFastGasPriceInWei} from "../gas_price_oracle";
 
 export const ZeroXOrdersProxy = {
@@ -45,8 +45,12 @@ async function cancelOrder(order) {
 
 async function submitOrder(order, referralAddress, feePercentage) {
 
+    console.debug("processing order: ", order)
+
     let myFilledMakerAmount = await tryMatchOrder(order)
     let myUnfilledMakerAmount = order.makerAssetAmount.minus(myFilledMakerAmount)
+
+    console.debug("is order to submit: ", myUnfilledMakerAmount.isGreaterThan(0))
 
     if (myUnfilledMakerAmount.isGreaterThan(0)) {
 
@@ -55,45 +59,47 @@ async function submitOrder(order, referralAddress, feePercentage) {
                 .multipliedBy(myUnfilledMakerAmount)
                 .dividedToIntegerBy(order.makerAssetAmount)
 
-        let makerToken = tokensList().find(t => t.address === order.makerAssetAddress)
-        let takerToken = tokensList().find(t => t.address === order.takerAssetAddress)
+        let contractWrapper = await getContractWrapper()
 
-        if (
-                isTokenAmountOverLimit(makerToken, myUnfilledMakerAmount) &&
-                isTokenAmountOverLimit(takerToken, myUnfilledTakerAmount)
-            )
-        {
-            let contractWrapper = await getContractWrapper()
+        const makerAssetData =
+            await contractWrapper.devUtils.encodeERC20AssetData(order.makerAssetAddress).callAsync();
 
-            const makerAssetData =
-                await contractWrapper.devUtils.encodeERC20AssetData(order.makerAssetAddress).callAsync();
+        const takerAssetData =
+            await contractWrapper.devUtils.encodeERC20AssetData(order.takerAssetAddress).callAsync();
 
-            const takerAssetData =
-                await contractWrapper.devUtils.encodeERC20AssetData(order.takerAssetAddress).callAsync();
-
-            let signedOrder = await orderFactory.createSignedOrderAsync(
-                getProvider(),
-                accountAddress(),
-                myUnfilledMakerAmount,
-                makerAssetData,
-                myUnfilledTakerAmount,
-                takerAssetData,
-                await zeroXContractAddresses().then(a => a.exchange),
-                {
-                    makerFee: `${myUnfilledMakerAmount.multipliedBy(feePercentage)}`,
-                    takerFee: `${myUnfilledTakerAmount.multipliedBy(feePercentage)}`,
-                    feeRecipientAddress: referralAddress,
-                }
-            )
-
-            await getReplayClient().submitOrderAsync(signedOrder)
+        let orderParams = {
+            makerFee: `${myUnfilledMakerAmount.multipliedBy(feePercentage)}`,
+            takerFee: `${myUnfilledTakerAmount.multipliedBy(feePercentage)}`,
+            feeRecipientAddress: referralAddress,
+            expirationTimeSeconds: `${order.expirationTimeSeconds}`
         }
+
+        if (isValidAddress(order.takerAddress)) {
+            orderParams.takerAddress = order.takerAddress
+        }
+
+        let signedOrder = await orderFactory.createSignedOrderAsync(
+            getProvider(),
+            accountAddress(),
+            myUnfilledMakerAmount,
+            makerAssetData,
+            myUnfilledTakerAmount,
+            takerAssetData,
+            await zeroXContractAddresses().then(a => a.exchange),
+            orderParams
+        )
+
+        await getReplayClient().submitOrderAsync(signedOrder)
     }
 }
 
 async function tryMatchOrder(order) {
 
+    console.debug("fetching orders to match")
+
     let candidateFillOrders = await findCandidateOrders(order)
+
+    console.debug("found candidates: ", candidateFillOrders)
 
     let contractWrapper = await getContractWrapper()
 
@@ -145,7 +151,8 @@ async function findCandidateOrders(order) {
         let orderPrice = bid.order.makerAssetAmount.dividedBy(bid.order.takerAssetAmount)
         let remainingUnfilledOrderAmount = new BigNumber(parseInt(bid.metaData.remainingFillableTakerAssetAmount))
 
-        if (orderPrice.isGreaterThanOrEqualTo(myPrice) &&
+        if ((!isValidAddress(order.takerAddress) || order.takerAddress.toLowerCase() === bid.order.takerAddress.toLowerCase()) &&
+            orderPrice.isGreaterThanOrEqualTo(myPrice) &&
             myUnfilledMakerAmount.isGreaterThan(0) &&
             remainingUnfilledOrderAmount.isGreaterThan(0))
         {
@@ -161,4 +168,8 @@ async function findCandidateOrders(order) {
     }
 
     return candidateFillOrders
+}
+
+function isValidAddress(address) {
+    return address !== null && address !== undefined && address.match("0x[0-9a-zA-Z]{40}") !== null
 }

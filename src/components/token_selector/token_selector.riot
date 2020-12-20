@@ -7,7 +7,10 @@
         </div>
         <div class="tokens">
             <table>
-                <tr id="token-{ token.symbol }" each={ token in state.sortedTokens } key={ token.symbol } onclick={ fetchTokenInfo }>
+                <tr id={ token.address.toLowerCase() }
+                    each={ token in state.sortedTokens }
+                    onclick={ fetchTokenInfo }
+                >
                     <td class="img"><img src="{ fetchTokenLogoURI(token) }" alt=" " onerror={ changeLogoToDefault }></td>
                     <td class="symbol">{ token.symbol }</td>
                     <td class="balance">{ safeRound(token.balance) }</td>
@@ -98,6 +101,11 @@
                 this.clearFilter()
             },
             async filterTokenSearch() {
+                let filter = this.extractFilter()
+                await this.buildSortedTokenList(filter)
+                this.filterTokens(filter)
+            },
+            extractFilter() {
                 let filter = null
                 let input = this.$("#token-selector input")
 
@@ -108,8 +116,7 @@
                 if (filter !== null && filter.length === 0) {
                     filter = null
                 }
-                await this.buildSortedTokenList(filter)
-                this.filterTokens(filter)
+                return filter
             },
             async buildSortedTokenList(filter) {
                 if (filter !== null &&
@@ -125,14 +132,14 @@
                     this.state.sortedTokens
                         .filter(function(x) {
                             return filter == null ||
-                                x.symbol.toLowerCase().includes(filter) ||
-                                (filter.match(that.state.addressRegEx) && x.address.toLowerCase().includes(filter))
+                                x.symbol.toLowerCase().startsWith(filter) ||
+                                (filter.match(that.state.addressRegEx) && x.address.toLowerCase().startsWith(filter))
                         })
 
                 tokensList().forEach(t => {
-                    let tr = document.getElementById(`token-${t.symbol}`)
+                    let tr = document.getElementById(t.address.toLowerCase())
                     if (tr !== null) {
-                        if (tokens.find(tt => tt.symbol === t.symbol) === undefined) {
+                        if (tokens.find(tt => tt.address.toLowerCase() === t.address.toLowerCase()) === undefined) {
                             tr.style.display = 'none'
                         } else {
                             tr.style.display = null

@@ -1,7 +1,7 @@
 import {HttpClient} from "@0x/connect";
 import {getProvider} from "../wallet/wallet_manager";
 import {BigNumber, providerUtils} from "@0x/utils";
-import {isTokenAmountOverLimit, tokensList} from "../tokens/token_fetch";
+import {tokensList} from "../tokens/token_fetch";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
 
 export function registerForOrderBookUpdateEvents(object) {
@@ -43,6 +43,9 @@ export async function setBaseToken(token) {
 
 export function setQuoteToken(token) {
     tokenCouple.quoteToken = token
+    bids=[]
+    asks = []
+    baseTokenChangeRegister.forEach(c => c.onBaseTokenUpdate())
 }
 
 export function getBaseToken() {
@@ -54,7 +57,7 @@ export function getQuoteToken() {
 }
 
 export async function getBidsMatching(baseTokenAddress, quoteTokenAddress) {
-    let orders = await getOrdersMatching(baseTokenAddress, quoteTokenAddress)
+    let orders = await getOrdersMatching(baseTokenAddress, quoteTokenAddress, true)
     return orders.bids.filter(o => o.is_valid).map(o => o.order)
 }
 
@@ -65,7 +68,8 @@ async function updateOrderBook() {
     let orderBookUpdate =
         await getOrdersMatching(
             baseToken.address,
-            quoteToken.address
+            quoteToken.address,
+            false
         )
 
     if (baseToken.symbol === getBaseToken().symbol && quoteToken.symbol === getQuoteToken().symbol) {
@@ -79,7 +83,7 @@ async function updateOrderBook() {
 
 }
 
-async function getOrdersMatching(baseTokenAddress, quoteTokenAddress) {
+async function getOrdersMatching(baseTokenAddress, quoteTokenAddress, keepOtcOrders) {
 
     let baseToken = tokensList().find(t => t.address === baseTokenAddress)
     let quoteToken = tokensList().find(t => t.address === quoteTokenAddress)
@@ -104,9 +108,7 @@ async function getOrdersMatching(baseTokenAddress, quoteTokenAddress) {
                 .dividedToIntegerBy(b.order.takerAssetAmount)
 
         let isValidOrder =
-            b.order.takerAddress === "0x0000000000000000000000000000000000000000" &&
-            isTokenAmountOverLimit(baseToken, takerAmount) &&
-            isTokenAmountOverLimit(quoteToken, makerAmount)
+            (keepOtcOrders || b.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
         filteredBids.push(
             {
@@ -124,9 +126,7 @@ async function getOrdersMatching(baseTokenAddress, quoteTokenAddress) {
                 .dividedToIntegerBy(b.order.takerAssetAmount)
 
         let isValidOrder =
-            b.order.takerAddress === "0x0000000000000000000000000000000000000000" &&
-            isTokenAmountOverLimit(quoteToken, takerAmount) &&
-            isTokenAmountOverLimit(baseToken, makerAmount)
+            (keepOtcOrders || b.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
         filteredAsks.push(
             {

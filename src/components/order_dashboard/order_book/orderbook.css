@@ -6,24 +6,20 @@
     overflow-y: scroll;
 }
 
-.orders {
-    width: 360px;
-    text-align: center;
-    line-height: 25px;
-}
-
-#orders-separator {
-    width: 450px;
-    height: 4px;
-    border: 3px solid var(--token-selector-border-color);
-}
-
 .bid {
     color: #3FCCB0;
 }
 
 .ask {
     color: #CC3F3F;
+}
+
+.order {
+    line-height: 20px;
+}
+
+#orders-separator {
+    line-height: 55px;
 }
 
 .order-price {
@@ -35,26 +31,18 @@
     cursor: pointer;
 }
 
-.orders thead th {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    text-align: center;
+.orders-header {
     line-height: 40px;
     font-weight: normal;
     color: var(--token-selector-table-text-color);
     background: var(--token-selector-background-color);
 }
 
-.orders th,td {
-    width: 30%;
-}
-
 .order-book-body {
     display: grid;
     grid-template-rows: 5% 95%;
     height: 476px;
-    width: 415px;
+    width: 360px;
     padding: 20px;
 }
 
@@ -70,11 +58,19 @@
 }
 
 @media(min-width: 600px) {
-    .orders{
-        width: 410px;
+
+    .order-book-body {
+        width: 415px;
     }
 
     #order-table-canvas {
         width: 420px;
     }
+}
+
+.order-book-columns {
+    display: grid;
+    place-content: center;
+    justify-content: center;
+    grid-template-columns: 33% 33% 33%;
 }

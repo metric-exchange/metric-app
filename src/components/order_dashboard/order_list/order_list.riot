@@ -1,15 +1,16 @@
 <order-list>
     <div class="order-list-title">{ this.i18next.t('my_order_list.title') }</div>
     <div class="filled-order-list">
+        <div class="my-orders-line my-orders-header">
+            <div>{ this.i18next.t('my_order_list.header.pair') }</div>
+            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.cost') }</div>
+            <div>{ this.i18next.t('my_order_list.header.amount') }</div>
+            <div>{ this.i18next.t('my_order_list.header.filled') }</div>
+            <div>{ this.i18next.t('order.price') }</div>
+            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</div>
+            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.recipient') }</div>
+        </div>
         <div class="order-list-canvas">
-            <div class="my-orders-line my-orders-header">
-                <div>{ this.i18next.t('my_order_list.header.pair') }</div>
-                <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.cost') }</div>
-                <div>{ this.i18next.t('my_order_list.header.amount') }</div>
-                <div>{ this.i18next.t('my_order_list.header.filled') }</div>
-                <div>{ this.i18next.t('order.price') }</div>
-                <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</div>
-            </div>
             <div class="empty-order-list" if={ state.isLoadingOrders }>
                 <loader />
             </div>
@@ -36,6 +37,7 @@
             synchronizeUserOrders,
             userOrders
         } from "../../../common/0x/0x_user_orders";
+        import {registerForTokenListUpdate} from "../../../common/tokens/token_fetch";
 
         export default {
             components: {
@@ -47,11 +49,15 @@
                 isLoadingOrders: true
             },
             onMounted() {
+                registerForTokenListUpdate(this)
                 registerForUserOrderUpdates(this)
                 registerForWalletChanges(this)
                 if (isWalletConnected()) {
                     synchronizeUserOrders(accountAddress())
                 }
+            },
+            onTokenListUpdate() {
+                this.update()
             },
             onWalletChanges() {
                 this.update({orders: [], isLoadingOrders: true})

@@ -36,7 +36,8 @@
                 "filled" : "Exécuté",
                 "expires_in" : "Expire dans",
                 "pair" : "Paire",
-                "cost" : "Coût"
+                "cost" : "Coût",
+                "recipient" : "Destinataire"
             },
             "order" : {
                 "cancel" : "Fermer"
@@ -69,11 +70,12 @@
             "metric_balance" : "Balance METRIC",
             "no_fee" : "Pas de frais 🥳",
             "max_amount" : "MAX",
-            "price_direction" : "{{base.symbol}} par {{quote.symbol}}"
+            "price_direction" : "{{base.symbol}} par {{quote.symbol}}",
+            "valid_until" : "Valide jusqu'au",
+            "recipient_address_placeholder" : "adresse du destinataire (optionelle)"
         },
         "submit" : {
             "insufficient_balance" : "SOLDE INSUFFISANT",
-            "must_be_greater_than" : "DOIT ETRE >{{token.volume_limit}} {{token.symbol}}",
             "approve": "APPROUVER {{token.symbol}}",
             "approving" : "EN COURS D'APPROBATION {{token.symbol}}",
             "place_order" : "PLACER l'ORDRE"

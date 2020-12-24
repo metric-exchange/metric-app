@@ -175,7 +175,7 @@
           let outputAmount = isNaN(result[0]) ? 0 : parseInt(result[0]) / (10 ** outputToken.decimals)
           let conversionRate = outputAmount / this.state.inputAmount
 
-          let usdPrice = await getTokenUsdPrice(outputToken.address, outputToken.symbol)
+          let usdPrice = await getTokenUsdPrice(outputToken)
 
           var usdAmount = usdPrice * outputAmount;
           if (usdAmount > 0) {
@@ -238,7 +238,7 @@
 
       async amountConvertToUsd(token, amount){
         let amountUsd = token.amountUsd
-        let priceUsd = await getTokenUsdPrice(token.address, token.symbol);
+        let priceUsd = await getTokenUsdPrice(token);
 
         if (priceUsd * amount > 0){
           amountUsd = `≈ $${this.round(priceUsd * amount, 2)}`

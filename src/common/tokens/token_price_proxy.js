@@ -1,10 +1,10 @@
 import {fetchJson} from "../json_api_fetch";
 
-export async function getTokenUsdPrice(address, symbol) {
-    let id = tokenId(address, symbol)
+export async function getTokenUsdPrice(token) {
+    let id = tokenId(token.address, token.symbol)
     let price = 0
 
-    let jsonRes = await fetchJson(url(address, symbol))
+    let jsonRes = await fetchJson(url(token.address, token.symbol))
 
     if (jsonRes[id] !== undefined && jsonRes[id].usd !== undefined){
         price = jsonRes[id].usd

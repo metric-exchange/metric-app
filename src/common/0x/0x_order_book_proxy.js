@@ -3,6 +3,7 @@ import {getProvider} from "../wallet/wallet_manager";
 import {BigNumber, providerUtils} from "@0x/utils";
 import {tokensList} from "../tokens/token_fetch";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
+import {getTokenUsdPrice} from "../tokens/token_price_proxy";
 
 export function registerForOrderBookUpdateEvents(object) {
     callbacksRegister.push(object)
@@ -16,12 +17,12 @@ export function getReplayClient() {
     return relayClient
 }
 
-export function getOrderBookBids(onlyValidOrders = true) {
-    return bids.filter(o => !onlyValidOrders || o.is_valid).map(o => o.order)
+export function getOrderBookBids() {
+    return bids
 }
 
-export function getOrderBookAsks(onlyValidOrders = true) {
-    return asks.filter(o => !onlyValidOrders || o.is_valid).map(o => o.order)
+export function getOrderBookAsks() {
+    return asks
 }
 
 export async function synchronizeOrderBook() {
@@ -58,7 +59,7 @@ export function getQuoteToken() {
 
 export async function getBidsMatching(baseTokenAddress, quoteTokenAddress) {
     let orders = await getOrdersMatching(baseTokenAddress, quoteTokenAddress, true)
-    return orders.bids.filter(o => o.is_valid).map(o => o.order)
+    return orders.bids
 }
 
 async function updateOrderBook() {
@@ -88,6 +89,9 @@ async function getOrdersMatching(baseTokenAddress, quoteTokenAddress, keepOtcOrd
     let baseToken = tokensList().find(t => t.address === baseTokenAddress)
     let quoteToken = tokensList().find(t => t.address === quoteTokenAddress)
 
+    let baseTokenPrice = await getTokenUsdPrice(baseToken)
+    let quoteTokenPrice = await getTokenUsdPrice(quoteToken)
+
     const baseAssetData = `0xf47261b0000000000000000000000000${baseToken.address.substr(2).toLowerCase()}`
     const quoteAssetData = `0xf47261b0000000000000000000000000${quoteToken.address.substr(2).toLowerCase()}`
 
@@ -100,40 +104,32 @@ async function getOrdersMatching(baseTokenAddress, quoteTokenAddress, keepOtcOrd
     let filteredBids = []
     let filteredAsks = []
 
-    for(let b of orders.bids.records) {
-        let takerAmount = new BigNumber(parseInt(b.metaData.remainingFillableTakerAssetAmount))
-        let makerAmount =
-            b.order.makerAssetAmount
-                .multipliedBy(takerAmount)
-                .dividedToIntegerBy(b.order.takerAssetAmount)
+    for(let bid of orders.bids.records) {
+        let takerAmount =
+            new BigNumber(parseInt(bid.metaData.remainingFillableTakerAssetAmount))
+                .multipliedBy(baseTokenPrice)
+                .dividedBy(10 ** baseToken.decimals)
 
-        let isValidOrder =
-            (keepOtcOrders || b.order.takerAddress === "0x0000000000000000000000000000000000000000")
+        let isValidOrder = takerAmount.isGreaterThan(10) &&
+            (keepOtcOrders || bid.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
-        filteredBids.push(
-            {
-                order: b,
-                is_valid: isValidOrder
-            }
-        )
+        if (isValidOrder) {
+            filteredBids.push(bid)
+        }
     }
 
-    for(let b of orders.asks.records) {
-        let takerAmount = new BigNumber(parseInt(b.metaData.remainingFillableTakerAssetAmount))
-        let makerAmount =
-            b.order.makerAssetAmount
-                .multipliedBy(takerAmount)
-                .dividedToIntegerBy(b.order.takerAssetAmount)
+    for(let ask of orders.asks.records) {
+        let takerAmount =
+            new BigNumber(parseInt(ask.metaData.remainingFillableTakerAssetAmount))
+                .multipliedBy(quoteTokenPrice)
+                .dividedBy(10 ** quoteToken.decimals)
 
-        let isValidOrder =
-            (keepOtcOrders || b.order.takerAddress === "0x0000000000000000000000000000000000000000")
+        let isValidOrder = takerAmount.isGreaterThan(10) &&
+            (keepOtcOrders || ask.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
-        filteredAsks.push(
-            {
-                order: b,
-                is_valid: isValidOrder
-            }
-        )
+        if (isValidOrder) {
+            filteredAsks.push(ask)
+        }
     }
 
     return {

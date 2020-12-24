@@ -61,7 +61,6 @@
 
 .switch-button-image {
   cursor: pointer;
-  background-image: var(--swap-button-image);
   background-position: center;
   background-repeat: no-repeat;
   height: 30px;

@@ -7,7 +7,7 @@
 
 .order-validity-input {
     display: grid;
-    grid-template-columns: 55% 45%;
+    grid-template-columns: 30% 70%;
     align-items: end;
 }
 
@@ -96,35 +96,33 @@
     color: var(--token-selector-box-text-color)  ;
 }
 
-.order-switch-button-image {
-    display: block;
-    cursor: pointer;
-    background-image: var(--swap-button-image);
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    transition: 0.3s ease-in-out;
-    -webkit-transition: 0.3s  ease-in-out;
-}
-
 .order-form .active-button {
     background-color: var(--swap-button-background-color);
     color: var(--swap-button-text-color);
 }
 
-.price-switch-button {
-    display: block;
+.switch-button {
     cursor: pointer;
-    background-image: var(--price-switch-image);
-    background-position: center;
-    background-repeat: no-repeat;
     height: 30px;
     width: 30px;
-    position: absolute;
     transition: 0.3s ease-in-out;
     -webkit-transition: 0.3s  ease-in-out;
+}
+
+.switch-button svg circle {
+    fill: var(--main-background-color);
+}
+
+.switch-button:hover svg circle {
+    fill: var(--theme-switch-active-button-background-color);
+}
+
+.switch-button svg path {
+    stroke: var(--token-selector-table-text-color);
+}
+
+.switch-button:hover svg path {
+    stroke: var(--theme-switch-active-button-text-color);
 }
 
 .transition-half-rotate {

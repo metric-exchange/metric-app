@@ -1,5 +1,4 @@
 :root {
-  --brand-logo: url("logo-dark.svg");
   --main-background-color: #303030;
   --main-text-color: #FFFFFF;
 
@@ -41,7 +40,6 @@
 }
 
 [data-theme="light"] {
-  --brand-logo: url("logo-light.svg");
   --main-background-color: #F9F9F9;
   --main-text-color: #000000;
 

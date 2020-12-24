@@ -51,24 +51,10 @@ a {
 }
 
 .header-logo {
-    position: relative;
-    height: 50px;
-    padding-left:20px;
-    padding-right: 20px;
+    margin-left:20px;
     width: 20%;
-}
-
-.brand-logo {
-    background-image: var(--brand-logo);
-    background-repeat: no-repeat;
-    background-size: contain;
-    height: 35px;
-    width: 102px;
-    position: absolute;
-    top: 60%;
-    -webkit-transform: translateY(-50%);
-        -ms-transform: translateY(-50%);
-            transform: translateY(-50%);
+    display: grid;
+    align-content: center;
 }
 
 .header-settings{

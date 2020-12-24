@@ -1,7 +1,7 @@
 <main>
     <header class="header">
         <div class="header-logo">
-            <div class="brand-logo"></div>
+            <img src={ config.Logo }>
         </div>
 
         <div class="header-links">
@@ -49,13 +49,13 @@
         import {synchronizeOrderBook} from "../../common/0x/0x_order_book_proxy";
         import {
             disableToken,
-            fetchTokensInfo,
             loadTokenList,
             tokensList
         } from "../../common/tokens/token_fetch";
         import {initWeb3} from "../../common/wallet/wallet_manager";
         import {Router, Route, setBase} from "@riotjs/route";
         import {initLocalizations} from "../../common/localization/localize";
+        import Logo from '../theme_colors/logo.svg'
 
         export default {
             components: {
@@ -63,7 +63,11 @@
                 Router,
                 Settings,
                 Swap,
-                OrderDashboard
+                OrderDashboard,
+                Logo
+            },
+            config: {
+                Logo: Logo
             },
             async onBeforeMount() {
                 await initLocalizations()

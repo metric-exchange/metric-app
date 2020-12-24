@@ -7,6 +7,7 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
+                <div class="input-sticky-placeholder" if={ !isNaN(state.inputAmount) }>{ this.i18next.t('order.you_pay') }</div>
                 <input type="number" id="order-amount-input" onkeyup={ updateInputAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
                 <label class="label-amount" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</label>
             </div>
@@ -17,6 +18,7 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
+                <div class="input-sticky-placeholder" if={ !isNaN(state.price) }>{ this.i18next.t('order.price') }</div>
                 <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }" value={ state.price }/>
                 <label if={!props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
                 <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
@@ -25,10 +27,10 @@
                 <div id="price-switch" class="switch-button" onclick={ changePriceDirection }>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="15" cy="15" r="15" fill="#262626"/>
-                        <path d="M18 11L19.5 12.5" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M19.5 12.5H13C12 12.5 10.5 12.5 10.5 14.5" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 19L10.5 17.5" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 11L19.5 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M19.5 12.5H13C12 12.5 10.5 12.5 10.5 14.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 19L10.5 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
             </div>
@@ -36,6 +38,7 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
+                <div class="input-sticky-placeholder" if={ !isNaN(state.outputAmount) }>{ this.i18next.t('order.you_get') }</div>
                 <input type="number" id="order-amount-output" onkeyup={ updateOutputAmount } placeholder="{ this.i18next.t('order.you_get') }"/>
                 <label class="label-amount" onclick={ openOutputTokenSelector }>{ state.outputToken.symbol } ˅</label>
             </div>
@@ -43,8 +46,8 @@
                 <div id="order-switch" class="order-line switch-button" onclick={ switchDirection }>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="15" cy="15" r="15" transform="rotate(-90 15 15)" fill="#262626"/>
-                        <path d="M12.5 11V19L11 17.5" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M17.5 18.9872L17.5 10.9985L19 12.5" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12.5 11V19L11 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M17.5 18.9872L17.5 10.9985L19 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
             </div>
@@ -66,6 +69,7 @@
 
         <div class="order-line">
             <div class="order-input">
+                <div class="input-sticky-placeholder" if={ isValidNonEmptyRecipientAddress() }>{ this.i18next.t('order.recipient_address_placeholder') }</div>
                 <input id="order-taker-address-input"
                        type="text"
                        onkeyup={ updateRecipientAddress }
@@ -121,7 +125,7 @@
                 outputToken: null,
                 inputAmount: NaN,
                 outputAmount: NaN,
-                price: null,
+                price: NaN,
                 showTokenSelector: false,
                 isLoadingTokens: true,
                 expiryTime: moment().add(1, 'years').format("yyyy-MM-DD HH:mm"),
@@ -163,7 +167,11 @@
                 this.setOrderMessage()
             },
             updateRecipientAddress(e) {
-                this.state.recipientAddress = e.target.value
+                this.update({recipientAddress: e.target.value})
+            },
+            isValidNonEmptyRecipientAddress() {
+                return this.state.recipientAddress !== null &&
+                    this.state.recipientAddress.length > 0
             },
             updateExpiryTime(e) {
                 this.state.expiryTime = e.target.value
@@ -346,12 +354,13 @@
             },
             resetInputAmount(amount, updateField = true) {
 
-                this.state.inputAmount = amount
+                this.state.inputAmount = amount > 0 ? amount : NaN
                 if (updateField) {
-                    document.getElementById("order-amount-input").value = amount
+                    document.getElementById("order-amount-input").value = this.state.inputAmount
                 }
 
-                this.state.outputAmount = this.receivedAmount() - this.applyFee(this.receivedAmount())
+                let value = this.receivedAmount() - this.applyFee(this.receivedAmount())
+                this.state.outputAmount = value > 0 ? value : NaN
                 document.getElementById("order-amount-output").value = this.state.outputAmount
 
                 this.updateSubmitButtonState()
@@ -359,9 +368,9 @@
             },
             resetOutputAmount(amount, updateField, updateInputField = true) {
 
-                this.state.outputAmount = amount
+                this.state.outputAmount = amount > 0 ? amount : NaN
                 if (updateField) {
-                    document.getElementById("order-amount-output").value = amount
+                    document.getElementById("order-amount-output").value = this.state.outputAmount
                 }
 
                 if (updateInputField) {
@@ -370,7 +379,8 @@
                         total = amount / this.orderPrice()
                     }
 
-                    this.state.inputAmount = total / ( 1 - this.applyFee(1))
+                    let value = total / ( 1 - this.applyFee(1))
+                    this.state.inputAmount = value > 0 ? value : NaN
                     document.getElementById("order-amount-input").value = this.state.inputAmount
                 }
 
@@ -419,7 +429,7 @@
                     expirationTimeSeconds: moment(this.state.expiryTime).unix(),
                 }
 
-                if (this.state.recipientAddress != null) {
+                if (this.isValidNonEmptyRecipientAddress()) {
                     order.takerAddress = this.state.recipientAddress
                 }
 

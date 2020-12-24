@@ -164,6 +164,10 @@
     cursor: pointer;
 }
 
+.input-sticky-placeholder {
+    font-size: xx-small;
+}
+
 @media(min-width: 600px) {
     #token-selector-box {
         width: 400px;

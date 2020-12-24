@@ -9,19 +9,19 @@
                 <div>{ this.i18next.t('order.total', { token: state.outputToken }) }</div>
             </div>
             <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
-                <div each={ask in state.asks} class="order order-book-columns" onclick={ (e) => setOrderPrice(ask.price) }>
+                <div each={ask in state.asks} class="order order-book-columns">
                     <div class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
-                    <div class="order-price">{ ask.price }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
                     <div class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
                 </div>
-                <div id="orders-separator" class="order-book-columns" onclick={ (e) => setOrderPrice(state.midMarketPrice) }>
+                <div id="orders-separator" class="order-book-columns" >
                     <div/>
-                    <div>{ state.midMarketPrice }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(state.midMarketPrice) }>{ state.midMarketPrice }</div>
                     <div/>
                 </div>
-                <div each={bid in state.bids} class="order order-book-columns" onclick={ (e) => setOrderPrice(bid.price) }>
+                <div each={bid in state.bids} class="order order-book-columns">
                     <div class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
-                    <div class="order-price">{ bid.price }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
                     <div class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
                 </div>
             </div>
@@ -188,18 +188,15 @@
             scrollOrderBookIntoView() {
                 let canvas = document.getElementById("order-table-canvas")
                 let separator = document.getElementById("orders-separator")
-                if (canvas !== null && separator !== null && this.isInViewport(canvas)) {
-                    separator.scrollIntoView({behavior: "smooth", block: "center"});
+                if (canvas !== null && separator !== null) {
+                    let top =
+                        separator.offsetTop -
+                        separator.parentNode.offsetTop -
+                        canvas.getBoundingClientRect().height / 2 +
+                        separator.getBoundingClientRect().height / 2
+
+                    canvas.scroll({ top : top, behavior: "smooth" })
                 }
-            },
-            isInViewport(element) {
-                let rect = element.getBoundingClientRect();
-                return (
-                    rect.top >= 0 &&
-                    rect.left >= 0 &&
-                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                )
             },
             setOrderPrice(price) {
                 updateOrderPrice(parseFloat(price))

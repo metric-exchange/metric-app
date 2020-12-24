@@ -1,7 +1,7 @@
 @import "../../theme_colors/colors.css";
 
 #order-table-canvas {
-    height: 415px;
+    height: 395px;
     width: 370px;
     overflow-y: scroll;
 }
@@ -15,7 +15,7 @@
 }
 
 .order {
-    line-height: 20px;
+    line-height: 25px;
 }
 
 #orders-separator {
@@ -23,11 +23,7 @@
 }
 
 .order-price {
-    color: var(--token-selector-table-text-color)
-}
-
-.order:hover {
-    background-color: var(--main-background-color);
+    color: var(--token-selector-table-text-color);
     cursor: pointer;
 }
 
@@ -40,7 +36,7 @@
 
 .order-book-body {
     display: grid;
-    grid-template-rows: 5% 95%;
+    grid-template-rows: 8% 92%;
     height: 476px;
     width: 360px;
     padding: 20px;
@@ -73,4 +69,8 @@
     place-content: center;
     justify-content: center;
     grid-template-columns: 33% 33% 33%;
+}
+
+.order-book-columns:hover {
+    background-color: var(--main-background-color);
 }

@@ -9,7 +9,7 @@
             <table>
                 <tr id={ token.address.toLowerCase() }
                     each={ token in state.sortedTokens }
-                    onclick={ fetchTokenInfo }
+                    onclick={ (e) => fetchTokenInfo(token) }
                 >
                     <td class="img"><img src="{ fetchTokenLogoURI(token) }" alt=" " onerror={ changeLogoToDefault }></td>
                     <td class="symbol">{ token.symbol }</td>
@@ -92,10 +92,8 @@
                 this.filterTokenSearch()
                 this.update()
             },
-            fetchTokenInfo(e) {
-                let symbol = e.target.parentElement.cells[1].textContent
-
-                let tokenData = tokensList().find(t => t.symbol === symbol)
+            fetchTokenInfo(token) {
+                let tokenData = tokensList().find(t => t.symbol === token.symbol)
 
                 this.props.selectToken(tokenData)
                 this.clearFilter()

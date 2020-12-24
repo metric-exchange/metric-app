@@ -2,7 +2,7 @@
 
 #order-form {
     display: grid;
-    grid-gap: 27px;
+    grid-gap: 42px;
 }
 
 .order-validity-input {
@@ -13,7 +13,7 @@
 
 .order-line label {
     position: absolute;
-    right: 0;
+    right: 5px;
     top: 2px;
 }
 
@@ -99,28 +99,14 @@
 .order-switch-button-image {
     display: block;
     cursor: pointer;
-    background-image: var(--exchange-button-image);
+    background-image: var(--swap-button-image);
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
-    padding-top: 10px;
-    transition:  0s;
-    -webkit-transition: 0s;
-}
-
-.transition-start {
-    transition: 0.5s;
-    -webkit-transition: 0.5s;
-    transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-}
-
-.transition-rotate {
-    transform: rotate(360deg);
-    -webkit-transform: rotate(360deg);
-    transition:  0.5s;
-    -webkit-transition: 0.5s;
+    position: absolute;
+    transition: 0.3s ease-in-out;
+    -webkit-transition: 0.3s  ease-in-out;
 }
 
 .order-form .active-button {
@@ -136,23 +122,14 @@
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
-    transition: 0.5s;
-    -webkit-transition: 0.5s;
     position: absolute;
-}
-
-.transition-half-start {
-    transition: 0.5s;
-    -webkit-transition: 0.5s;
-    transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
+    transition: 0.3s ease-in-out;
+    -webkit-transition: 0.3s  ease-in-out;
 }
 
 .transition-half-rotate {
     transform: rotate(180deg);
     -webkit-transform: rotate(180deg);
-    transition:  0.5s;
-    -webkit-transition: 0.5s;
 }
 
 .max-amount {
@@ -168,14 +145,19 @@
 }
 
 .label-amount {
-    display: grid;
     grid-template-columns: auto auto;
     justify-items: center;
     grid-gap: 10%;
+    cursor: pointer;
 }
 
 .order-valid-until-label {
     padding-bottom: 8px;
+}
+
+.date-input {
+    color: var(--token-selector-table-text-color);
+    cursor: pointer;
 }
 
 @media(min-width: 600px) {

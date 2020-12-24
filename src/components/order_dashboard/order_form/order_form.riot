@@ -4,13 +4,13 @@
     </div>
     <div id="order-form" if={ !state.isLoadingTokens }>
 
-        <div class="order-line order-inputs">
-            <div class="token-selector button clickable" onclick={ openInputTokenSelector }>
-                { state.inputToken.symbol } ˅
+        <div class="order-line exchange-price">
+            <div class="order-input">
+                <input type="number" id="order-amount-input" onkeyup={ updateInputAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
+                <label class="label-amount" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</label>
             </div>
-            <div class="order-switch-button-image transition-start" onclick={ switchDirection }></div>
-            <div class="token-selector button clickable" onclick={ openOutputTokenSelector }>
-                { state.outputToken.symbol } ˅
+            <div class="order-input">
+                <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
             </div>
         </div>
 
@@ -21,18 +21,23 @@
                 <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
             </div>
             <div class="order-input">
-                <div class="price-switch-button transition-half-start" onclick={ changePriceDirection }></div>
+                <div class="price-switch-button" onclick={ changePriceDirection }></div>
             </div>
         </div>
 
         <div class="order-line exchange-price">
             <div class="order-input">
-                <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.amount_simple') }"/>
-                <label class="label-amount">{ state.inputToken.symbol }</label>
+                <input type="number" id="order-amount-output" onkeyup={ updateOutputAmount } placeholder="{ this.i18next.t('order.you_get') }"/>
+                <label class="label-amount" onclick={ openOutputTokenSelector }>{ state.outputToken.symbol } ˅</label>
             </div>
             <div class="order-input">
-                <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
+                <div class="order-line order-switch-button-image" onclick={ switchDirection }></div>
             </div>
+        </div>
+
+        <div class="order-line order-info">
+            <div>{ this.i18next.t('order.fee') }</div>
+            <label>{ formattedFeeAmount() } { sentToken().symbol }</label>
         </div>
 
         <div class="order-line order-validity-input">
@@ -40,11 +45,7 @@
                 { this.i18next.t('order.valid_until') }
             </div>
             <div class="order-input">
-                <input id="order-expiry-date-input"
-                       type="datetime-local"
-                       onkeyup={ updateExpiryTime }
-                       value={ state.expiryTime }
-                />
+                <input class="date-input" id="order-expiry-date-input"/>
             </div>
         </div>
 
@@ -57,21 +58,6 @@
                        value={ state.recipientAddress }
                 />
             </div>
-        </div>
-
-        <div class="order-line order-info">
-            <div>{ this.i18next.t('order.fee') }</div>
-            <label>{ formattedFeeAmount() } { sentToken().symbol }</label>
-        </div>
-
-        <div class="order-line order-info">
-            <div>{ this.i18next.t('order.you_pay') }</div>
-            <label>{ formatSentAmount() } { sentToken().symbol }</label>
-        </div>
-
-        <div class="order-line order-info">
-            <div>{ this.i18next.t('order.you_get') }</div>
-            <label>{ formattedTotalAmount() } { receivedToken().symbol }</label>
         </div>
 
         <div id ="place-order-button" class="order-line button">
@@ -106,6 +92,9 @@
         import { router } from '@riotjs/route'
         import {registerForOrderPriceUpdates} from "../../../common/prices/OrderPriceManager";
         import moment from 'moment';
+        import flatpickr from "flatpickr";
+        import "./flatpicker.css";
+        import {supportedDateTranslations} from "../../../common/localization/localize";
 
         export default {
             components: {
@@ -115,27 +104,43 @@
             state: {
                 inputToken: null,
                 outputToken: null,
-                amount: NaN,
+                inputAmount: NaN,
+                outputAmount: NaN,
                 price: null,
-                isOutputTokenApproved: false,
-                isInputTokenApproved: false,
                 showTokenSelector: false,
                 isLoadingTokens: true,
-                expiryTime: moment().add(1, 'years').format("yyyy-MM-DDTHH:mm"),
-                recipientAddress: null
+                expiryTime: moment().add(1, 'years').format("yyyy-MM-DD HH:mm"),
+                recipientAddress: null,
+                datepicker: undefined
             },
             onBeforeMount() {
-                this.updateTokens()
-                this.setOrderMessage()
-            },
-            async onMounted() {
                 registerForTokenListUpdate(this)
                 registerForTokenAllowancesUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
 
-                if (!this.state.isLoadingTokens) {
-                    this.refreshOrderMessage()
+                this.updateTokens()
+                this.setOrderMessage()
+            },
+            onUpdated() {
+                let dateinput = document.getElementById("order-expiry-date-input")
+                let that = this
+                if (this.state.datepicker === undefined && dateinput !== null) {
+                    this.datepicker = flatpickr(dateinput, {
+                        enableTime: true,
+                        defaultDate: this.state.expiryTime,
+                        altFormat: "F j, Y H:i K",
+                        altInput: true,
+                        dateFormat: "Y-m-d H:i",
+                        onChange: function(selectedDates, dateStr, instance) {
+                            that.state.expiryTime = moment(dateStr).format("yyyy-MM-DD HH:mm")
+                        },
+                        minDate: moment().format("yyyy-MM-DD"),
+                        locale: supportedDateTranslations[this.i18next.language]
+                    });
+                    this.i18next.on("languageChanged", (lng, ns) => {
+                        flatpickr.localize(supportedDateTranslations[lng]);
+                    })
                 }
             },
             onTokenListUpdate() {
@@ -151,7 +156,6 @@
             changePriceDirection(e) {
                 this.switchPrice(this.state.price)
                 this.props.togglePriceDirection()
-                e.target.classList.toggle("transition-half-start")
                 e.target.classList.toggle("transition-half-rotate")
             },
             switchDirection(e) {
@@ -172,8 +176,7 @@
 
                 router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
 
-                e.target.classList.toggle("transition-rotate")
-                e.target.classList.toggle("transition-start")
+                e.target.classList.toggle("transition-half-rotate")
 
                 this.resetInputs()
 
@@ -277,15 +280,16 @@
                 this.update()
                 this.resetInputs()
             },
-            updateAmount(e) {
-                this.update({ amount: parseFloat(e.target.value) })
-                this.updateSubmitButtonState()
-                this.refreshOrderMessage()
+            updateInputAmount(e) {
+                this.resetInputAmount(parseFloat(e.target.value), false)
+            },
+            updateOutputAmount(e) {
+                this.resetOutputAmount(parseFloat(e.target.value), false)
             },
             updatePrice(e) {
-                this.update({ price: parseFloat(e.target.value) })
-                this.updateSubmitButtonState()
-                this.refreshOrderMessage()
+                this.state.price = parseFloat(e.target.value)
+                let amount = this.orderPrice() * this.state.inputAmount
+                this.resetOutputAmount(amount - this.applyFee(amount), true, false)
             },
             updateSubmitButtonState() {
                 let button = document.getElementById("place-order-button")
@@ -325,11 +329,38 @@
             setMaxInputAmount() {
                 this.resetInputAmount(this.state.inputToken.balance)
             },
-            resetInputAmount(amount) {
-                this.update({ amount: amount })
+            resetInputAmount(amount, updateField = true) {
+
+                this.state.inputAmount = amount
+                if (updateField) {
+                    document.getElementById("order-amount-input").value = amount
+                }
+
+                this.state.outputAmount = this.receivedAmount() - this.applyFee(this.receivedAmount())
+                document.getElementById("order-amount-output").value = this.state.outputAmount
+
                 this.updateSubmitButtonState()
                 this.refreshOrderMessage()
-                document.getElementById("order-amount-input").value = amount
+            },
+            resetOutputAmount(amount, updateField, updateInputField = true) {
+
+                this.state.outputAmount = amount
+                if (updateField) {
+                    document.getElementById("order-amount-output").value = amount
+                }
+
+                if (updateInputField) {
+                    let total = 0
+                    if (this.orderPrice() > 0 && amount > 0 ) {
+                        total = amount / this.orderPrice()
+                    }
+
+                    this.state.inputAmount = total / ( 1 - this.applyFee(1))
+                    document.getElementById("order-amount-input").value = this.state.inputAmount
+                }
+
+                this.updateSubmitButtonState()
+                this.refreshOrderMessage()
             },
             async checkApprovalAndSubmitOrder() {
                 if (this.isApproved()) {
@@ -380,7 +411,7 @@
                 return order
             },
             inputAmount() {
-                return this.state.amount
+                return this.state.inputAmount
             },
             outputAmount() {
                 let amount = this.inputAmount()
@@ -451,8 +482,8 @@
             },
             isValidInputs() {
                 return !isNaN(this.state.price) &&
-                    !isNaN(this.state.amount) &&
-                    this.state.amount > 0 &&
+                    !isNaN(this.state.inputAmount) &&
+                    this.state.inputAmount > 0 &&
                     this.state.price > 0
             },
             isSufficientBalance() {

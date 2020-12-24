@@ -53,7 +53,7 @@
     background-color: var(--token-selector-background-color);
     border-radius: 10px;
     padding: 20px;
-    height: 275px;
+    min-height: 275px;
     font-style: normal;
     font-weight: normal;
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);

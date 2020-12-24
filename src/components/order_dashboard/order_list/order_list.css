@@ -25,7 +25,6 @@
     color: var(--token-selector-table-text-color);
     margin-bottom: 5px;
     font-weight: normal;
-
     position: sticky;
     top: 0;
     background: var(--token-selector-background-color);

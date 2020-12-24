@@ -42,7 +42,7 @@ a {
    position: fixed;
    top: 0;
    z-index: 1;
-   background-color: var(--main-background-color);
+   background-color: var(--swap-form-background-color);
    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
    display: -webkit-box;
    display: -webkit-flex;
@@ -61,10 +61,11 @@ a {
 .brand-logo {
     background-image: var(--brand-logo);
     background-repeat: no-repeat;
-    height: 30px;
+    background-size: contain;
+    height: 35px;
     width: 102px;
     position: absolute;
-    top: 50%;
+    top: 60%;
     -webkit-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
             transform: translateY(-50%);
@@ -88,11 +89,11 @@ a {
     grid-template-columns: auto auto auto auto auto;
     align-items: center;
     justify-items: center;
-    color: var(--footer-text-color);
+    color: var(--token-selector-table-text-color);
 }
 
 .header-links a, .header-links a:hover, .header-links a:visited {
-    color: var(--footer-text-color);
+    color: var(--token-selector-table-text-color);
     font-size: 12px;
     margin: 0 5px;
 }

@@ -1,8 +1,11 @@
 @import "../../theme_colors/colors.css";
 
 #order-form {
+    min-height: 456px;
     display: grid;
-    grid-gap: 42px;
+    grid-template-rows: 10% 10% 10% 10% 10% 10% 10%;
+    grid-gap: 5%;
+    padding: 30px;
 }
 
 .order-validity-input {
@@ -47,7 +50,9 @@
 }
 
 .order-form .order-form-loader {
-    padding-left: 45%;
+    height: 516px;
+    display: grid;
+    place-content: center;
 }
 
 .order-buttons {
@@ -83,7 +88,7 @@
 
 .exchange-price {
     display: grid;
-    grid-template-columns: 90% 8%;
+    grid-template-columns: 88% 10%;
     grid-gap: 2%;
 }
 
@@ -102,9 +107,9 @@
 }
 
 .switch-button {
+    display: grid;
+    place-content: center;
     cursor: pointer;
-    height: 30px;
-    width: 30px;
     transition: 0.3s ease-in-out;
     -webkit-transition: 0.3s  ease-in-out;
 }
@@ -134,8 +139,9 @@
     cursor: pointer;
     background-color: var(--main-background-color);
     border-radius: 20%;
-    padding: 2px;
+    padding: 3px;
     text-align: center;
+    line-height: 20px;
 }
 .max-amount:hover {
     color: var(--theme-switch-active-button-text-color);

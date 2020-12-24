@@ -9,20 +9,20 @@
                 <div>{ this.i18next.t('order.total', { token: state.outputToken }) }</div>
             </div>
             <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
-                <div each={ask in state.asks} class="order order-book-columns">
-                    <div class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
-                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
-                    <div class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                <div each={bid in state.bids} class="order order-book-columns">
+                    <div class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
+                    <div class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
                 </div>
                 <div id="orders-separator" class="order-book-columns" >
                     <div/>
                     <div class="order-price" onclick={ (e) => setOrderPrice(state.midMarketPrice) }>{ state.midMarketPrice }</div>
                     <div/>
                 </div>
-                <div each={bid in state.bids} class="order order-book-columns">
-                    <div class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
-                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
-                    <div class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                <div each={ask in state.asks} class="order order-book-columns">
+                    <div class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
+                    <div class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
                 </div>
             </div>
         </div>
@@ -170,8 +170,8 @@
 
             async midMarketPrice() {
                 if (this.state.asks.length > 0 && this.state.bids.length > 0) {
-                    let bestAsk = this.state.asks.slice(-1)[0]
-                    let bestBid = this.state.bids[0]
+                    let bestAsk = this.state.asks[0]
+                    let bestBid = this.state.bids.slice(-1)[0]
 
                     return ((parseFloat(bestAsk.price) + parseFloat(bestBid.price)) / 2).toFixed(this.config.displayedDecimalPoints)
                 } else {

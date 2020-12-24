@@ -13,20 +13,14 @@
 
 .order-form {
     display: grid;
-    grid-template-columns: auto;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    justify-items: stretch;
     color: var(--token-selector-table-text-color);
     border-radius: 10px;
-    padding: 30px;
     background: var(--swap-form-background-color);
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
     grid-column: 1;
     grid-row: 1;
-    width: 340px;
+    width: 400px;
+    height: 516px;
 }
 
 .order-book {
@@ -73,7 +67,7 @@
     }
 
     .order-form {
-        width: 395px;
+        width: 455px;
     }
 
     .order-book {

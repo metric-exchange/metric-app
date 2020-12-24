@@ -71,17 +71,6 @@
     grid-gap: 4%;
 }
 
-.order-info {
-    position: relative;
-    display: grid;
-    grid-template-columns: 90% 10%;
-}
-
-.order-info label {
-    position: absolute;
-    right: 0;
-    top: 0;
-}
 .order-input {
     position: relative;
 }

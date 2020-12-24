@@ -60,7 +60,7 @@
             "amount" : "Montant {{token.symbol}}",
             "amount_simple" : "Montant",
             "total" : "Totale {{token.symbol}}",
-            "fee" : "Frais",
+            "with_fee" : "(frais: {{amount}})",
             "you_get" : "Vous recevez",
             "you_pay" : "Vous payez",
             "swap_fee" : "Frais D'échange",

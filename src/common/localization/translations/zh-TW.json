@@ -60,7 +60,7 @@
             "amount" : "數量：{{token.symbol}}",
             "amount_simple" : "數量",
             "total" : "總額：{{token.symbol}}",
-            "fee" : "費用",
+            "with_fee" : "（費用：{{amount}}）",
             "you_get" : "您將獲得",
             "you_pay" : "你要付錢",
             "swap_fee" : "兌換費用",

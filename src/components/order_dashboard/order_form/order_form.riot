@@ -7,7 +7,9 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
-                <div class="input-sticky-placeholder" if={ !isNaN(state.inputAmount) }>{ this.i18next.t('order.you_pay') }</div>
+                <div class="input-sticky-placeholder" if={ !isNaN(state.inputAmount) }>
+                    { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
+                </div>
                 <input type="number" id="order-amount-input" onkeyup={ updateInputAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
                 <label class="label-amount" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</label>
             </div>
@@ -53,10 +55,7 @@
             </div>
         </div>
 
-        <div class="order-line order-info">
-            <div>{ this.i18next.t('order.fee') }</div>
-            <label>{ formattedFeeAmount() } { sentToken().symbol }</label>
-        </div>
+        <div></div>
 
         <div class="order-line order-validity-input">
             <div class="order-input order-valid-until-label">

@@ -36,9 +36,6 @@
 }
 
 .selected-order {
-    background-color: var(--selected-item-for-cancel-background);
+    background-color: var(--main-background-color);
 }
 
-.selected-order:hover {
-    background-color: var(--selected-item-for-cancel-background);
-}

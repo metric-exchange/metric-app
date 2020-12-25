@@ -7,21 +7,8 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
-                <div class="input-sticky-placeholder" if={ !isNaN(state.inputAmount) }>
-                    { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
-                </div>
-                <input type="number" id="order-amount-input" onkeyup={ updateInputAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
-                <label class="label-amount" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</label>
-            </div>
-            <div class="order-input">
-                <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
-            </div>
-        </div>
-
-        <div class="order-line exchange-price">
-            <div class="order-input">
-                <div class="input-sticky-placeholder" if={ !isNaN(orderPrice()) }>{ this.i18next.t('order.price') }</div>
-                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }" value={ orderPrice() }/>
+                <div class="input-sticky-placeholder" if={ !isNaN(state.price) }>{ this.i18next.t('order.price') }</div>
+                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }"/>
                 <label if={!props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
                 <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
             </div>
@@ -35,6 +22,19 @@
                         <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
+            </div>
+        </div>
+
+        <div class="order-line exchange-price">
+            <div class="order-input">
+                <div class="input-sticky-placeholder" if={ !isNaN(state.inputAmount) }>
+                    { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
+                </div>
+                <input type="number" id="order-amount-input" onkeyup={ updateInputAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
+                <label class="label-amount" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</label>
+            </div>
+            <div class="order-input">
+                <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
             </div>
         </div>
 
@@ -176,12 +176,15 @@
                 this.state.expiryTime = e.target.value
             },
             changePriceDirection(e) {
-                this.switchPrice(this.state.price)
                 this.props.togglePriceDirection()
                 document.getElementById("price-switch").classList.toggle("transition-half-rotate")
+                if (this.state.price > 0 && this.props.isPriceDirectionReverted) {
+                    document.getElementById("order-price-input").value = 1 / this.state.price
+                } else {
+                    document.getElementById("order-price-input").value = this.state.price
+                }
             },
             switchDirection(e) {
-
                 if (this.props.isPriceDirectionReverted) {
                     this.props.togglePriceDirection()
                 }
@@ -231,24 +234,19 @@
                 }
             },
             onOrderPriceUpdate(price) {
-                if (this.props.isPriceDirectionReverted) {
-                    this.switchPrice(price)
-                } else {
-                    this.setPrice(price)
-                }
+                this.setPrice(price)
                 this.updateSubmitButtonState()
                 this.refreshOrderMessage()
             },
-            switchPrice(price) {
-                let newPrice = price
-                if (price > 0) {
-                    newPrice = 1 / price
-                }
-                this.setPrice(isNaN(newPrice) ? null : newPrice)
-            },
             setPrice(price) {
-                this.state.price = price
+                if (this.props.isPriceDirectionReverted && this.state.price > 0 ) {
+                    this.state.price = 1 / price
+                } else {
+                    this.state.price = price
+                }
                 document.getElementById("order-price-input").value = price
+                let amount = this.state.price * this.state.inputAmount
+                this.resetOutputAmount(amount - this.applyFee(amount), true, false)
             },
             listenToSelectorCloseClick(e) {
                 if(this.state.showTokenSelector) {
@@ -310,7 +308,7 @@
             },
             updatePrice(e) {
                 this.state.price = parseFloat(e.target.value)
-                let amount = this.orderPrice() * this.state.inputAmount
+                let amount = this.state.price * this.state.inputAmount
                 this.resetOutputAmount(amount - this.applyFee(amount), true, false)
             },
             updateSubmitButtonState() {
@@ -374,8 +372,8 @@
 
                 if (updateInputField) {
                     let total = 0
-                    if (this.orderPrice() > 0 && amount > 0 ) {
-                        total = amount / this.orderPrice()
+                    if (this.state.price > 0 && amount > 0 ) {
+                        total = amount / this.state.price
                     }
 
                     let value = total / ( 1 - this.applyFee(1))
@@ -439,16 +437,7 @@
             },
             outputAmount() {
                 let amount = this.inputAmount()
-                return (isNaN(amount) ? 0 : amount) * this.orderPrice()
-            },
-            orderPrice() {
-                let price = (isNaN(this.state.price) || this.state.price == null) ? NaN : this.state.price
-
-                if (price > 0 && this.props.isPriceDirectionReverted) {
-                    return 1 / price
-                } else {
-                    return price
-                }
+                return (isNaN(amount) ? 0 : amount) * this.state.price
             },
             sentAmount() {
                 let amount = this.inputAmount()

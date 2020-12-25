@@ -71,7 +71,8 @@
                 midMarketPrice: null,
                 triggerScrollToView: true,
                 oldPriceDirectionState: false,
-                isLoadingOrders: true
+                isLoadingOrders: true,
+                midMarketPricePublished: false
             },
             onBeforeMount() {
                 this.state.inputToken = getBaseToken()
@@ -83,7 +84,8 @@
             },
             onBaseTokenUpdate() {
                 this.update({
-                    isLoadingOrders: true
+                    isLoadingOrders: true,
+                    midMarketPricePublished: false
                 });
             },
             async onOrderBookUpdate() {
@@ -167,6 +169,10 @@
                             .sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
 
                     this.state.midMarketPrice = await this.midMarketPrice()
+                    if (this.state.midMarketPricePublished === false) {
+                        this.setOrderPrice(this.state.midMarketPrice)
+                        this.state.midMarketPricePublished = true
+                    }
                     await this.update({
                         isLoadingOrders: false,
                         triggerScrollToView: true

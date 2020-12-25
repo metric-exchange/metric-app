@@ -7,26 +7,6 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
-                <div class="input-sticky-placeholder" if={ !isNaN(state.price) }>{ this.i18next.t('order.price') }</div>
-                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }"/>
-                <label if={!props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
-                <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
-            </div>
-            <div class="order-input">
-                <div id="price-switch" class="switch-button" onclick={ changePriceDirection }>
-                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="15" cy="15" r="15" fill="#262626"/>
-                        <path d="M18 11L19.5 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M19.5 12.5H13C12 12.5 10.5 12.5 10.5 14.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 19L10.5 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="order-line exchange-price">
-            <div class="order-input">
                 <div class="input-sticky-placeholder" if={ !isNaN(state.inputAmount) }>
                     { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
                 </div>
@@ -50,6 +30,26 @@
                         <circle cx="15" cy="15" r="15" transform="rotate(-90 15 15)" fill="#262626"/>
                         <path d="M12.5 11V19L11 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M17.5 18.9872L17.5 10.9985L19 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-line exchange-price">
+            <div class="order-input">
+                <div class="input-sticky-placeholder" if={ !isNaN(state.price) }>{ this.i18next.t('order.price') }</div>
+                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }"/>
+                <label if={!props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
+                <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
+            </div>
+            <div class="order-input">
+                <div id="price-switch" class="switch-button" onclick={ changePriceDirection }>
+                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="15" cy="15" r="15" fill="#262626"/>
+                        <path d="M18 11L19.5 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M19.5 12.5H13C12 12.5 10.5 12.5 10.5 14.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 19L10.5 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
             </div>

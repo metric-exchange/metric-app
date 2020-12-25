@@ -170,10 +170,7 @@
                             .sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
 
                     this.state.midMarketPrice = await this.midMarketPrice()
-                    if (this.state.midMarketPricePublished === false) {
-                        this.setOrderPrice(this.state.midMarketPrice)
-                        this.state.midMarketPricePublished = true
-                    }
+                    this.setOrderPriceWithBestOffer()
                     await this.update({
                         isLoadingOrders: false,
                         triggerScrollToView: true
@@ -241,6 +238,24 @@
                     return this.state.inputToken
                 } else {
                     return this.state.outputToken
+                }
+            },
+            setOrderPriceWithBestOffer() {
+                if (this.state.midMarketPricePublished === false) {
+                    let bestPrice = this.state.midMarketPrice
+
+                    if (this.state.bids.length > 0) {
+                        if (this.props.isPriceDirectionReverted) {
+                            bestPrice = this.state.bids.slice(-1)[0].price
+                        } else {
+                            bestPrice = this.state.bids[0].price
+                        }
+                    }
+
+                    console.debug("setting best price: ", bestPrice)
+
+                    this.setOrderPrice(bestPrice)
+                    this.state.midMarketPricePublished = true
                 }
             }
         }

@@ -29,8 +29,8 @@
 .order-list-canvas {
     height: 190px;
     overflow-y: scroll;
-    border-top: solid 2px var(--token-selector-border-color);
-    border-bottom: solid 2px var(--token-selector-border-color);
+    border-top: solid 1px var(--token-selector-border-color);
+    border-bottom: solid 1px var(--token-selector-border-color);
 }
 
 .order-list-big-screen-column {
@@ -43,7 +43,7 @@
     color: var(--token-selector-table-text-color);
     align-content: center;
     justify-content: center;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 7px;
     white-space: pre-wrap;
     text-align: center;

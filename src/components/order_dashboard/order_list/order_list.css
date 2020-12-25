@@ -23,14 +23,13 @@
 
 .my-orders-line {
     display: grid;
-    grid-template-columns: 35% 25% 20% 20%;
+    grid-template-columns: 35% 20% 15% 20% 10%;
+    margin-right: 5px;
 }
 
 .order-list-canvas {
     height: 190px;
     overflow-y: scroll;
-    border-top: solid 1px var(--token-selector-border-color);
-    border-bottom: solid 1px var(--token-selector-border-color);
 }
 
 .order-list-big-screen-column {
@@ -63,11 +62,22 @@
     padding-top: 15px;
 }
 
+.order-select-check-box {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+.order-select-check-box input {
+    cursor: pointer;
+    background-color: var(--main-background-color);
+}
+
 @media(min-width: 1000px) {
     .order-list-big-screen-column {
         display: unset;
     }
     .my-orders-line {
-        grid-template-columns: 23% 13% 13% 13% 13% 13% 12%;
+        grid-template-columns: 20% 13% 13% 13% 13% 13% 12% 3%;
     }
 }

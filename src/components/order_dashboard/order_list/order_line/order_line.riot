@@ -4,7 +4,6 @@
     <div id="{ props.order.metaData.orderHash }"
          class="my-orders my-orders-line"
          if={ state.makerToken !== undefined && state.takerToken !== undefined }
-         onclick={ handleClick }
     >
         <div class="order-pair">
             <div>{ state.makerToken.symbol }</div>
@@ -23,6 +22,7 @@
                 { takerAddress() }
             </a>
         </div>
+        <div class="order-select-check-box"><check-box checked={ state.selected } onclick={ handleClick }/></div>
     </div>
 
     <script>
@@ -31,15 +31,20 @@
         import moment from 'moment';
         import {supportedLanguages} from "../../../../common/localization/localize";
         import Image from '../../../token_selector/close.svg'
+        import CheckBox from '../../../checkbox/checkbox.riot'
 
         export default {
+            components: {
+                CheckBox
+            },
             config: {
               closeImage: Image
             },
             state: {
                 makerToken: undefined,
                 takerToken: undefined,
-                priceDirectionReverted: false
+                priceDirectionReverted: false,
+                selected: false
             },
             onBeforeMount() {
                 this.initTokens()
@@ -49,9 +54,11 @@
 
                 let orderElement = document.getElementById(this.props.order.metaData.orderHash)
                 if (orderElement !== null) {
+                    this.state.selected = false
                     orderElement.classList.remove("selected-order")
                     if (this.props.selectedOrders.find(hash => hash === this.props.order.metaData.orderHash)) {
                         orderElement.classList.add("selected-order")
+                        this.state.selected = true
                     }
                 }
             },
@@ -112,7 +119,8 @@
                     return address.substr(0, 4) + '...' + address.substr(38, 40)
                 }
             },
-            handleClick() {
+            handleClick(e) {
+                this.state.selected = !this.state.selected
                 document.getElementById(this.props.order.metaData.orderHash).classList.toggle("selected-order")
                 this.props.toggleOrderSelection(this.props.order)
             }

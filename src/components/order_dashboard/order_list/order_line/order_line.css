@@ -16,7 +16,6 @@
     align-items: center;
     justify-items: left;
     width: 100%;
-    margin-left: 5px;
 }
 
 .order-recipient {
@@ -28,7 +27,6 @@
 .my-orders {
     width: 100%;
     line-height: 25px;
-    cursor: pointer;
     border-radius: 5px;
     margin-bottom: 5px;
 }

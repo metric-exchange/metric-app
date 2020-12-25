@@ -37,6 +37,7 @@
     "i18next-browser-languagedetector": "^6.0.1",
     "jquery": "^3.5.1",
     "moment": "^2.29.1",
+    "numeral": "^2.0.6",
     "riot": "^5.0.0",
     "settings": "^0.1.1",
     "translations": "^2.2.1",

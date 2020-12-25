@@ -11,15 +11,15 @@
             <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
 
                 <div each={bid in state.bids} class="order order-book-columns" if={ props.isPriceDirectionReverted }>
-                    <div class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="bid">{ this.formatNumber(bid.volumeTaker) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
-                    <div class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="ask">{ this.formatNumber(bid.volumeMaker) }</div>
                 </div>
 
                 <div each={ask in state.asks} class="order order-book-columns" if={ !props.isPriceDirectionReverted }>
-                    <div class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="ask">{ this.formatNumber(ask.volumeTaker) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
-                    <div class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="bid">{ this.formatNumber(ask.volumeMaker) }</div>
                 </div>
 
                 <div id="orders-separator" class="order-book-columns" >
@@ -29,15 +29,15 @@
                 </div>
 
                 <div each={bid in state.bids} class="order order-book-columns" if={ !props.isPriceDirectionReverted }>
-                    <div class="bid">{ bid.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="bid">{ this.formatNumber(bid.volumeTaker) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
-                    <div class="ask">{ bid.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="ask">{ this.formatNumber(bid.volumeMaker) }</div>
                 </div>
 
                 <div each={ask in state.asks} class="order order-book-columns" if={ props.isPriceDirectionReverted }>
-                    <div class="ask">{ ask.volumeTaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="ask">{ this.formatNumber(ask.volumeTaker) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
-                    <div class="bid">{ ask.volumeMaker.toFixed(config.displayedDecimalPoints) }</div>
+                    <div class="bid">{ this.formatNumber(ask.volumeMaker) }</div>
                 </div>
             </div>
         </div>
@@ -199,7 +199,7 @@
                     let quoteTokenUsdPrice = await getTokenUsdPrice(this.state.outputToken)
 
                     if (baseTokenUsdPrice > 0 && quoteTokenUsdPrice > 0) {
-                        return this.formatPrice((baseTokenUsdPrice / quoteTokenUsdPrice).toFixed(this.config.displayedDecimalPoints))
+                        return this.formatPrice(baseTokenUsdPrice / quoteTokenUsdPrice)
                     } else {
                         return null
                     }
@@ -222,12 +222,12 @@
                 updateOrderPrice(parseFloat(price))
             },
             formatPrice(price) {
-                let formattedPrice = parseFloat(price)
+                let formattedPrice = price
                 if (this.props.isPriceDirectionReverted) {
                     formattedPrice = price > 0 ? 1 / price : 0
                 }
 
-                return formattedPrice.toFixed(this.config.displayedDecimalPoints)
+                return this.formatNumber(formattedPrice)
             },
             priceToken() {
                 if (this.props.isPriceDirectionReverted) {

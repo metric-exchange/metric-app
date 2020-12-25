@@ -7,10 +7,10 @@
             <div>&#8594;</div>
             <div>{ state.takerToken.symbol }</div>
         </div>
-        <div class="order-list-big-screen-column ask">{ makerTotalAmount(props.order).toFixed(3) }</div>
-        <div class="bid">{ takerAmount(props.order).toFixed(3) }</div>
-        <div>{ filledTakerPercentage(props.order).toFixed(2) }%</div>
-        <div>{ orderPrice(props.order).toFixed(3) }</div>
+        <div class="order-list-big-screen-column ask">{ this.formatNumber(makerTotalAmount(props.order)) }</div>
+        <div class="bid">{ this.formatNumber(takerAmount(props.order)) }</div>
+        <div>{ this.formatNumber(filledTakerPercentage(props.order)) }%</div>
+        <div>{ this.formatNumber(orderPrice(props.order)) }</div>
         <div class="order-list-big-screen-column">{ getDateDiff(props.order.order.expirationTimeSeconds) }</div>
         <div class="order-list-big-screen-column">
             <a class="order-recipient"

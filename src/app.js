@@ -10,6 +10,7 @@ export default (window.$ = window.jQuery = jquery);
 
 import Main from './components/main/main.riot'
 import i18next from "i18next";
+import {formatNumber} from "./common/helpers";
 
 install(c => {
 
@@ -30,6 +31,7 @@ install(c => {
     c.initTheme = initTheme
 
     c.i18next = i18next
+    c.formatNumber = formatNumber
 
 })
 

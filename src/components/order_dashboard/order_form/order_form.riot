@@ -323,29 +323,6 @@
                     button.onclick = this.checkApprovalAndSubmitOrder
                 }
             },
-            async setBuyOrderTypeAndRefresh() {
-                await this.setBuyOrderType()
-                this.refreshOrderMessage()
-            },
-            async setBuyOrderType() {
-                this.updateSubmitButtonState()
-                this.removeInputAmountClickableState()
-            },
-            async setSellOrderTypeAndRefresh() {
-                this.updateSubmitButtonState()
-                this.refreshOrderMessage()
-                this.addInputAmountClickableState()
-            },
-            addInputAmountClickableState() {
-                let element = document.getElementById("input-balance-amount")
-                element.classList.add("clickable")
-                element.onclick = this.setMaxInputAmount
-            },
-            removeInputAmountClickableState() {
-                let element = document.getElementById("input-balance-amount")
-                element.classList.remove("clickable")
-                element.onclick = null
-            },
             setMaxInputAmount() {
                 this.resetInputAmount(this.state.inputToken.balance)
             },
@@ -356,7 +333,7 @@
                     document.getElementById("order-amount-input").value = this.state.inputAmount
                 }
 
-                let value = this.receivedAmount() - this.applyFee(this.receivedAmount())
+                let value = this.state.inputAmount * this.state.price - this.applyFee(this.state.inputAmount * this.state.price)
                 this.state.outputAmount = value > 0 ? value : NaN
                 document.getElementById("order-amount-output").value = this.state.outputAmount
 
@@ -371,12 +348,12 @@
                 }
 
                 if (updateInputField) {
-                    let total = 0
+                    let inputAmount = 0
                     if (this.state.price > 0 && amount > 0 ) {
-                        total = amount / this.state.price
+                        inputAmount = amount / this.state.price
                     }
 
-                    let value = total / ( 1 - this.applyFee(1))
+                    let value = inputAmount * (1 + calculateMetricFee())
                     this.state.inputAmount = value > 0 ? value : NaN
                     document.getElementById("order-amount-input").value = this.state.inputAmount
                 }
@@ -415,8 +392,15 @@
                 )
             },
             buildOrder() {
-                let inputAmount = this.inputAmount() * (10 ** this.state.inputToken.decimals)
-                let outputAmount = this.outputAmount() * (10 ** this.state.outputToken.decimals)
+                let inputAmount =
+                    this.state.inputAmount * (10 ** this.state.inputToken.decimals)
+                    - this.applyFee(this.state.inputAmount) * (10 ** this.state.inputToken.decimals)
+
+                let outputAmount = this.state.outputAmount * (10 ** this.state.outputToken.decimals)
+
+                console.debug(`selling: ${this.state.inputAmount - this.applyFee(this.state.inputAmount)} ${this.state.inputToken.symbol}`)
+                console.debug(`fee: ${this.applyFee(this.state.inputAmount)} ${this.state.inputToken.symbol}`)
+                console.debug(`buying: ${this.state.outputAmount} ${this.state.outputToken.symbol}`)
 
                 let order = {
                     makerAssetAmount: new BigNumber(inputAmount),
@@ -432,38 +416,12 @@
 
                 return order
             },
-            inputAmount() {
-                return this.state.inputAmount
-            },
-            outputAmount() {
-                let amount = this.inputAmount()
-                return (isNaN(amount) ? 0 : amount) * this.state.price
-            },
-            sentAmount() {
-                let amount = this.inputAmount()
-                return (isNaN(amount) || amount == null) ? 0 : amount
-            },
-            receivedAmount() {
-                let amount = this.outputAmount()
-                return (isNaN(amount) || amount == null) ? 0 : amount
-            },
-            receivedToken() {
-                return this.state.outputToken
-            },
-            sentToken() {
-                return this.state.inputToken
-            },
-            formattedTotalAmount() {
-                return ((this.receivedAmount() - this.applyFee(this.receivedAmount()))).toFixed(3)
-            },
-            formatSentAmount() {
-                return this.sentAmount().toFixed(3)
-            },
             formattedFeeAmount() {
-                return this.applyFee(this.sentAmount()).toFixed(3)
+                return this.applyFee(this.state.inputAmount).toFixed(3)
             },
             applyFee(amount) {
-                return amount * calculateMetricFee()
+                let feePercentage = calculateMetricFee()
+                return amount * feePercentage / (1 + feePercentage)
             },
             setApprovalMessage(token) {
                 this.update({
@@ -491,7 +449,7 @@
                 this.update()
             },
             isApproved() {
-                return tokensList().find(t => t.symbol === this.state.inputToken.symbol).allowance >= this.inputAmount()
+                return tokensList().find(t => t.symbol === this.state.inputToken.symbol).allowance >= this.state.inputAmount
             },
             isValidInputs() {
                 return !isNaN(this.state.price) &&
@@ -501,7 +459,7 @@
             },
             isSufficientBalance() {
                 let balance = tokensList().find(t => t.symbol === this.state.inputToken.symbol).balance
-                let amount = this.inputAmount()
+                let amount = this.state.inputAmount
 
                 return balance >= amount
             },

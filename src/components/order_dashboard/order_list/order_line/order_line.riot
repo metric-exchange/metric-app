@@ -58,17 +58,15 @@
                 await ZeroXOrdersProxy.cancelOrder(this.props.order)
             },
             makerTotalAmount(order) {
-                return order.order.makerAssetAmount
+                return order.order.makerAssetAmount.plus(order.order.makerFee)
                     .dividedBy(10**this.state.makerToken.decimals)
             },
             makerAmount(order) {
                 return order.order.makerAssetAmount
-                    .minus(order.order.makerFee)
                     .dividedBy(10**this.state.makerToken.decimals)
             },
             takerAmount(order) {
                 return order.order.takerAssetAmount
-                    .minus(order.order.takerFee)
                     .dividedBy(10**this.state.takerToken.decimals)
             },
             filledTakerPercentage(order) {

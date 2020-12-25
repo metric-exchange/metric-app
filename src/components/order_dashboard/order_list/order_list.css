@@ -10,15 +10,6 @@
     line-height: 32px;
 }
 
-.my-orders {
-    width: 100%;
-    line-height: 25px;
-}
-
-.my-orders:hover {
-    background-color: var(--main-background-color);
-}
-
 .my-orders-header {
     line-height: 40px;
     text-align: left;
@@ -32,16 +23,44 @@
 
 .my-orders-line {
     display: grid;
-    grid-template-columns: 35% 20% 15% 20% 10%;
+    grid-template-columns: 35% 25% 20% 20%;
 }
 
 .order-list-canvas {
     height: 190px;
     overflow-y: scroll;
+    border-top: solid 2px var(--token-selector-border-color);
+    border-bottom: solid 2px var(--token-selector-border-color);
 }
 
 .order-list-big-screen-column {
     display: none;
+}
+
+.order-action-button {
+    display: grid;
+    background: var(--inactive-button-background-color);
+    color: var(--token-selector-table-text-color);
+    align-content: center;
+    justify-content: center;
+    border-radius: 3px;
+    padding: 7px;
+    white-space: pre-wrap;
+    text-align: center;
+    height: 30px;
+}
+
+.active-order-action-button {
+    background: var(--theme-switch-active-button-background-color);
+    color: var(--theme-switch-active-button-text-color);
+    cursor: pointer;
+}
+
+.order-list-actions {
+    display: grid;
+    grid-template-columns: 30% 30% 30%;
+    grid-gap: 1%;
+    padding-top: 15px;
 }
 
 @media(min-width: 1000px) {
@@ -49,6 +68,6 @@
         display: unset;
     }
     .my-orders-line {
-        grid-template-columns: 20% 13% 13% 13% 13% 13% 12% 3%;
+        grid-template-columns: 23% 13% 13% 13% 13% 13% 12%;
     }
 }

@@ -1,7 +1,11 @@
 
 <order-line>
 
-    <div class="my-orders my-orders-line" if={ state.makerToken !== undefined && state.takerToken !== undefined }>
+    <div id="{ props.order.metaData.orderHash }"
+         class="my-orders my-orders-line"
+         if={ state.makerToken !== undefined && state.takerToken !== undefined }
+         onclick={ handleClick }
+    >
         <div class="order-pair">
             <div>{ state.makerToken.symbol }</div>
             <div>&#8594;</div>
@@ -19,15 +23,11 @@
                 { takerAddress() }
             </a>
         </div>
-        <div class="cancel-order">
-            <img src={ config.closeImage } onclick={ this.cancelOrder } alt={ this.i18next.t('order.cancel') }/>
-        </div>
     </div>
 
     <script>
         import './order_line.css'
         import {tokensList} from "../../../../common/tokens/token_fetch";
-        import {ZeroXOrdersProxy} from "../../../../common/0x/0x_orders_proxy";
         import moment from 'moment';
         import {supportedLanguages} from "../../../../common/localization/localize";
         import Image from '../../../token_selector/close.svg'
@@ -46,6 +46,14 @@
             },
             onBeforeUpdate() {
                 this.initTokens()
+
+                let orderElement = document.getElementById(this.props.order.metaData.orderHash)
+                if (orderElement !== null) {
+                    orderElement.classList.remove("selected-order")
+                    if (this.props.selectedOrders.find(hash => hash === this.props.order.metaData.orderHash)) {
+                        orderElement.classList.add("selected-order")
+                    }
+                }
             },
             initTokens() {
                 let prefixLen = "0xf47261b0000000000000000000000000".length
@@ -53,9 +61,6 @@
                 let takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
                 this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === makerAddress)
                 this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === takerAddress)
-            },
-            async cancelOrder() {
-                await ZeroXOrdersProxy.cancelOrder(this.props.order)
             },
             makerTotalAmount(order) {
                 return order.order.makerAssetAmount.plus(order.order.makerFee)
@@ -106,6 +111,10 @@
                 } else {
                     return address.substr(0, 4) + '...' + address.substr(38, 40)
                 }
+            },
+            handleClick() {
+                document.getElementById(this.props.order.metaData.orderHash).classList.toggle("selected-order")
+                this.props.toggleOrderSelection(this.props.order)
             }
         }
     </script>

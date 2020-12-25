@@ -36,6 +36,8 @@
   --scrollbar-color: #3D3D3D;
   --inactive-button-background-color: #000000;
 
+  --selected-item-for-cancel-background: #490e0e;
+
   --icon-color-invert: 100;
 }
 
@@ -75,6 +77,8 @@
 
   --scrollbar-color: #EDEDED;
   --inactive-button-background-color: #F9F9F9;
+
+  --selected-item-for-cancel-background: #f6e6e6;
 
   --icon-color-invert: 0;
 }

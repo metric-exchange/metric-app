@@ -87,7 +87,7 @@
     width: 350px;
     background: var(--swap-form-background-color);
     border-radius: 10px;
-    color: var(--token-selector-box-text-color)  ;
+    color: var(--token-selector-box-text-color);
 }
 
 .order-form .active-button {

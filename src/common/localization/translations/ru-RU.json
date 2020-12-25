@@ -40,7 +40,9 @@
                 "recipient" : "получатель"
             },
             "order" : {
-                "cancel" : "Отмена"
+                "cancel" : "Отмена",
+                "select_all" : "Выбрать все",
+                "clear_selection" : "Очистить выбор"
             }
         },
         "wallet" : {

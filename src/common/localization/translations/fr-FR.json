@@ -40,7 +40,9 @@
                 "recipient" : "Destinataire"
             },
             "order" : {
-                "cancel" : "Fermer"
+                "cancel" : "Supprimer",
+                "select_all" : "Selectioner tout",
+                "clear_selection" : "Annuler la selection"
             }
         },
         "wallet" : {

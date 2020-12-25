@@ -28,7 +28,9 @@ export const ZeroXOrdersProxy = {
 
     submitOrder: submitOrder,
 
-    cancelOrder: cancelOrder
+    cancelOrder: cancelOrder,
+
+    batchCancelOrders: batchCancelOrders
 }
 
 export async function fetch0xAllowanceForToken(address) {
@@ -41,6 +43,13 @@ async function cancelOrder(order) {
             .exchange
             .cancelOrder(order.order)
             .awaitTransactionSuccessAsync({ from: accountAddress() })
+}
+
+async function batchCancelOrders(orders) {
+    return (await getContractWrapper())
+        .exchange
+        .batchCancelOrders(orders.map(o => o.order))
+        .awaitTransactionSuccessAsync({ from: accountAddress() })
 }
 
 async function submitOrder(order, referralAddress, feePercentage) {

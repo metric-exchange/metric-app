@@ -19,8 +19,27 @@
                     each={ order in state.orders }
                     key={ order.metaData.orderHash }
                     order={ order }
+                    selected-orders={ state.selectedOrders }
+                    toggle-order-selection={ toggleOrderSelection }
             />
         </div>
+    </div>
+
+    <div class="order-list-actions">
+        <div id="orders-cancel-button" class="order-action-button">{ this.i18next.t('my_order_list.order.cancel') }</div>
+
+        <div id ="orders-select-all-button"
+             class="order-action-button"
+        >{ this.i18next.t('my_order_list.order.select_all') }</div>
+
+        <div id ="orders-reset-selection-button"
+             class="order-action-button active-order-action-button"
+             onclick={ resetOrdersSelection }
+             if={ state.selectedOrders.length > 0 }
+        >{ this.i18next.t('my_order_list.order.clear_selection') }</div>
+
+        <div if={ state.selectedOrders.length === 0 }></div>
+
     </div>
 
     <script>
@@ -38,6 +57,7 @@
             userOrders
         } from "../../../common/0x/0x_user_orders";
         import {registerForTokenListUpdate} from "../../../common/tokens/token_fetch";
+        import {ZeroXOrdersProxy} from "../../../common/0x/0x_orders_proxy";
 
         export default {
             components: {
@@ -46,6 +66,7 @@
             },
             state: {
                 orders: [],
+                selectedOrders: [],
                 isLoadingOrders: true
             },
             onMounted() {
@@ -54,6 +75,18 @@
                 registerForWalletChanges(this)
                 if (isWalletConnected()) {
                     synchronizeUserOrders(accountAddress())
+                }
+            },
+            onUpdated() {
+                let element = document.getElementById("orders-select-all-button")
+                if (element != null) {
+                    if (this.state.orders.length > 0 && !element.classList.contains("active-order-action-button")) {
+                        element.classList.add("active-order-action-button")
+                        element.onclick = this.selectAllOrders
+                    } else if (this.state.orders.length === 0 && element.classList.contains("active-order-action-button")) {
+                        element.classList.remove("active-order-action-button")
+                        element.onclick = null
+                    }
                 }
             },
             onTokenListUpdate() {
@@ -74,6 +107,48 @@
                 }
 
                 this.update({isLoadingOrders: false})
+            },
+            toggleOrderSelection(order) {
+                let index = this.state.selectedOrders.indexOf(order.metaData.orderHash)
+                if (index >= 0) {
+                    this.state.selectedOrders.splice(index, 1)
+                    if (this.state.selectedOrders.length === 0) {
+                        document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
+                        document.getElementById("orders-cancel-button").onclick = null
+                    }
+                } else {
+                    this.state.selectedOrders.push(order.metaData.orderHash)
+                    document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
+                    document.getElementById("orders-cancel-button").classList.add("active-order-action-button")
+                    document.getElementById("orders-cancel-button").onclick = this.cancelSelectedOrders
+                }
+                this.update()
+            },
+            selectAllOrders() {
+                this.update({ selectedOrders: this.state.orders.map(o => o.metaData.orderHash) })
+
+                document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
+                document.getElementById("orders-cancel-button").classList.add("active-order-action-button")
+                document.getElementById("orders-cancel-button").onclick = this.cancelSelectedOrders
+            },
+            resetOrdersSelection() {
+                this.update({ selectedOrders: [] })
+                document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
+                document.getElementById("orders-cancel-button").onclick = null
+            },
+            async cancelSelectedOrders() {
+                if (this.state.selectedOrders.length > 1) {
+                    let ordersToCancel =
+                        this.state.orders
+                            .filter(o => this.state.selectedOrders.find(hash => o.metaData.orderHash === hash) > -1)
+
+                    await ZeroXOrdersProxy.batchCancelOrders(ordersToCancel)
+                } else {
+                    await ZeroXOrdersProxy.cancelOrder(this.props.orders[0])
+                }
+            },
+            allOrdersAreSelected() {
+                return this.state.orders.length === this.state.selectedOrders.length
             }
         }
 

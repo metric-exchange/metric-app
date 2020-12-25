@@ -307,7 +307,7 @@
                 this.resetOutputAmount(parseFloat(e.target.value), false)
             },
             updatePrice(e) {
-                this.state.price = parseFloat(e.target.value)
+                this.setPrice(parseFloat(e.target.value))
                 let amount = this.state.price * this.state.inputAmount
                 this.resetOutputAmount(amount - this.applyFee(amount), true, false)
             },

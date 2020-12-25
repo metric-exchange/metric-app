@@ -57,6 +57,7 @@
         import {BigNumber} from '@0x/utils';
         import {getTokenUsdPrice} from "../../../common/tokens/token_price_proxy";
         import {updateOrderPrice} from "../../../common/prices/OrderPriceManager";
+        import numeral from 'numeral'
 
         export default {
             components: {
@@ -225,7 +226,7 @@
                 }
             },
             setOrderPrice(price) {
-                updateOrderPrice(parseFloat(price))
+                updateOrderPrice(numeral(price).value())
             },
             formatPrice(price) {
                 let formattedPrice = price

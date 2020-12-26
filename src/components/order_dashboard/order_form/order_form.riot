@@ -197,7 +197,7 @@
 
                 this.state.inputToken = output
                 this.state.outputToken = input
-                this.resetInputAmount(null)
+                this.resetInputAmount(NaN)
 
                 router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
 
@@ -469,8 +469,8 @@
             resetInputs() {
                 this.state.recipientAddress = null
                 this.state.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
-                this.setPrice(null)
-                this.resetInputAmount(null)
+                this.setPrice(NaN)
+                this.resetInputAmount(NaN)
             }
         }
 

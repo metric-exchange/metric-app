@@ -38,8 +38,6 @@
 
 .order-action-button {
     display: grid;
-    background: var(--inactive-button-background-color);
-    color: var(--token-selector-table-text-color);
     align-content: center;
     justify-content: center;
     border-radius: 2px;
@@ -47,19 +45,11 @@
     white-space: pre-wrap;
     text-align: center;
     height: 30px;
-}
-
-.active-order-action-button {
     background: var(--theme-switch-active-button-background-color);
     color: var(--theme-switch-active-button-text-color);
     cursor: pointer;
-}
-
-.order-list-actions {
-    display: grid;
-    grid-template-columns: 30% 30% 30%;
-    grid-gap: 1%;
-    padding-top: 15px;
+    margin-top: 15px;
+    width: 30%;
 }
 
 .order-select-check-box {

@@ -40,9 +40,7 @@
                 "recipient" : "接受者"
             },
             "order" : {
-                "cancel" : "取消",
-                "select_all" : "全选",
-                "clear_selection" : "清空选项"
+                "cancel" : "取消订单"
             }
         },
         "wallet" : {

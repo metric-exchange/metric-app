@@ -26,8 +26,10 @@
         </div>
     </div>
 
-    <div class="order-list-actions">
-        <div id="orders-cancel-button" class="order-action-button">{ this.i18next.t('my_order_list.order.cancel') }</div>
+    <div class="order-action-button"
+         if={ state.someOrdersAreSelected }
+         onclick={ cancelSelectedOrders }
+    >{ this.i18next.t('my_order_list.order.cancel') }
     </div>
 
     <script>
@@ -58,7 +60,8 @@
                 orders: [],
                 selectedOrders: [],
                 isLoadingOrders: true,
-                allOrdersSelected: false
+                allOrdersSelected: false,
+                someOrdersAreSelected: false
             },
             onMounted() {
                 registerForTokenListUpdate(this)
@@ -103,28 +106,27 @@
                 let index = this.state.selectedOrders.indexOf(order.metaData.orderHash)
                 if (index >= 0) {
                     this.state.selectedOrders.splice(index, 1)
-                    if (this.state.selectedOrders.length === 0) {
-                        document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
-                        document.getElementById("orders-cancel-button").onclick = null
-                    }
                 } else {
                     this.state.selectedOrders.push(order.metaData.orderHash)
-                    document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
-                    document.getElementById("orders-cancel-button").classList.add("active-order-action-button")
-                    document.getElementById("orders-cancel-button").onclick = this.cancelSelectedOrders
                 }
-                this.update({ allOrdersSelected : this.allOrdersAreSelected() })
+                this.update({
+                    allOrdersSelected : this.state.orders.length === this.state.selectedOrders.length,
+                    someOrdersAreSelected: (this.state.selectedOrders.length > 0)
+                })
             },
             toggleSelectAllOrders() {
                 if (this.state.selectedOrders.length === this.state.orders.length) {
-                    this.update({ selectedOrders: [], allOrdersSelected: false })
-                    document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
-                    document.getElementById("orders-cancel-button").onclick = null
+                    this.update({
+                        selectedOrders: [],
+                        allOrdersSelected: false,
+                        someOrdersAreSelected: false
+                    })
                 } else {
-                    this.update({ selectedOrders: this.state.orders.map(o => o.metaData.orderHash), allOrdersSelected: true })
-                    document.getElementById("orders-cancel-button").classList.remove("active-order-action-button")
-                    document.getElementById("orders-cancel-button").classList.add("active-order-action-button")
-                    document.getElementById("orders-cancel-button").onclick = this.cancelSelectedOrders
+                    this.update({
+                        selectedOrders: this.state.orders.map(o => o.metaData.orderHash),
+                        allOrdersSelected: true,
+                        someOrdersAreSelected: true
+                    })
                 }
             },
             async cancelSelectedOrders() {
@@ -139,9 +141,6 @@
                     let order = this.state.orders.find(o => o.metaData.orderHash === hash)
                     await ZeroXOrdersProxy.cancelOrder(order)
                 }
-            },
-            allOrdersAreSelected() {
-                return this.state.orders.length === this.state.selectedOrders.length
             }
         }
 

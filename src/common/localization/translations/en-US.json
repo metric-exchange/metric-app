@@ -40,9 +40,7 @@
                 "recipient" : "Recipient"
             },
             "order" : {
-                "cancel" : "Cancel",
-                "select_all" : "Select all",
-                "clear_selection" : "Clear selection"
+                "cancel" : "Cancel orders"
             }
         },
         "order_book" : {

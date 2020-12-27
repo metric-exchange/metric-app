@@ -151,7 +151,8 @@ export async function loadTokenList()
 }
 
 export function addToken(token) {
-    if (tokens.find(t => t.address.toLowerCase() === token.address.toLowerCase()) === undefined) {
+    if (token.symbol.toUpperCase() !== "ETH" &&
+        tokens.find(t => t.address.toLowerCase() === token.address.toLowerCase()) === undefined) {
         tokens.push(token)
     }
 }
@@ -207,15 +208,6 @@ let defaultTokens = [
         decimals: 18,
         symbol: "METRIC",
         logoURI: "https://etherscan.io/token/images/metric_32.png",
-        balance: 0,
-        allowance: 0,
-        disabled: false
-    },
-    {
-        address: "0x0000000000000000000000000000000000000000",
-        symbol: "ETH",
-        decimals: 18,
-        logoURI: EthIcon,
         balance: 0,
         allowance: 0,
         disabled: false

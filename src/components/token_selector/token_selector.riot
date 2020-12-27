@@ -11,24 +11,17 @@
         </div>
         <input id="token-selector-input-text" type="text" placeholder={ this.i18next.t('token_selector.input.message') } oninput={ filterTokenSearch }>
         <div class="tokens">
-            <table>
-                <tr id={ token.address.toLowerCase() }
-                    each={ token in state.sortedTokens }
-                    onclick={ (e) => fetchTokenInfo(token) }
-                >
-                    <td class="img"><img height="25" width="25" src="{ fetchTokenLogoURI(token) }" alt=" " onerror={ changeLogoToDefault }></td>
-                    <td class="symbol">{ token.symbol }</td>
-                    <td class="balance">{ safeRound(token.balance) }</td>
-                </tr>
-            </table>
+            <token-selection
+                each={ token in state.sortedTokens }
+                token={ token }
+                fetch-token-info={ (e) => fetchTokenInfo(token) }
+            />
         </div>
     </div>
 
     <script>
 
         import Image from './close.svg'
-        import UnknownTokenLightImage from './unknown-token-light.svg'
-        import UnknownTokenDarkImage from './unknown-token-dark.svg'
         import './token_selector.css'
         import {
             fetchTokensInfo,
@@ -36,11 +29,13 @@
             registerForTokenListUpdate, resetTokensInfo,
             tokensList
         } from "../../common/tokens/token_fetch";
-        import {registerForThemeUpdates} from "../../common/theme_manager";
-        import { BigNumber } from '@0x/utils'
         import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../common/wallet/wallet_manager";
+        import TokenSelection from './tokenSelection/tokenSelection.riot'
 
         export default {
+            components: {
+              TokenSelection
+            },
             config: {
                 closeImage: Image
             },
@@ -48,22 +43,17 @@
                 sortedTokens: [],
                 addressRegEx: new RegExp("0x[0-9a-zA-Z]{40}")
             },
-            safeRound(n) {
-                return new BigNumber(n).toFixed(4, BigNumber.ROUND_DOWN)
-            },
             async onBeforeMount() {
                 await this.buildSortedTokenList(null)
             },
             onMounted() {
                 document.addEventListener('click', this.listenToSelectorCloseClick)
-                registerForThemeUpdates(this)
                 registerForTokenListUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForWalletChanges(this)
                 if (isWalletConnected()) {
                     fetchTokensInfo(accountAddress())
                 }
-                this.updateTheme()
             },
             onWalletChanges() {
                 resetTokensInfo()
@@ -98,9 +88,7 @@
                 this.update()
             },
             fetchTokenInfo(token) {
-                let tokenData = tokensList().find(t => t.symbol === token.symbol)
-
-                this.props.selectToken(tokenData)
+                this.props.selectToken(token)
                 this.clearFilter()
             },
             async filterTokenSearch() {
@@ -163,30 +151,6 @@
                         return a.symbol.localeCompare(value, 'en', { sensitivity: 'base' })
                     }
                 })
-            },
-            fetchTokenLogoURI(token) {
-                if (token.logoURI !== undefined) {
-                    return token.logoURI
-                } else {
-                    return this.defaultTokenLogo()
-                }
-            },
-            defaultTokenLogo() {
-                if (this.isLightThemeSet()) {
-                    return UnknownTokenLightImage
-                } else {
-                    return UnknownTokenDarkImage
-                }
-            },
-            changeLogoToDefault(e) {
-                e.target.setAttribute("src", this.defaultTokenLogo())
-                e.target.classList.add("token-with-default-logo")
-            },
-            updateTheme() {
-                let tokensWithNoLogo = document.getElementsByClassName("token-with-default-logo")
-                for (let i = 0; i < tokensWithNoLogo.length; i++) {
-                    tokensWithNoLogo[i].setAttribute("src", this.defaultTokenLogo())
-                }
             }
         }
 

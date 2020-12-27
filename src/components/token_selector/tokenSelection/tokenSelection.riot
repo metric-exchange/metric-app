@@ -1,0 +1,61 @@
+<token-selection>
+
+    <div
+        id={ props.token.address.toLowerCase() }
+        class="token-selection"
+        onclick={ (e) => props.fetchTokenInfo() }>
+        <img
+            height="25"
+            width="25"
+            src="{ fetchTokenLogoURI(props.token) }"
+            alt={ props.token.symbol }
+            onerror={ changeLogoToDefault }
+        >
+        <div class="symbol">{ props.token.symbol }</div>
+        <div class="balance">{ safeRound() }</div>
+    </div>
+
+    <script>
+
+        import './tokenSelection.css'
+
+        import UnknownTokenLightImage from './unknown-token-light.svg'
+        import UnknownTokenDarkImage from './unknown-token-dark.svg'
+        import {registerForThemeUpdates} from "../../../common/theme_manager";
+
+        export default {
+            onMounted() {
+                registerForThemeUpdates(this)
+                this.updateTheme()
+            },
+            safeRound() {
+                return this.formatNumber(this.props.token.balance, 4)
+            },
+            fetchTokenLogoURI(token) {
+                if (token.logoURI !== undefined) {
+                    return token.logoURI
+                } else {
+                    return this.defaultTokenLogo()
+                }
+            },
+            changeLogoToDefault(e) {
+                e.target.setAttribute("src", this.defaultTokenLogo())
+                e.target.classList.add("token-with-default-logo")
+            },
+            updateTheme() {
+                let tokensWithNoLogo = document.getElementsByClassName("token-with-default-logo")
+                for (let i = 0; i < tokensWithNoLogo.length; i++) {
+                    tokensWithNoLogo[i].setAttribute("src", this.defaultTokenLogo())
+                }
+            },
+            defaultTokenLogo() {
+                if (this.isLightThemeSet()) {
+                    return UnknownTokenLightImage
+                } else {
+                    return UnknownTokenDarkImage
+                }
+            },
+        }
+    </script>
+
+</token-selection>

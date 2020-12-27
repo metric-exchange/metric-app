@@ -9,40 +9,9 @@
     margin-bottom: 15px;
 }
 
-#token-selector .img img {
-    -webkit-border-radius: 5px;
-            border-radius: 5px;
-    margin-right: 10px;
-}
-
 #token-selector .tokens {
     height: 500px;
     overflow: auto;
-}
-
-#token-selector table {
-    color: var(--token-selector-table-text-color);
-    border-collapse: collapse;
-    margin-top: 30px;
-    width: 100%;
-}
-
-#token-selector table tr {
-    line-height: 45px;
-}
-
-#token-selector table tr:hover {
-    background: var(--token-selector-table-hover-background-color);
-    cursor: pointer;
-}
-
-#token-selector .balance {
-    text-align: right;
-    padding-right: 30px;
-}
-
-#token-selector .symbol {
-    text-align: left;
 }
 
 #token-selector input[type=text] {

@@ -77,8 +77,8 @@ async function submitOrder(order, referralAddress, feePercentage) {
             await contractWrapper.devUtils.encodeERC20AssetData(order.takerAssetAddress).callAsync();
 
         let orderParams = {
-            makerFee: `${myUnfilledMakerAmount.multipliedBy(feePercentage)}`,
-            takerFee: `${myUnfilledTakerAmount.multipliedBy(feePercentage)}`,
+            makerFee: `${myUnfilledMakerAmount.multipliedBy(feePercentage).integerValue(BigNumber.ROUND_DOWN)}`,
+            takerFee: `${myUnfilledTakerAmount.multipliedBy(feePercentage).integerValue(BigNumber.ROUND_DOWN)}`,
             feeRecipientAddress: referralAddress,
             expirationTimeSeconds: `${order.expirationTimeSeconds}`
         }

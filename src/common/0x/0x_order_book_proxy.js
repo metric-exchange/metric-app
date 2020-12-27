@@ -110,7 +110,7 @@ async function getOrdersMatching(baseTokenAddress, quoteTokenAddress, keepOtcOrd
                 .multipliedBy(baseTokenPrice)
                 .dividedBy(10 ** baseToken.decimals)
 
-        let isValidOrder = takerAmount.isGreaterThan(10) &&
+        let isValidOrder = (isNaN(baseTokenPrice) || takerAmount.isGreaterThan(10)) &&
             (keepOtcOrders || bid.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
         if (isValidOrder) {
@@ -124,7 +124,7 @@ async function getOrdersMatching(baseTokenAddress, quoteTokenAddress, keepOtcOrd
                 .multipliedBy(quoteTokenPrice)
                 .dividedBy(10 ** quoteToken.decimals)
 
-        let isValidOrder = takerAmount.isGreaterThan(10) &&
+        let isValidOrder = (isNaN(quoteTokenPrice) || takerAmount.isGreaterThan(10) )&&
             (keepOtcOrders || ask.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
         if (isValidOrder) {

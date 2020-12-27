@@ -8,12 +8,16 @@ export async function getFastGasPriceInWei() {
 
 async function getEtherChainFasGasPriceInWei() {
 
-    let gasPrices = await fetchJson("https://www.etherchain.org/api/gasPriceOracle")
-
     let fastGasPrice = 0
 
-    if (gasPrices !== undefined && gasPrices.fast !== undefined) {
-        fastGasPrice = gasPrices.fast
+    try {
+        let gasPrices = await fetchJson("https://www.etherchain.org/api/gasPriceOracle")
+
+        if (gasPrices !== undefined && gasPrices.fast !== undefined) {
+            fastGasPrice = gasPrices.fast
+        }
+    } catch (e) {
+        console.warn("Call to price oracle has failed, fallbacking on web3 gas price")
     }
 
     return fastGasPrice * (10 ** 9)

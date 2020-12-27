@@ -5,7 +5,6 @@ export async function fetchJson(url) {
         await fetch(url, {method: "GET"})
             .then(handleErrors)
             .then(r => r.json())
-            .catch(e => console.error("Json Api call failed with:", e.message))
 
     if (tryJson === undefined) {
         tryJson = {}

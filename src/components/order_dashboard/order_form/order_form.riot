@@ -403,9 +403,9 @@
                 console.debug(`buying: ${this.state.outputAmount} ${this.state.outputToken.symbol}`)
 
                 let order = {
-                    makerAssetAmount: new BigNumber(inputAmount),
+                    makerAssetAmount: new BigNumber(inputAmount).integerValue(BigNumber.ROUND_DOWN),
                     makerAssetAddress: this.state.inputToken.address,
-                    takerAssetAmount: new BigNumber(outputAmount),
+                    takerAssetAmount: new BigNumber(outputAmount).integerValue(BigNumber.ROUND_DOWN),
                     takerAssetAddress: this.state.outputToken.address,
                     expirationTimeSeconds: moment(this.state.expiryTime).unix(),
                 }

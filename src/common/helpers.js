@@ -1,7 +1,11 @@
 import numeral from "numeral";
 
 export function formatNumber(n, precision = 3) {
-    return numeral(n).format(precisionToFormat(precision)).toUpperCase()
+    if (n > (1 / (10 ** precision))) {
+        return numeral(n).format(precisionToFormat(precision))
+    } else {
+        return numeral(n).format(`${precisionToFormat(precision)}e+0`)
+    }
 }
 
 function precisionToFormat(precision) {

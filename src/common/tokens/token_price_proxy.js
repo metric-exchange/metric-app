@@ -1,13 +1,18 @@
 import {fetchJson} from "../json_api_fetch";
 
 export async function getTokenUsdPrice(token) {
-    let id = tokenId(token.address, token.symbol)
-    let price = 0
+    let price = NaN
+    try {
+        let id = tokenId(token.address, token.symbol)
 
-    let jsonRes = await fetchJson(url(token.address, token.symbol))
+        let jsonRes = await fetchJson(url(token.address, token.symbol))
 
-    if (jsonRes[id] !== undefined && jsonRes[id].usd !== undefined){
-        price = jsonRes[id].usd
+        if (jsonRes[id] !== undefined && jsonRes[id].usd !== undefined){
+            price = jsonRes[id].usd
+        }
+
+    } catch (e) {
+        console.warn(`Could not fetch price for token: ${token.symbol}`)
     }
 
     return price

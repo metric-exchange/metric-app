@@ -124,30 +124,35 @@ function formatAmount(amount) {
 
 export async function loadTokenList()
 {
-    await fetchJson("https://tokens.coingecko.com/uniswap/all.json")
-        .then(json => {
-            if (json.tokens !== undefined) {
-                return Array.from(json.tokens)
-            } else {
-                return []
-            }
-        })
-        .then(at => {
-            at.forEach(t => {
-                addToken({
-                    balance: 0,
-                    allowance: 0,
-                    address: t.address,
-                    symbol: t.symbol,
-                    decimals: t.decimals,
-                    logoURI: t.logoURI
+    try {
+        await fetchJson("https://tokens.coingecko.com/uniswap/all.json")
+            .then(json => {
+                if (json.tokens !== undefined) {
+                    return Array.from(json.tokens)
+                } else {
+                    return []
+                }
+            })
+            .then(at => {
+                at.forEach(t => {
+                    addToken({
+                        balance: 0,
+                        allowance: 0,
+                        address: t.address,
+                        symbol: t.symbol,
+                        decimals: t.decimals,
+                        logoURI: t.logoURI
+                    })
                 })
             })
-        })
 
-    await Promise.all(
-        register.map(item => item.onTokenListUpdate())
-    )
+        await Promise.all(
+            register.map(item => item.onTokenListUpdate())
+        )
+    } catch (e) {
+        console.error("Token list fetch failed, search by address can still be used")
+    }
+
 }
 
 export function addToken(token) {

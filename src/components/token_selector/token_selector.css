@@ -1,31 +1,5 @@
 @import "../theme_colors/colors.css";
 
-#token-selector .box {
-    position: absolute;
-    display: block;
-    top: -100px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-            transform: translateX(-50%);
-    max-width: 400px;
-    width:100%;
-    min-width: 290px;
-    height: 620px;
-    background: var(--token-selector-box-background-color);
-    -webkit-border-radius: 5px;
-            border-radius: 5px;
-    border: 1px solid var(--token-selector-box-border-color);
-    color: var(--token-selector-box-text-color);
-}
-
-#token-selector .wrapper {
-}
-
-#token-selector .img {
-    width: 30px;
-}
-
 #token-selector .close {
     text-align: right;
 }
@@ -38,7 +12,6 @@
 #token-selector .img img {
     -webkit-border-radius: 5px;
             border-radius: 5px;
-    width: 25px;
     margin-right: 10px;
 }
 

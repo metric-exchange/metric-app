@@ -1,17 +1,22 @@
 <token-selector>
 
     <div id="token-selector">
-        <div class="wrapper">
-            <div class="close"><img src={ config.closeImage } onclick={ this.cleanUpAndClose } alt={ this.i18next.t('token_selector.close.alt') } ></div>
-            <input id="token-selector-input-text" type="text" placeholder={ this.i18next.t('token_selector.input.message') } oninput={ filterTokenSearch }>
+        <div class="close">
+            <img
+                    src={ config.closeImage }
+                    width="15"
+                    height="15"
+                    onclick={ this.cleanUpAndClose }
+                    alt={ this.i18next.t('token_selector.close.alt') } />
         </div>
+        <input id="token-selector-input-text" type="text" placeholder={ this.i18next.t('token_selector.input.message') } oninput={ filterTokenSearch }>
         <div class="tokens">
             <table>
                 <tr id={ token.address.toLowerCase() }
                     each={ token in state.sortedTokens }
                     onclick={ (e) => fetchTokenInfo(token) }
                 >
-                    <td class="img"><img src="{ fetchTokenLogoURI(token) }" alt=" " onerror={ changeLogoToDefault }></td>
+                    <td class="img"><img height="25" width="25" src="{ fetchTokenLogoURI(token) }" alt=" " onerror={ changeLogoToDefault }></td>
                     <td class="symbol">{ token.symbol }</td>
                     <td class="balance">{ safeRound(token.balance) }</td>
                 </tr>

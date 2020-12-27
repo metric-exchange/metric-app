@@ -59,7 +59,7 @@
             state: {
                 orders: [],
                 selectedOrders: [],
-                isLoadingOrders: true,
+                isLoadingOrders: false,
                 allOrdersSelected: false,
                 someOrdersAreSelected: false
             },
@@ -68,6 +68,7 @@
                 registerForUserOrderUpdates(this)
                 registerForWalletChanges(this)
                 if (isWalletConnected()) {
+                    this.update({ isLoadingOrders: true })
                     synchronizeUserOrders(accountAddress())
                 }
             },
@@ -87,8 +88,9 @@
                 this.update()
             },
             onWalletChanges() {
-                this.update({orders: [], isLoadingOrders: true})
+                this.update({orders: []})
                 if (isWalletConnected()) {
+                    this.update({isLoadingOrders: true})
                     synchronizeUserOrders(accountAddress())
                 }
             },

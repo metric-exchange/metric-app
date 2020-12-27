@@ -7,32 +7,17 @@ html, body {
     font-family: 'Roboto Mono', monospace;
     color: var(--main-text-color);
     width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
 }
 
 * {
     font-size: 13px;
 }
 
-body {
-    background: var(--main-background-color);
-    position: relative;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
 a {
     text-decoration: none;
-}
-
-.notice {
-    text-align: center;
-    width: 100%;
-    top: 65px;
-    padding-bottom: 7px;
-    position: absolute;
-    color: var(--token-selector-table-text-color);
-    background-color: var(--main-background-color);
 }
 
 .header {
@@ -56,7 +41,7 @@ a {
     align-content: center;
 }
 
-.header-settings{
+.header-settings {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -68,7 +53,7 @@ a {
     width: 20%;
 }
 
-.header-links{
+.header-links {
     width: 60%;
     display: grid;
     grid-template-columns: auto auto auto auto auto;
@@ -153,4 +138,22 @@ a {
 .main-content{
     width: 100%;
     position: relative;
+}
+
+input {
+    -moz-appearance: textfield;
+    border: 0;
+    color: var(--token-selector-text-color);
+    background: var(--token-selector-background-color);
+    border-bottom: 1px solid var(--token-selector-border-color);
+    padding: 5px 0;
+    outline: none;
+    margin-right: 10px;
+    width: 100%;
+}
+
+::placeholder {
+    color: var(--token-placeholder-text-color);
+    font-family: 'Roboto Mono', monospace;
+    opacity: 1; /* Firefox */
 }

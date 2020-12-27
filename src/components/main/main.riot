@@ -19,9 +19,8 @@
     </header>
 
     <div class="main-content">
-      <swap if={ !isOrderBookFeatureEnabled() }/>
 
-      <router if={ isOrderBookFeatureEnabled() }>
+      <router>
           <route path="/#/:inputAddress/:outputAddress">
               <order-dashboard input-token-address={ route.params.inputAddress } output-token-address={ route.params.outputAddress }/>
           </route>
@@ -44,11 +43,9 @@
     <script>
         import './main.css'
         import Settings from './settings/settings.riot'
-        import Swap from '../swap_dashboard/swap_menue/swap.riot'
         import OrderDashboard from '../order_dashboard/order_dashboard.riot'
         import {synchronizeOrderBook} from "../../common/0x/0x_order_book_proxy";
         import {
-            disableToken,
             loadTokenList,
             tokensList
         } from "../../common/tokens/token_fetch";
@@ -62,35 +59,27 @@
                 Route,
                 Router,
                 Settings,
-                Swap,
                 OrderDashboard,
                 Logo
             },
             config: {
                 Logo: Logo
             },
-            async onBeforeMount() {
-                await initLocalizations()
+            onBeforeMount() {
+                initLocalizations()
                 document.title = "Metric Exchange"
-
-                await initWeb3()
-                await loadTokenList()
+            },
+            async onMounted() {
+                initWeb3()
+                loadTokenList()
 
                 synchronizeOrderBook()
 
-                if (this.isOrderBookFeatureEnabled()) {
-                    disableToken("ETH")
-                }
-
                 setBase(`/`)
-            },
-            async onMounted() {
+
                 this.i18next.on("languageChanged", (lng, ns) => {
                     this.update()
                 })
-            },
-            isOrderBookFeatureEnabled() {
-                return true // window.location.host !== "metric.exchange"
             },
             defaultInputTokenAddress() {
                 return tokensList().find(t => t.symbol.toLowerCase() === "metric").address

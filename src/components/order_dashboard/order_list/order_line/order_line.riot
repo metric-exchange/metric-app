@@ -29,7 +29,6 @@
         import './order_line.css'
         import {tokensList} from "../../../../common/tokens/token_fetch";
         import moment from 'moment';
-        import {supportedLanguages} from "../../../../common/localization/localize";
         import Image from '../../../token_selector/close.svg'
         import CheckBox from '../../../checkbox/checkbox.riot'
 
@@ -107,7 +106,7 @@
             },
             getDateDiff(timestampSeconds) {
                 let langId = this.i18next.language
-                let lang = supportedLanguages[langId]
+                let lang = this.supportedLanguages[langId]
                 moment.locale(langId, { relativeTime: lang.translation.relativeTime});
                 return moment(timestampSeconds * 1000).fromNow()
             },

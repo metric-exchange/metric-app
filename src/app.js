@@ -11,6 +11,7 @@ export default (window.$ = window.jQuery = jquery);
 import Main from './components/main/main.riot'
 import i18next from "i18next";
 import {formatNumber} from "./common/helpers";
+import {supportedLanguages} from "./common/localization/localize";
 
 install(c => {
 
@@ -32,6 +33,7 @@ install(c => {
 
     c.i18next = i18next
     c.formatNumber = formatNumber
+    c.supportedLanguages = supportedLanguages
 
 })
 

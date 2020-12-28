@@ -12,13 +12,13 @@
 
                 <div each={bid in state.bids} class="order order-book-columns" if={ props.isPriceDirectionReverted }>
                     <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber()) }</div>
-                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ this.formatNumber(bid.price) }</div>
                     <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber()) }</div>
                 </div>
 
                 <div each={ask in state.asks} class="order order-book-columns" if={ !props.isPriceDirectionReverted }>
                     <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber()) }</div>
-                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ this.formatNumber(ask.price) }</div>
                     <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber()) }</div>
                 </div>
 
@@ -30,13 +30,13 @@
 
                 <div each={bid in state.bids} class="order order-book-columns" if={ !props.isPriceDirectionReverted }>
                     <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber()) }</div>
-                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ this.formatNumber(bid.price) }</div>
                     <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber()) }</div>
                 </div>
 
                 <div each={ask in state.asks} class="order order-book-columns" if={ props.isPriceDirectionReverted }>
                     <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber()) }</div>
-                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
+                    <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ this.formatNumber(ask.price) }</div>
                     <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber()) }</div>
                 </div>
             </div>

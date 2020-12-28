@@ -9,9 +9,13 @@ export function formatNumber(n, precision = 3) {
 }
 
 function precisionToFormat(precision) {
-    let format = precision > 0 ? "0,0." : "0,0"
+    let format = precision > 0 ? "0,0.[" : "0,0"
     for(let i = 0; i < precision; i++) {
         format += "0"
+    }
+
+    if ( precision > 0 ) {
+        format += "]"
     }
 
     return `${format}`

@@ -1,6 +1,7 @@
 
 .token-selection {
-    margin-right: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
     color: var(--token-selector-table-text-color);
     cursor: pointer;
     display: grid;

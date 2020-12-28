@@ -11,15 +11,15 @@
             <div id="order-table-canvas" onscroll={ disableScrollToView } if={ !state.isLoadingOrders }>
 
                 <div each={bid in state.bids} class="order order-book-columns" if={ props.isPriceDirectionReverted }>
-                    <div class="bid">{ this.formatNumber(bid.volumeTaker) }</div>
+                    <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber()) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
-                    <div class="ask">{ this.formatNumber(bid.volumeMaker) }</div>
+                    <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber()) }</div>
                 </div>
 
                 <div each={ask in state.asks} class="order order-book-columns" if={ !props.isPriceDirectionReverted }>
-                    <div class="ask">{ this.formatNumber(ask.volumeTaker) }</div>
+                    <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber()) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
-                    <div class="bid">{ this.formatNumber(ask.volumeMaker) }</div>
+                    <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber()) }</div>
                 </div>
 
                 <div id="orders-separator" class="order-book-columns" >
@@ -29,15 +29,15 @@
                 </div>
 
                 <div each={bid in state.bids} class="order order-book-columns" if={ !props.isPriceDirectionReverted }>
-                    <div class="bid">{ this.formatNumber(bid.volumeTaker) }</div>
+                    <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber()) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(bid.price) }>{ bid.price }</div>
-                    <div class="ask">{ this.formatNumber(bid.volumeMaker) }</div>
+                    <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber()) }</div>
                 </div>
 
                 <div each={ask in state.asks} class="order order-book-columns" if={ props.isPriceDirectionReverted }>
-                    <div class="ask">{ this.formatNumber(ask.volumeTaker) }</div>
+                    <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber()) }</div>
                     <div class="order-price" onclick={ (e) => setOrderPrice(ask.price) }>{ ask.price }</div>
-                    <div class="bid">{ this.formatNumber(ask.volumeMaker) }</div>
+                    <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber()) }</div>
                 </div>
             </div>
         </div>

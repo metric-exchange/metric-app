@@ -10,10 +10,10 @@
             <div>&#8594;</div>
             <div>{ state.takerToken.symbol }</div>
         </div>
-        <div class="order-list-big-screen-column ask">{ this.formatNumber(makerTotalAmount(props.order)) }</div>
-        <div class="bid">{ this.formatNumber(takerAmount(props.order)) }</div>
-        <div>{ this.formatNumber(filledTakerPercentage(props.order)) }%</div>
-        <div>{ this.formatNumber(orderPrice(props.order)) }</div>
+        <div class="order-list-big-screen-column ask">{ this.formatNumber(makerTotalAmount(props.order).toNumber()) }</div>
+        <div class="bid">{ this.formatNumber(takerAmount(props.order).toNumber()) }</div>
+        <div>{ this.formatNumber(filledTakerPercentage(props.order).toNumber()) }%</div>
+        <div>{ this.formatNumber(orderPrice(props.order).toNumber()) }</div>
         <div class="order-list-big-screen-column">{ getDateDiff(props.order.order.expirationTimeSeconds) }</div>
         <div class="order-list-big-screen-column">
             <a class="order-recipient"
@@ -89,9 +89,9 @@
             },
             orderPrice(order) {
                 if (this.state.priceDirectionReverted) {
-                    return this.makerAmount(order) / this.takerAmount(order)
+                    return this.makerAmount(order).dividedBy(this.takerAmount(order))
                 } else {
-                    return this.takerAmount(order) / this.makerAmount(order)
+                    return this.takerAmount(order).dividedBy(this.makerAmount(order))
                 }
             },
             revertPriceDirection() {

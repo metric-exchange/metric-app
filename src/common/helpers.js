@@ -1,7 +1,7 @@
 import numeral from "numeral";
 
 export function formatNumber(n, precision = 3) {
-    if (n > (1 / (10 ** precision))) {
+    if (n === 0 || n > (1 / (10 ** precision))) {
         return numeral(n).format(precisionToFormat(precision))
     } else {
         return numeral(n).format(`${precisionToFormat(precision)}e+0`)

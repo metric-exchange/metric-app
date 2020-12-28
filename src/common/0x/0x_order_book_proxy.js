@@ -5,6 +5,10 @@ import {tokensList} from "../tokens/token_fetch";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
 import {getTokenUsdPrice} from "../tokens/token_price_proxy";
 
+export function isOrderBookInitialized() {
+    return orderBookInitialized;
+}
+
 export function registerForOrderBookUpdateEvents(object) {
     callbacksRegister.push(object)
 }
@@ -38,6 +42,7 @@ export async function setBaseToken(token) {
     tokenCouple.baseToken = token
     bids=[]
     asks = []
+    orderBookInitialized = false
     baseTokenChangeRegister.forEach(c => c.onBaseTokenUpdate())
 }
 
@@ -46,6 +51,7 @@ export function setQuoteToken(token) {
     tokenCouple.quoteToken = token
     bids=[]
     asks = []
+    orderBookInitialized = false
     baseTokenChangeRegister.forEach(c => c.onBaseTokenUpdate())
 }
 
@@ -76,6 +82,8 @@ async function updateOrderBook() {
     if (baseToken.symbol === getBaseToken().symbol && quoteToken.symbol === getQuoteToken().symbol) {
         bids = orderBookUpdate.bids
         asks = orderBookUpdate.asks
+
+        orderBookInitialized = true
 
         await Promise.all(
             callbacksRegister.map(obj => obj.onOrderBookUpdate())
@@ -146,6 +154,8 @@ export async function zeroXContractAddresses() {
 
 let bids = []
 let asks = []
+
+let orderBookInitialized = false
 
 let tokenCouple = {
     baseToken: null,

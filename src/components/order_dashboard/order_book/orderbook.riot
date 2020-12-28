@@ -50,7 +50,7 @@
         import {
             getBaseToken,
             getOrderBookAsks,
-            getOrderBookBids, getQuoteToken, registerForBaseTokenChange,
+            getOrderBookBids, getQuoteToken, isOrderBookInitialized, registerForBaseTokenChange,
             registerForOrderBookUpdateEvents
         } from "../../../common/0x/0x_order_book_proxy";
 
@@ -114,7 +114,7 @@
                 this.state.triggerScrollToView = false
             },
             async fetchOrderBook(inputToken, outputToken) {
-                if (inputToken !== null && outputToken !== null) {
+                if (isOrderBookInitialized() && inputToken !== null && outputToken !== null) {
 
                     let asks =
                         getOrderBookAsks().map(b => {

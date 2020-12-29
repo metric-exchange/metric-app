@@ -252,6 +252,15 @@ let defaultTokens = [
         balance: 0,
         allowance: 0,
         disabled: false
+    },
+    {
+        address: "0x8d4507E16EFCD02f4434B2498CFFACe9A05c9955",
+        decimals: 18,
+        symbol: "DPOOL",
+        logoURI: "https://",
+        balance: 0,
+        allowance: 0,
+        disabled: false
     }
 ]
 let customTokensManager = new CustomTokenManager()

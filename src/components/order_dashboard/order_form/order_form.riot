@@ -96,6 +96,7 @@
         import TokenSelector from '../../token_selector/token_selector.riot'
         import Loader from '../../loader/loader.riot'
         import {
+            findOrAddTokenWithAddress,
             registerForTokenAllowancesUpdate,
             registerForTokenBalancesUpdate, registerForTokenListUpdate,
             tokensList
@@ -113,6 +114,7 @@
         import flatpickr from "flatpickr";
         import "./flatpicker.css";
         import {supportedDateTranslations} from "../../../common/localization/localize";
+        import {registerForWalletChanges} from "../../../common/wallet/wallet_manager";
 
         export default {
             components: {
@@ -136,6 +138,7 @@
                 registerForTokenAllowancesUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
+                registerForWalletChanges(this)
 
                 this.updateTokens()
                 this.setOrderMessage()
@@ -161,8 +164,12 @@
                     })
                 }
             },
-            onTokenListUpdate() {
-                this.updateTokens()
+            async onWalletChanges() {
+                await this.onTokenListUpdate()
+            },
+            async onTokenListUpdate() {
+                console.debug("token list updated")
+                await this.updateTokens()
                 this.setOrderMessage()
             },
             updateRecipientAddress(e) {
@@ -206,23 +213,25 @@
                 this.resetInputs()
 
             },
-            updateTokens() {
+            async updateTokens() {
+                console.debug("updating tokens: ", this.props.inputTokenAddress, this.props.outputTokenAddress)
+
                 if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {
 
-                    let tokenFromRoute =
-                        tokensList().find(t => t.address.toLowerCase() === this.props.inputTokenAddress.toLowerCase())
+                    let tokenFromRoute = await findOrAddTokenWithAddress(this.props.inputTokenAddress)
 
                     if (tokenFromRoute !== undefined && tokenFromRoute !== null) {
+                        console.log("input token found", tokenFromRoute)
                         this.state.inputToken = tokenFromRoute
                         setBaseToken(this.state.inputToken)
                     }
                 }
 
                 if (this.props.outputTokenAddress !== undefined && this.props.outputTokenAddress !== null) {
-                    let tokenFromRoute =
-                        tokensList().find(t => t.address.toLowerCase() === this.props.outputTokenAddress.toLowerCase())
+                    let tokenFromRoute = await findOrAddTokenWithAddress(this.props.outputTokenAddress)
 
                     if (tokenFromRoute !== undefined && tokenFromRoute !== null) {
+                        console.log("output token found", tokenFromRoute)
                         this.state.outputToken = tokenFromRoute
                         setQuoteToken(this.state.outputToken)
                     }

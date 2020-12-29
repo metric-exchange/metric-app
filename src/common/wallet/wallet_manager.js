@@ -2,6 +2,7 @@ import {MetamaskSubprovider} from "@0x/subproviders";
 import {providerUtils} from "@0x/utils";
 import {ContractWrappers} from "@0x/contract-wrappers";
 import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalPovider} from "./web3Modal";
+import LogRocket from "logrocket";
 
 export let walletAddress = undefined
 
@@ -49,6 +50,7 @@ export function updateAccountAddress(accounts) {
         clearWalletProvider()
         walletAddress = undefined
     }
+    LogRocket.identify(walletAddress)
     walletEventListeners.forEach(item => item.onWalletChanges())
 }
 

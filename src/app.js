@@ -13,6 +13,16 @@ import i18next from "i18next";
 import {formatNumber} from "./common/helpers";
 import {supportedLanguages} from "./common/localization/localize";
 
+import LogRocket from 'logrocket';
+
+LogRocket.init('5xh2hd/metric', {
+    shouldCaptureIP: false,
+    // dom: {
+    //     inputSanitizer: true,
+    //     textSanitizer: true
+    // }
+});
+
 install(c => {
 
     c.round = function(num, decimals) {

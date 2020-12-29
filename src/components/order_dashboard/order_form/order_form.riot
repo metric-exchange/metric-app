@@ -57,26 +57,26 @@
 
         <div></div>
 
-        <div class="order-line order-validity-input">
-            <div class="order-input order-valid-until-label">
-                { this.i18next.t('order.valid_until') }
-            </div>
-            <div class="order-input">
-                <input class="date-input" id="order-expiry-date-input"/>
-            </div>
-        </div>
+<!--        <div class="order-line order-validity-input">-->
+<!--            <div class="order-input order-valid-until-label">-->
+<!--                { this.i18next.t('order.valid_until') }-->
+<!--            </div>-->
+<!--            <div class="order-input">-->
+<!--                <input class="date-input" id="order-expiry-date-input"/>-->
+<!--            </div>-->
+<!--        </div>-->
 
-        <div class="order-line">
-            <div class="order-input">
-                <div class="input-sticky-placeholder" if={ isValidNonEmptyRecipientAddress() }>{ this.i18next.t('order.recipient_address_placeholder') }</div>
-                <input id="order-taker-address-input"
-                       type="text"
-                       onkeyup={ updateRecipientAddress }
-                       placeholder="{ this.i18next.t('order.recipient_address_placeholder') }"
-                       value={ state.recipientAddress }
-                />
-            </div>
-        </div>
+<!--        <div class="order-line">-->
+<!--            <div class="order-input">-->
+<!--                <div class="input-sticky-placeholder" if={ isValidNonEmptyRecipientAddress() }>{ this.i18next.t('order.recipient_address_placeholder') }</div>-->
+<!--                <input id="order-taker-address-input"-->
+<!--                       type="text"-->
+<!--                       onkeyup={ updateRecipientAddress }-->
+<!--                       placeholder="{ this.i18next.t('order.recipient_address_placeholder') }"-->
+<!--                       value={ state.recipientAddress }-->
+<!--                />-->
+<!--            </div>-->
+<!--        </div>-->
 
         <div id ="place-order-button" class="order-line button">
             { this.i18next.t(state.submitMessage, state.submitMessageParams) }

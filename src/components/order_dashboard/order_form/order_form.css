@@ -3,8 +3,8 @@
 #order-form {
     min-height: 456px;
     display: grid;
-    grid-template-rows: 10% 10% 10% 10% 10% 10% 10%;
-    grid-gap: 5%;
+    grid-template-rows: 10% 10% 10% 10% 10%;
+    grid-gap: 12%;
     padding: 30px;
 }
 

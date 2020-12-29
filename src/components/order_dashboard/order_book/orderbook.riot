@@ -249,6 +249,12 @@
                         } else {
                             bestPrice = this.state.bids[0].price
                         }
+                    } else if (this.state.asks.length > 0) {
+                        if (this.props.isPriceDirectionReverted) {
+                            bestPrice = this.state.asks[0].price
+                        } else {
+                            bestPrice = this.state.asks.slice(-1)[0].price
+                        }
                     }
 
                     console.debug("setting best price: ", bestPrice)

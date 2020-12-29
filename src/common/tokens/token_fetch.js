@@ -44,7 +44,7 @@ export async function findOrAddTokenWithAddress(address) {
 }
 
 export function findTokenWithAddress(address) {
-    return tokensList().find(t => t.address.toLowerCase().startsWith(address.toLowerCase()))
+    return tokensList().find(t => t.address.toLowerCase() === address.toLowerCase())
 }
 
 export function tokensList() { return tokens }

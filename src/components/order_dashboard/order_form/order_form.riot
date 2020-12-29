@@ -449,7 +449,9 @@
                 this.update()
             },
             isApproved() {
-                return tokensList().find(t => t.symbol === this.state.inputToken.symbol).allowance >= this.state.inputAmount
+                return tokensList()
+                    .find(t => t.address.toLowerCase() === this.state.inputToken.address.toLowerCase())
+                    .allowance >= this.state.inputAmount
             },
             isValidInputs() {
                 return !isNaN(this.state.price) &&
@@ -458,7 +460,10 @@
                     this.state.price > 0
             },
             isSufficientBalance() {
-                let balance = tokensList().find(t => t.symbol === this.state.inputToken.symbol).balance
+                let balance = tokensList()
+                    .find(t => t.address.toLowerCase() === this.state.inputToken.address.toLowerCase())
+                    .balance
+
                 let amount = this.state.inputAmount
 
                 return balance >= amount

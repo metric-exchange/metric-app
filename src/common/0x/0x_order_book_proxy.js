@@ -94,8 +94,8 @@ async function updateOrderBook() {
 
 async function getOrdersMatching(baseTokenAddress, quoteTokenAddress, keepOtcOrders) {
 
-    let baseToken = tokensList().find(t => t.address === baseTokenAddress)
-    let quoteToken = tokensList().find(t => t.address === quoteTokenAddress)
+    let baseToken = tokensList().find(t => t.address.toLowerCase() === baseTokenAddress.toLowerCase())
+    let quoteToken = tokensList().find(t => t.address.toLowerCase() === quoteTokenAddress.toLowerCase())
 
     let baseTokenPrice = await getTokenUsdPrice(baseToken)
     let quoteTokenPrice = await getTokenUsdPrice(quoteToken)

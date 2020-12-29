@@ -15,13 +15,13 @@ import {supportedLanguages} from "./common/localization/localize";
 
 import LogRocket from 'logrocket';
 
-LogRocket.init('5xh2hd/metric', {
-    shouldCaptureIP: false,
-    // dom: {
-    //     inputSanitizer: true,
-    //     textSanitizer: true
-    // }
-});
+console.debug("Environment:", process.env.NODE_ENV)
+
+if (process.env.NODE_ENV === 'production') {
+    LogRocket.init('5xh2hd/metric', {
+        shouldCaptureIP: false
+    });
+}
 
 install(c => {
 

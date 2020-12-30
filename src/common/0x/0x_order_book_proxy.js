@@ -35,7 +35,7 @@ export async function synchronizeOrderBook() {
         try {
             await updateOrderBook()
         } catch (e) {
-            console.error("Unexpected error while synchronizing the order book, will keep retrying")
+            console.error("Unexpected error while synchronizing the order book, will keep retrying", e)
         }
     }
 

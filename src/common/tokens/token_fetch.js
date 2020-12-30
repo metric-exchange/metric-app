@@ -81,7 +81,7 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
                 }
                 await batch.execute();
             } catch(e) {
-                console.error("Unexpected error while updating tokens balance/allowance info")
+                console.error("Unexpected error while updating tokens balance/allowance info", e)
             }
 
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
@@ -175,7 +175,7 @@ export async function loadTokenList()
             register.map(item => item.onTokenListUpdate())
         )
     } catch (e) {
-        console.error("Token list fetch failed, search by address can still be used")
+        console.error("Token list fetch failed, search by address can still be used", e)
     }
 
 
@@ -203,7 +203,7 @@ export async function addTokenWithAddress(address) {
         addToken(token)
 
     } catch (e) {
-        console.error("Invalid token address:", address)
+        console.error("Invalid token address:", address, e)
     }
 }
 

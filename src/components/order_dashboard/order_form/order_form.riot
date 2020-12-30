@@ -347,14 +347,16 @@
             },
             updateSubmitButtonState() {
                 let button = document.getElementById("place-order-button")
-                if (!isWalletConnected() || !this.isValidInputs() || !this.isSufficientBalance()) {
-                    button.classList.remove("active-button")
-                    button.classList.remove("clickable")
-                    button.onclick = null
-                } else if (this.isValidInputs() && !button.classList.contains("active-button")) {
-                    button.classList.add("active-button")
-                    button.classList.add("clickable")
-                    button.onclick = this.checkApprovalAndSubmitOrder
+                if (button !== null) {
+                    if (!isWalletConnected() || !this.isValidInputs() || !this.isSufficientBalance()) {
+                        button.classList.remove("active-button")
+                        button.classList.remove("clickable")
+                        button.onclick = null
+                    } else if (this.isValidInputs() && !button.classList.contains("active-button")) {
+                        button.classList.add("active-button")
+                        button.classList.add("clickable")
+                        button.onclick = this.checkApprovalAndSubmitOrder
+                    }
                 }
             },
             async setMaxInputAmount() {

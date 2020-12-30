@@ -79,7 +79,14 @@
             "insufficient_balance" : "INSUFFICIENT BALANCE",
             "approve": "APPROVE {{token.symbol}}",
             "approving" : "APPROVING {{token.symbol}}",
-            "place_order" : "PLACE ORDER"
+            "approval_rejected": "{{token.symbol}} APPROVAL REJECTED",
+            "place_order" : "PLACE ORDER",
+            "matching_order": "MATCHING ORDER",
+            "filling_orders": "FILLING {{amount}} {{token.symbol}}",
+            "order_fill_rejected": "ORDER FILL REJECTED",
+            "order_fill_succeeded": "ORDER FILLED FOR {{amount}} {{token.symbol}}",
+            "submitting_order": "PLACING ORDER FOR {{amount}} {{token.symbol}}",
+            "order_placement_rejected": "ORDER PLACEMENT REJECTED"
         },
         "language_selector" : {
             "title" : "Language",

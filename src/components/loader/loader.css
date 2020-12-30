@@ -1,11 +1,21 @@
-.loader {
-    border: 3px solid var(--main-background-color);
+.loader-default {
     border-radius: 50%;
-    border-top: 3px solid var(--theme-switch-active-button-border-color);
     width: 15px;
     height: 15px;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
+    border: 3px solid var(--loader-background-color);
+    border-top: 3px solid var(--loader-ticker-color);
+}
+
+.loader-inverted {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    border: 3px solid var(--loader-inverted-background-color);
+    border-top: 3px solid var(--loader-inverted-ticker-color);
 }
 
 /* Safari */

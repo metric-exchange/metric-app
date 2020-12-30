@@ -3,6 +3,7 @@ import {providerUtils} from "@0x/utils";
 import {ContractWrappers} from "@0x/contract-wrappers";
 import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalPovider} from "./web3Modal";
 import LogRocket from "logrocket";
+import Web3 from "web3";
 
 export let walletAddress = undefined
 
@@ -17,6 +18,9 @@ export function isWalletConnected() {
 }
 
 export async function initWeb3() {
+
+    window.web3fallback = new Web3(new Web3.providers.WebsocketProvider(defaultWSUrl))
+
     if (hasCashedProvider()) {
         await connectWallet();
     }
@@ -79,3 +83,4 @@ export async function getContractWrapper() {
 let providerEngine = null
 let contractWrapper = null
 let walletEventListeners = []
+let defaultWSUrl = "wss://mainnet.infura.io/ws/v3/12522e5176814bfda74dd672929641a3"

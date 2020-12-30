@@ -79,7 +79,14 @@
             "insufficient_balance" : "余额不足",
             "approve": "批准{{token.symbol}}",
             "approving" : "正在批准{{token.symbol}}",
-            "place_order" : "发送订单"
+            "approval_rejected": "{{token.symbol}}拒签",
+            "place_order" : "发送订单",
+            "matching_order": "配对订单",
+            "filling_orders": "填充{{amount}}{{token.symbol}}",
+            "order_fill_rejected": "订单被拒",
+            "order_fill_succeeded": "订单已填写{{amount}}{{token.symbol}}",
+            "submitting_order": "下订单{{amount}}{{token.symbol}}",
+            "order_placement_rejected": "订单下单被拒"
         },
         "language_selector" : {
             "title" : "选择语言",

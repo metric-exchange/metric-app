@@ -1,5 +1,6 @@
 
 .token-selection {
+    position: relative;
     padding-right: 10px;
     padding-left: 10px;
     color: var(--token-selector-table-text-color);
@@ -23,6 +24,11 @@
 
 .token-selection .balance {
     text-align: right;
+}
+
+.token-selection .loader {
+    position: absolute;
+    right: 10px;
 }
 
 .token-selection .symbol {

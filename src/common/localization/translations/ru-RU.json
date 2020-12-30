@@ -79,7 +79,15 @@
             "insufficient_balance" : "НЕДОСТАТОЧНЫЙ БАЛАНС",
             "approve": "УТВЕРДИТЬ {{token.symbol}}",
             "approving" : "Идёт утверждение {token.symbol}}",
-            "place_order" : "РАЗМЕСТИТЬ ЗАКАЗ"
+            "approval_rejected": "{{token.symbol}} УТВЕРЖДЕНИЕ ОТКЛОНЕНО",
+            "place_order" : "РАЗМЕСТИТЬ ЗАКАЗ",
+            "matching_order": "МАТЧИКИ ЗАКАЗ",
+            "filling_orders": "ЗАПОЛНЕНИЕ {{amount}} {{token.symbol}}",
+            "order_fill_rejected": "ЗАКАЗ ОТКЛОНЕН",
+            "order_fill_succeeded": "ЗАКАЗ ЗАПОЛНЕН НА {{amount}} {{token.symbol}}",
+            "submitting_order": "РАЗМЕЩЕНИЕ ЗАКАЗА НА {{amount}} {{token.symbol}}",
+            "order_placement_rejected": "РАЗМЕЩЕНИЕ ЗАКАЗА ОТКЛОНЕНО"
+
         },
         "language_selector" : {
             "title" : "Язык",

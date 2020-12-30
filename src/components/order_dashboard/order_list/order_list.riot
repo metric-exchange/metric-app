@@ -13,7 +13,7 @@
         </div>
         <div class="order-list-canvas">
             <div class="empty-order-list" if={ state.isLoadingOrders }>
-                <loader />
+                <loader inverted={ false } />
             </div>
             <order-line
                     if={ !state.isLoadingOrders }
@@ -48,7 +48,7 @@
             userOrders
         } from "../../../common/0x/0x_user_orders";
         import {registerForTokenListUpdate} from "../../../common/tokens/token_fetch";
-        import {ZeroXOrdersProxy} from "../../../common/0x/0x_orders_proxy";
+        import {batchCancelOrders, cancelOrder} from "../../../common/0x/0x_orders_proxy";
 
         export default {
             components: {
@@ -137,11 +137,11 @@
                         this.state.orders
                             .filter(o => this.state.selectedOrders.find(hash => o.metaData.orderHash === hash) > -1)
 
-                    await ZeroXOrdersProxy.batchCancelOrders(ordersToCancel)
+                    await batchCancelOrders(ordersToCancel)
                 } else {
                     let hash = this.state.selectedOrders[this.state.selectedOrders.length-1]
                     let order = this.state.orders.find(o => o.metaData.orderHash === hash)
-                    await ZeroXOrdersProxy.cancelOrder(order)
+                    await cancelOrder(order)
                 }
             }
         }

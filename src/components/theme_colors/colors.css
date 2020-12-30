@@ -32,6 +32,10 @@
   --theme-switch-active-button-border-color: #337263;
   --theme-switch-active-button-background-color: #21302D;
   --theme-switch-active-button-text-color: #60FFD9;
+  --loader-background-color: #303030;
+  --loader-ticker-color: #337263;
+  --loader-inverted-background-color: #337263;
+  --loader-inverted-ticker-color: #60FFD9;
 
   --scrollbar-color: #3D3D3D;
   --inactive-button-background-color: #000000;
@@ -74,6 +78,12 @@
   --theme-switch-active-button-background-color: #000000;
   --theme-switch-active-button-text-color: #FFFFFF;
   --theme-switch-active-button-border-color: #000000;
+
+  --loader-background-color: #EDEDED;
+  --loader-ticker-color: #000000;
+
+  --loader-inverted-background-color: #797979;
+  --loader-inverted-ticker-color: #FFFFFF;
 
   --scrollbar-color: #EDEDED;
   --inactive-button-background-color: #F9F9F9;

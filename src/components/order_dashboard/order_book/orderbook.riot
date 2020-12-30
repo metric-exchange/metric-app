@@ -1,6 +1,6 @@
 <order-book>
     <div class="order-book-body">
-        <loader if={ state.isLoadingOrders }/>
+        <loader if={ state.isLoadingOrders } inverted={ false }/>
         <div class="order-book-content" if={ !state.isLoadingOrders }>
             <div class="order-book-columns orders-header">
                 <div>{ this.i18next.t('order.amount', { token: state.inputToken }) }</div>

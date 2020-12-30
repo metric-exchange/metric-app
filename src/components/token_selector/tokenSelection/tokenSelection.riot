@@ -12,21 +12,36 @@
             onerror={ changeLogoToDefault }
         >
         <div class="symbol">{ props.token.symbol }</div>
-        <div class="balance">{ safeRound() }</div>
+        <div class="balance" if={ isTokenInfoInitialized() }>{ safeRound() }</div>
+        <div class="loader" if={ !isTokenInfoInitialized() }>
+            <loader inverted={ false }/>
+        </div>
     </div>
 
     <script>
 
         import './tokenSelection.css'
+        import Loader from '../../loader/loader.riot'
 
         import UnknownTokenLightImage from './unknown-token-light.svg'
         import UnknownTokenDarkImage from './unknown-token-dark.svg'
         import {registerForThemeUpdates} from "../../../common/theme_manager";
+        import {isWalletConnected} from "../../../common/wallet/wallet_manager";
+        import {registerForTokenInfoRefresh} from "../../../common/tokens/token_fetch";
 
         export default {
+            components: {
+                Loader
+            },
             onMounted() {
                 registerForThemeUpdates(this)
+                registerForTokenInfoRefresh(this)
                 this.updateTheme()
+            },
+            onTokenInfoRefresh(token) {
+                if (token.address.toLowerCase() === this.props.token.address.toLowerCase()) {
+                    this.update()
+                }
             },
             safeRound() {
                 return this.formatNumber(this.props.token.balance, 4)
@@ -55,6 +70,9 @@
                     return UnknownTokenDarkImage
                 }
             },
+            isTokenInfoInitialized() {
+                return !isWalletConnected() || this.props.token.initialized
+            }
         }
     </script>
 

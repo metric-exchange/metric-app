@@ -1,6 +1,6 @@
 <order-form>
     <div class="order-form-loader" if={ state.isLoadingTokens }>
-        <loader/>
+        <loader inverted={ false } />
     </div>
 
     <div id="order-form" if={ !state.isLoadingTokens }>
@@ -14,7 +14,10 @@
                 <label class="label-amount" onclick={ openInputTokenSelector }>{ state.inputToken.symbol } ˅</label>
             </div>
             <div class="order-input">
-                <div class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
+                <div if={ isTokenInfoUpdated() } class="max-amount" onclick={ setMaxInputAmount }>{ this.i18next.t('order.max_amount') }</div>
+                <div class="max-amount-loader" if={ !isTokenInfoUpdated() } >
+                    <loader inverted={ false } />
+                </div>
             </div>
         </div>
 
@@ -79,7 +82,10 @@
 <!--        </div>-->
 
         <div id ="place-order-button" class="order-line button">
-            { this.i18next.t(state.submitMessage, state.submitMessageParams) }
+            <div class="order-submit-loader" if={ state.buttonDisplay.showLoader }>
+                <loader inverted={ true } />
+            </div>
+            <div class={state.buttonDisplay.isError ? "error-message" : ""}>{ this.i18next.t(state.buttonDisplay.message, state.buttonDisplay.params).toUpperCase() }</div>
         </div>
 
         <div id="token-selector-box" style="display:none" }>
@@ -105,7 +111,12 @@
             setBaseToken,
             setQuoteToken
         } from "../../../common/0x/0x_order_book_proxy";
-        import {ZeroXOrdersProxy} from "../../../common/0x/0x_orders_proxy";
+        import {
+            approveZeroXAllowance, calculateRemainingOrderDetails,
+            findCandidateOrders,
+            submitOrder,
+            fillOrders
+        } from "../../../common/0x/0x_orders_proxy";
         import { BigNumber } from '@0x/utils';
         import {calculateMetricFee, MetricReferralAddress} from "../../../common/metric_fee";
         import { router } from '@riotjs/route'
@@ -114,7 +125,14 @@
         import flatpickr from "flatpickr";
         import "./flatpicker.css";
         import {supportedDateTranslations} from "../../../common/localization/localize";
-        import {registerForWalletChanges} from "../../../common/wallet/wallet_manager";
+        import {isWalletConnected, registerForWalletChanges} from "../../../common/wallet/wallet_manager";
+        import {
+            approveToken,
+            approving, connectWalletMessage, fillingOrder, insufficientBalance,
+            matchingOrder,
+            orderFillExecuted,
+            placeOrder, submittingOrder
+        } from "./order_messages";
 
         export default {
             components: {
@@ -131,7 +149,8 @@
                 isLoadingTokens: true,
                 expiryTime: moment().add(1, 'years').format("yyyy-MM-DD HH:mm"),
                 recipientAddress: null,
-                datepicker: undefined
+                datepicker: undefined,
+                orderSubmissionInProgress: false
             },
             onBeforeMount() {
                 registerForTokenListUpdate(this)
@@ -140,7 +159,6 @@
                 registerForOrderPriceUpdates(this)
                 registerForWalletChanges(this)
 
-                this.updateTokens()
                 this.setOrderMessage()
             },
             onUpdated() {
@@ -164,13 +182,16 @@
                     })
                 }
             },
-            async onWalletChanges() {
-                await this.onTokenListUpdate()
+            onWalletChanges() {
+                if (!isWalletConnected()) {
+                    this.resetInputs()
+                }
+                this.refreshOrderMessage()
             },
             async onTokenListUpdate() {
                 console.debug("token list updated")
                 await this.updateTokens()
-                this.setOrderMessage()
+                this.refreshOrderMessage()
             },
             updateRecipientAddress(e) {
                 this.update({recipientAddress: e.target.value})
@@ -244,7 +265,6 @@
             },
             onOrderPriceUpdate(price) {
                 this.setPrice(price)
-                this.updateSubmitButtonState()
                 this.refreshOrderMessage()
             },
             setPrice(price) {
@@ -255,7 +275,9 @@
                 }
                 document.getElementById("order-price-input").value = price
                 let amount = this.state.price * this.state.inputAmount
-                this.resetOutputAmount(amount - this.applyFee(amount), true, false)
+                if (!isNaN(amount)) {
+                    this.resetOutputAmount(amount - this.applyFee(amount), true, false)
+                }
             },
             listenToSelectorCloseClick(e) {
                 if(this.state.showTokenSelector) {
@@ -322,7 +344,7 @@
             },
             updateSubmitButtonState() {
                 let button = document.getElementById("place-order-button")
-                if (!this.isValidInputs() || !this.isSufficientBalance()) {
+                if (!isWalletConnected() || !this.isValidInputs() || !this.isSufficientBalance()) {
                     button.classList.remove("active-button")
                     button.classList.remove("clickable")
                     button.onclick = null
@@ -332,8 +354,12 @@
                     button.onclick = this.checkApprovalAndSubmitOrder
                 }
             },
-            setMaxInputAmount() {
-                this.resetInputAmount(this.state.inputToken.balance)
+            async setMaxInputAmount() {
+                if (isWalletConnected()) {
+                    this.resetInputAmount(this.state.inputToken.balance)
+                } else {
+                    await this.connectWallet()
+                }
             },
             resetInputAmount(amount, updateField = true) {
 
@@ -346,7 +372,6 @@
                 this.state.outputAmount = value > 0 ? value : NaN
                 document.getElementById("order-amount-output").value = this.state.outputAmount
 
-                this.updateSubmitButtonState()
                 this.refreshOrderMessage()
             },
             resetOutputAmount(amount, updateField, updateInputField = true) {
@@ -367,38 +392,93 @@
                     document.getElementById("order-amount-input").value = this.state.inputAmount
                 }
 
-                this.updateSubmitButtonState()
                 this.refreshOrderMessage()
             },
             async checkApprovalAndSubmitOrder() {
+                this.startSubmitProcess()
                 if (this.isApproved()) {
                     await this.sendOrder()
                 } else {
-                    await this.requestApprovalAndSubmitOrder()
+                    await this.sendApprovalForTokenAndSubmitOrder(this.state.inputToken)
                 }
-                this.refreshOrderMessage()
-            },
-            async requestApprovalAndSubmitOrder() {
-                await this.sendApprovalForTokenAndSubmitOrder(this.state.inputToken)
             },
             async sendApprovalForTokenAndSubmitOrder(token) {
-                this.setApprovalMessage(token)
-                await ZeroXOrdersProxy.approveZeroXAllowance(
+                this.update({ buttonDisplay: approving(token) })
+                await approveZeroXAllowance(
                     token.address,
-                    (a, b) => {
-                        this.refreshOrderMessage()
+                    async (a, b) => {
+                        await this.sendOrder()
                     },
                     (e) => {
-                        this.refreshOrderMessage()
+                        this.stopSubmitProcess(false)
                     }
                 )
             },
             async sendOrder() {
-                await ZeroXOrdersProxy.submitOrder(
-                    this.buildOrder(),
-                    MetricReferralAddress,
-                    calculateMetricFee()
-                )
+                this.update({ buttonDisplay: matchingOrder() })
+
+                let order = this.buildOrder()
+                let candidates = await findCandidateOrders(order)
+
+                setTimeout(async () => {
+                    if (candidates.length > 0) {
+                        await this.matchCandidateOrdersAndSubmitRemaining(order, candidates)
+                    } else {
+                        await this.submitRemainingOrderAfterFill(order, new BigNumber(0))
+                    }
+                }, 1000)
+            },
+            async matchCandidateOrdersAndSubmitRemaining(order, candidates) {
+                let filledAmount = await this.fillMatchingOrders(order, candidates)
+                if (isNaN(filledAmount)) {
+                    this.stopSubmitProcess(false)
+                } else if (filledAmount.isLessThan(order.makerAssetAmount)) {
+
+                    this.update({ buttonDisplay: orderFillExecuted(filledAmount.toNumber(), this.state.inputToken) })
+                    setTimeout(async () => {
+                        await this.submitRemainingOrderAfterFill(order, filledAmount)
+                    }, 1000)
+                }
+            },
+            async fillMatchingOrders(order, candidates) {
+                let filledAmount = NaN
+                try {
+
+                    let fillAmount =
+                        candidates
+                            .map(o => o.takerFillAmount)
+                            .reduce((a, b) => BigNumber.sum(a, b))
+                            .dividedBy(10 ** this.state.inputToken.decimals)
+
+                    this.update({ buttonDisplay: fillingOrder(fillAmount.toNumber(), this.state.inputToken) })
+
+                    filledAmount = await fillOrders(candidates)
+
+                } catch (e) {
+                    filledAmount = NaN
+                    console.warn("Order fill failed", e.message)
+                }
+
+                return filledAmount
+            },
+            async submitRemainingOrderAfterFill(order, filledAmount) {
+                let remainingOrder = calculateRemainingOrderDetails(order, filledAmount)
+                let remainingAmount =
+                    remainingOrder.makerAssetAmount.dividedBy(10 ** this.state.inputToken.decimals)
+
+                this.update({ buttonDisplay: submittingOrder(remainingAmount.toNumber(), this.state.inputToken) })
+                try {
+                    await submitOrder(
+                        remainingOrder,
+                        MetricReferralAddress,
+                        calculateMetricFee()
+                    )
+
+                } catch (e) {
+                    console.warn("Order submit rejected")
+                }
+
+                this.stopSubmitProcess(false)
             },
             buildOrder() {
                 let inputAmount =
@@ -432,29 +512,24 @@
                 let feePercentage = calculateMetricFee()
                 return amount * feePercentage / (1 + feePercentage)
             },
-            setApprovalMessage(token) {
-                this.update({
-                    submitMessage: "submit.approving",
-                    submitMessageParams: {token: token}
-                })
-            },
             setOrderMessage() {
-                if (!this.isValidInputs()) {
-                    this.state.submitMessage = "submit.place_order"
-                    this.state.submitMessageParams = {}
-                } else if (!this.isSufficientBalance()) {
-                    this.state.submitMessage = "submit.insufficient_balance"
-                    this.state.submitMessageParams = {}
-                } else if(!this.isApproved()) {
-                    this.state.submitMessage = "submit.approve"
-                    this.state.submitMessageParams = {token: this.state.inputToken}
-                } else {
-                    this.state.submitMessage = "submit.place_order"
-                    this.state.submitMessageParams = {}
+                if (this.state.orderSubmissionInProgress === false) {
+                    if (!isWalletConnected()) {
+                        this.state.buttonDisplay = connectWalletMessage()
+                    } else if (!this.isValidInputs()) {
+                        this.state.buttonDisplay = placeOrder()
+                    } else if (!this.isSufficientBalance()) {
+                        this.state.buttonDisplay = insufficientBalance()
+                    } else if(!this.isApproved()) {
+                        this.state.buttonDisplay = approveToken(this.state.inputToken)
+                    } else {
+                        this.state.buttonDisplay = placeOrder()
+                    }
                 }
             },
             refreshOrderMessage() {
                 this.setOrderMessage()
+                this.updateSubmitButtonState()
                 this.update()
             },
             isApproved() {
@@ -480,11 +555,25 @@
             formatWalletBalance(amount) {
                 return new BigNumber(amount).toFixed(3, BigNumber.ROUND_DOWN)
             },
+            startSubmitProcess() {
+                this.state.orderSubmissionInProgress = true
+            },
+            stopSubmitProcess(resetInputs = true) {
+                this.state.orderSubmissionInProgress = false
+                this.refreshOrderMessage()
+                if (resetInputs) {
+                    this.resetInputs()
+                }
+            },
             resetInputs() {
                 this.state.recipientAddress = null
                 this.state.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
                 this.setPrice(NaN)
                 this.resetInputAmount(NaN)
+            },
+            isTokenInfoUpdated() {
+                return !isWalletConnected() ||
+                    (this.state.inputToken !== null && this.state.inputToken.initialized)
             }
         }
 

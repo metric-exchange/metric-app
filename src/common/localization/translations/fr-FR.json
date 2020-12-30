@@ -78,8 +78,15 @@
         "submit" : {
             "insufficient_balance" : "SOLDE INSUFFISANT",
             "approve": "APPROUVER {{token.symbol}}",
-            "approving" : "EN COURS D'APPROBATION {{token.symbol}}",
-            "place_order" : "PLACER l'ORDRE"
+            "approving" : "{{token.symbol}} EN COURS D'APPROBATION",
+            "approval_rejected": "{{token.symbol}} APPROBATION REJETE",
+            "place_order" : "PLACER l'ORDRE",
+            "matching_order": "RECHERCHE D'ORDRES A EXECUTER",
+            "filling_orders": "EXECUTION {{amount}} {{token.symbol}}",
+            "order_fill_rejected": "EXECUTION REJETE",
+            "order_fill_succeeded": "EXECUTION REUSSIE POUR {{amount}} {{token.symbol}}",
+            "submitting_order": "OUVERTURE D'ORDRE POUR {{amount}} {{token.symbol}}",
+            "order_placement_rejected": "OUVERTURE D'ORDRE REJETE"
         },
         "language_selector" : {
             "title" : "Langue",

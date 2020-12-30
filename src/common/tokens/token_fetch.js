@@ -12,6 +12,7 @@ export function resetTokensInfo() {
     tokens.forEach(t => {
         t.balance = 0
         t.allowance = 0
+        t.initialized = false
     })
 }
 
@@ -25,6 +26,10 @@ export function registerForTokenBalancesUpdate(item) {
 
 export function registerForTokenAllowancesUpdate(item) {
     allowancesRegister.push(item)
+}
+
+export function registerForTokenInfoRefresh(item) {
+    infoRefreshRegister.push(item)
 }
 
 export function disableToken(symbol) {
@@ -55,30 +60,33 @@ export function updateTokenAllowance(address, allowance) {
 }
 
 export async function fetchTokensInfo(address) {
-    await executeBatch(address, 0, 100, 1000)
+    await executeBatch(address, 0, 100, 500)
 }
 
 async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
     if (isWalletConnected() && address === accountAddress()) {
         if (batchIndex*batchSize < tokens.length) {
-            let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
-            let batch = new window.web3.BatchRequest();
-            for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
-                let token = tokens[index]
-                let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
-                batch.add(
-                    contract
-                        .methods
-                        .balanceOf(address)
-                        .call
-                        .request({from: address}, (err, b) => updateBalance(index, address, b))
-                );
+            try {
+                let batch = new window.web3.BatchRequest();
+                for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
+                    let token = tokens[index]
+                    let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
+                    batch.add(
+                        contract
+                            .methods
+                            .balanceOf(address)
+                            .call
+                            .request({from: address}, (err, b) => updateBalance(index, address, b))
+                    );
+                }
+                await batch.execute();
+            } catch(e) {
+                console.error("Unexpected error while updating tokens balance/allowance info")
             }
-            await batch.execute();
 
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
         } else {
-            setTimeout(() => executeBatch(address, 0, batchSize, 10000), 60000)
+            console.debug("Token Balances/allowances startup update finished")
         }
     }
 }
@@ -96,11 +104,25 @@ async function updateBalance(index, address, balance) {
         if (newBalance > 0) {
             let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
             let contract = new window.web3.eth.Contract(Erc20Abi, tokens[index].address);
-            let allowance = await contract
+            await contract
                 .methods
                 .allowance(address, zeroXAllowanceTargetAddress)
-                .call()
-            await updateAllowance(index, address, allowance)
+                .call(
+                    { from: accountAddress()},
+                    async (error, allowance) => {
+                        if (error === null) {
+                            await updateAllowance(index, address, allowance)
+                        } else {
+                            console.log("Failed to fetch allowance for: ", tokens[index].symbol)
+                        }
+                    }
+                )
+        }
+        if (isWalletConnected() && address === accountAddress()) {
+            tokens[index].initialized = true
+            await Promise.all(
+                infoRefreshRegister.map(item => item.onTokenInfoRefresh(tokens[index]))
+            )
         }
     }
 }
@@ -138,6 +160,7 @@ export async function loadTokenList()
                     addToken({
                         balance: 0,
                         allowance: 0,
+                        initialized: false,
                         address: t.address,
                         symbol: t.symbol,
                         decimals: t.decimals,
@@ -146,12 +169,15 @@ export async function loadTokenList()
                 })
             })
 
+        tokenListInitialized = true
+
         await Promise.all(
             register.map(item => item.onTokenListUpdate())
         )
     } catch (e) {
         console.error("Token list fetch failed, search by address can still be used")
     }
+
 
 }
 
@@ -165,17 +191,16 @@ export function addToken(token) {
 export async function addTokenWithAddress(address) {
     try {
         let token = { address: address }
-        let contract = Erc20ContractProxy.erc20Contract(address)
+        let contract = Erc20ContractProxy.erc20FallbackContract(address)
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
         token.balance = 0
         token.allowance = 0
+        token.initialized = false
 
         customTokensManager.addToken(new Token(token.symbol, token.address, token.decimals))
 
         addToken(token)
-
-        register.map(item => item.onTokenListUpdate())
 
     } catch (e) {
         console.error("Invalid token address:", address)
@@ -189,6 +214,7 @@ function initTokenList() {
         tokens.push({
             balance: t.balance,
             allowance: 0,
+            initialized: false,
             address: t.address,
             symbol: t.symbol,
             decimals: t.decimals,
@@ -198,6 +224,11 @@ function initTokenList() {
 
     return tokens
 }
+
+export function isTokenListInitialized() {
+    return tokenListInitialized
+}
+
 let defaultTokens = [
     {
         address: "0x6e36556b3ee5aa28def2a8ec3dae30ec2b208739",
@@ -206,6 +237,7 @@ let defaultTokens = [
         logoURI: "https://etherscan.io/token/images/build_32.png",
         balance: 0,
         allowance: 0,
+        initialized: false,
         disabled: false
     },
     {
@@ -215,6 +247,7 @@ let defaultTokens = [
         logoURI: "https://etherscan.io/token/images/metric_32.png",
         balance: 0,
         allowance: 0,
+        initialized: false,
         disabled: false
     },
     {
@@ -224,6 +257,7 @@ let defaultTokens = [
         logoURI: "https://etherscan.io/token/images/MCDDai_32.png",
         balance: 0,
         allowance: 0,
+        initialized: false,
         disabled: false
     },
     {
@@ -233,6 +267,7 @@ let defaultTokens = [
         logoURI: HypeIcon,
         balance: 0,
         allowance: 0,
+        initialized: false,
         disabled: false
     },
     {
@@ -242,6 +277,7 @@ let defaultTokens = [
         logoURI: "https://",
         balance: 0,
         allowance: 0,
+        initialized: false,
         disabled: false
     },
     {
@@ -251,15 +287,7 @@ let defaultTokens = [
         logoURI: UpdownIcon,
         balance: 0,
         allowance: 0,
-        disabled: false
-    },
-    {
-        address: "0x8d4507E16EFCD02f4434B2498CFFACe9A05c9955",
-        decimals: 18,
-        symbol: "DPOOL",
-        logoURI: "https://",
-        balance: 0,
-        allowance: 0,
+        initialized: false,
         disabled: false
     }
 ]
@@ -269,4 +297,6 @@ let tokens = initTokenList()
 let register = []
 let balancesRegister = []
 let allowancesRegister = []
+let infoRefreshRegister = []
+let tokenListInitialized = false
 

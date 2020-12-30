@@ -32,7 +32,11 @@ export function getOrderBookAsks() {
 export async function synchronizeOrderBook() {
 
     if (tokenCouple.quoteToken !== null && tokenCouple.baseToken !== null) {
-        await updateOrderBook()
+        try {
+            await updateOrderBook()
+        } catch (e) {
+            console.error("Unexpected error while synchronizing the order book, will keep retrying")
+        }
     }
 
     setTimeout(synchronizeOrderBook, 10000)

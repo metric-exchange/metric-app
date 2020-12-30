@@ -25,7 +25,7 @@
         import './token_selector.css'
         import {
             fetchTokensInfo,
-            findOrAddTokenWithAddress, registerForTokenBalancesUpdate,
+            findOrAddTokenWithAddress, isTokenListInitialized, registerForTokenBalancesUpdate,
             registerForTokenListUpdate, resetTokensInfo,
             tokensList
         } from "../../common/tokens/token_fetch";
@@ -51,23 +51,27 @@
                 registerForTokenListUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForWalletChanges(this)
-                if (isWalletConnected()) {
+
+                if (isTokenListInitialized() && isWalletConnected()) {
                     fetchTokensInfo(accountAddress())
                 }
             },
             onWalletChanges() {
                 resetTokensInfo()
-                if (isWalletConnected()) {
+                if (isWalletConnected() && isTokenListInitialized()) {
                     fetchTokensInfo(accountAddress())
                 }
                 this.update()
             },
             async onTokenListUpdate() {
+                if (isWalletConnected()) {
+                    fetchTokensInfo(accountAddress())
+                }
                 await this.filterTokenSearch()
-                this.update()
             },
             async onTokenBalancesUpdate() {
-                await this.onTokenListUpdate()
+                await this.filterTokenSearch()
+                this.update()
             },
             listenToSelectorCloseClick(e) {
                 let selector = document.getElementById('token-selector');

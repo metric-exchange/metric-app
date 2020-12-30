@@ -77,9 +77,11 @@
         },
         "submit" : {
             "insufficient_balance" : "НЕДОСТАТОЧНЫЙ БАЛАНС",
+            "checking_approval" : "проверка разрешений для {{token.symbol}}",
             "approve": "УТВЕРДИТЬ {{token.symbol}}",
             "approving" : "Идёт утверждение {token.symbol}}",
             "approval_rejected": "{{token.symbol}} УТВЕРЖДЕНИЕ ОТКЛОНЕНО",
+            "fill_order_params": "ВВЕДИТЕ СУММЫ И ЦЕНЫ",
             "place_order" : "РАЗМЕСТИТЬ ЗАКАЗ",
             "matching_order": "МАТЧИКИ ЗАКАЗ",
             "filling_orders": "ЗАПОЛНЕНИЕ {{amount}} {{token.symbol}}",

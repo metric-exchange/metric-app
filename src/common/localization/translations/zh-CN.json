@@ -77,9 +77,11 @@
         },
         "submit" : {
             "insufficient_balance" : "余额不足",
+            "checking_approval" : "权限检查{{token.symbol}}",
             "approve": "批准{{token.symbol}}",
             "approving" : "正在批准{{token.symbol}}",
             "approval_rejected": "{{token.symbol}}拒签",
+            "fill_order_params": "输入金额和价格",
             "place_order" : "发送订单",
             "matching_order": "配对订单",
             "filling_orders": "填充{{amount}}{{token.symbol}}",

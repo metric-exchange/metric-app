@@ -27,7 +27,7 @@
         import UnknownTokenDarkImage from './unknown-token-dark.svg'
         import {registerForThemeUpdates} from "../../../common/theme_manager";
         import {isWalletConnected} from "../../../common/wallet/wallet_manager";
-        import {registerForTokenInfoRefresh} from "../../../common/tokens/token_fetch";
+        import {registerForTokenBalancesUpdate} from "../../../common/tokens/token_fetch";
 
         export default {
             components: {
@@ -35,10 +35,10 @@
             },
             onMounted() {
                 registerForThemeUpdates(this)
-                registerForTokenInfoRefresh(this)
+                registerForTokenBalancesUpdate(this)
                 this.updateTheme()
             },
-            onTokenInfoRefresh(token) {
+            onTokenBalancesUpdate(token) {
                 if (token.address.toLowerCase() === this.props.token.address.toLowerCase()) {
                     this.update()
                 }
@@ -71,7 +71,7 @@
                 }
             },
             isTokenInfoInitialized() {
-                return !isWalletConnected() || this.props.token.initialized
+                return !isWalletConnected() || !isNaN(this.props.token.balance)
             }
         }
     </script>

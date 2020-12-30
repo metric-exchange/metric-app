@@ -1,4 +1,3 @@
-import EthIcon from './eth.png'
 import HypeIcon from './hype.png'
 import UpdownIcon from './updown.jpg'
 import {accountAddress, isWalletConnected} from "../wallet/wallet_manager";
@@ -10,9 +9,8 @@ import {zeroXContractAddresses} from "../0x/0x_order_book_proxy";
 
 export function resetTokensInfo() {
     tokens.forEach(t => {
-        t.balance = 0
-        t.allowance = 0
-        t.initialized = false
+        t.balance = NaN
+        t.allowance = NaN
     })
 }
 
@@ -26,10 +24,6 @@ export function registerForTokenBalancesUpdate(item) {
 
 export function registerForTokenAllowancesUpdate(item) {
     allowancesRegister.push(item)
-}
-
-export function registerForTokenInfoRefresh(item) {
-    infoRefreshRegister.push(item)
 }
 
 export function disableToken(symbol) {
@@ -94,13 +88,16 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
 async function updateBalance(index, address, balance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = balance / (10 ** tokens[index].decimals)
-        if (newBalance !== tokens[index].balance) {
+        if (newBalance > 0) {
             console.debug("update balance", tokens[index].symbol, newBalance)
-            tokens[index].balance = newBalance
-            await Promise.all(
-                balancesRegister.map(item => item.onTokenBalancesUpdate())
-            )
         }
+
+        tokens[index].balance = newBalance
+
+        await Promise.all(
+            balancesRegister.map(item => item.onTokenBalancesUpdate(tokens[index]))
+        )
+
         if (newBalance > 0) {
             let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
             let contract = new window.web3.eth.Contract(Erc20Abi, tokens[index].address);
@@ -117,26 +114,26 @@ async function updateBalance(index, address, balance) {
                         }
                     }
                 )
-        }
-        if (isWalletConnected() && address === accountAddress()) {
-            tokens[index].initialized = true
+        } else {
+            tokens[index].allowance = 0
             await Promise.all(
-                infoRefreshRegister.map(item => item.onTokenInfoRefresh(tokens[index]))
+                allowancesRegister.map(item => item.onTokenAllowancesUpdate(tokens[index]))
             )
         }
+
     }
 }
 
 async function updateAllowance(index, address, allowance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** tokens[index].decimals)
-        if (newAllowance !== tokens[index].allowance) {
+        if (newAllowance > 0) {
             console.debug("update allowance", tokens[index].symbol, newAllowance)
-            tokens[index].allowance = newAllowance
-            await Promise.all(
-                allowancesRegister.map(item => item.onTokenAllowancesUpdate())
-            )
         }
+        tokens[index].allowance = newAllowance
+        await Promise.all(
+            allowancesRegister.map(item => item.onTokenAllowancesUpdate(tokens[index]))
+        )
     }
 }
 
@@ -158,9 +155,8 @@ export async function loadTokenList()
             .then(at => {
                 at.forEach(t => {
                     addToken({
-                        balance: 0,
-                        allowance: 0,
-                        initialized: false,
+                        balance: NaN,
+                        allowance: NaN,
                         address: t.address,
                         symbol: t.symbol,
                         decimals: t.decimals,
@@ -177,8 +173,10 @@ export async function loadTokenList()
     } catch (e) {
         console.error("Token list fetch failed, search by address can still be used", e)
     }
+}
 
-
+export function isTokenListInitialized() {
+    return tokenListInitialized
 }
 
 export function addToken(token) {
@@ -194,9 +192,8 @@ export async function addTokenWithAddress(address) {
         let contract = Erc20ContractProxy.erc20FallbackContract(address)
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
-        token.balance = 0
-        token.allowance = 0
-        token.initialized = false
+        token.balance = NaN
+        token.allowance = NaN
 
         customTokensManager.addToken(new Token(token.symbol, token.address, token.decimals))
 
@@ -212,9 +209,8 @@ function initTokenList() {
     customTokensManager.init()
     customTokensManager.customtokens.tokens.forEach(t => {
         tokens.push({
-            balance: t.balance,
-            allowance: 0,
-            initialized: false,
+            balance: NaN,
+            allowance: NaN,
             address: t.address,
             symbol: t.symbol,
             decimals: t.decimals,
@@ -225,19 +221,14 @@ function initTokenList() {
     return tokens
 }
 
-export function isTokenListInitialized() {
-    return tokenListInitialized
-}
-
 let defaultTokens = [
     {
         address: "0x6e36556b3ee5aa28def2a8ec3dae30ec2b208739",
         decimals: 18,
         symbol: "BUILD",
         logoURI: "https://etherscan.io/token/images/build_32.png",
-        balance: 0,
-        allowance: 0,
-        initialized: false,
+        balance: NaN,
+        allowance: NaN,
         disabled: false
     },
     {
@@ -245,9 +236,8 @@ let defaultTokens = [
         decimals: 18,
         symbol: "METRIC",
         logoURI: "https://etherscan.io/token/images/metric_32.png",
-        balance: 0,
-        allowance: 0,
-        initialized: false,
+        balance: NaN,
+        allowance: NaN,
         disabled: false
     },
     {
@@ -255,9 +245,8 @@ let defaultTokens = [
         decimals: 18,
         symbol: "DAI",
         logoURI: "https://etherscan.io/token/images/MCDDai_32.png",
-        balance: 0,
-        allowance: 0,
-        initialized: false,
+        balance: NaN,
+        allowance: NaN,
         disabled: false
     },
     {
@@ -265,9 +254,8 @@ let defaultTokens = [
         decimals: 18,
         symbol: "HYPE",
         logoURI: HypeIcon,
-        balance: 0,
-        allowance: 0,
-        initialized: false,
+        balance: NaN,
+        allowance: NaN,
         disabled: false
     },
     {
@@ -275,9 +263,8 @@ let defaultTokens = [
         decimals: 18,
         symbol: "bCRED",
         logoURI: "https://",
-        balance: 0,
-        allowance: 0,
-        initialized: false,
+        balance: NaN,
+        allowance: NaN,
         disabled: false
     },
     {
@@ -285,9 +272,8 @@ let defaultTokens = [
         decimals: 18,
         symbol: "UPDOWN",
         logoURI: UpdownIcon,
-        balance: 0,
-        allowance: 0,
-        initialized: false,
+        balance: NaN,
+        allowance: NaN,
         disabled: false
     }
 ]
@@ -297,6 +283,4 @@ let tokens = initTokenList()
 let register = []
 let balancesRegister = []
 let allowancesRegister = []
-let infoRefreshRegister = []
 let tokenListInitialized = false
-

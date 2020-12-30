@@ -14,6 +14,14 @@ export function insufficientBalance() {
     }
 }
 
+export function checkingApprovalMessage(token) {
+    return {
+        message: "submit.checking_approval",
+        params: {token: token},
+        showLoader: true
+    }
+}
+
 export function approveToken(token) {
     return {
         message: "submit.approve",
@@ -27,6 +35,13 @@ export function approving(token) {
         message: "submit.approving",
         params: {token: token},
         showLoader: true
+    }
+}
+
+export function fillOrderAmountPriceMessage() {
+    return {
+        message: "submit.fill_order_params",
+        showLoader: false
     }
 }
 

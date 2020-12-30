@@ -77,9 +77,11 @@
         },
         "submit" : {
             "insufficient_balance" : "余額不足",
+            "checking_approval" : "權限檢查{{token.symbol}}",
             "approve": "批準{{token.symbol}}",
             "approving" : "正在批準{{token.symbol}}",
             "approval_rejected": "{{token.symbol}}拒簽",
+            "fill_order_params": "輸入金額和價格",
             "place_order" : "發送訂單",
             "matching_order": "配對訂單",
             "filling_orders": "填充{{amount}}{{token.symbol}}",

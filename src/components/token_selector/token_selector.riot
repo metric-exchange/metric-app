@@ -69,9 +69,11 @@
                 }
                 await this.filterTokenSearch()
             },
-            async onTokenBalancesUpdate() {
-                await this.filterTokenSearch()
-                this.update()
+            async onTokenBalancesUpdate(token) {
+                if (token.balance > 0) {
+                    await this.filterTokenSearch()
+                    this.update()
+                }
             },
             listenToSelectorCloseClick(e) {
                 let selector = document.getElementById('token-selector');

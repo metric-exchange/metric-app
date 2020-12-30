@@ -77,9 +77,11 @@
         },
         "submit" : {
             "insufficient_balance" : "INSUFFICIENT BALANCE",
+            "checking_approval" : "CHECKING ALLOWANCE FOR {{token.symbol}}",
             "approve": "APPROVE {{token.symbol}}",
             "approving" : "APPROVING {{token.symbol}}",
             "approval_rejected": "{{token.symbol}} APPROVAL REJECTED",
+            "fill_order_params": "ENTER ORDER AMOUNTS & PRICE",
             "place_order" : "PLACE ORDER",
             "matching_order": "MATCHING ORDER",
             "filling_orders": "FILLING {{amount}} {{token.symbol}}",

@@ -42,7 +42,7 @@ export async function synchronizeOrderBook() {
     setTimeout(synchronizeOrderBook, 10000)
 }
 
-export async function setBaseToken(token) {
+export function setBaseToken(token) {
     tokenCouple.baseToken = token
     bids=[]
     asks = []

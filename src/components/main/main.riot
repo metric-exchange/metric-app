@@ -20,15 +20,7 @@
     </header>
 
     <div class="main-content">
-
-      <router>
-          <route path="/#/:inputAddress/:outputAddress">
-              <order-dashboard input-token-address={ route.params.inputAddress } output-token-address={ route.params.outputAddress }/>
-          </route>
-          <route path="/">
-              <order-dashboard input-token-address={ defaultInputTokenAddress() } output-token-address={ defaultOutputTokenAddress() }/>
-          </route>
-      </router>
+      <order-dashboard/>
     </div>
 
     <div id="footer">
@@ -47,19 +39,13 @@
         import Settings from './settings/settings.riot'
         import OrderDashboard from '../order_dashboard/order_dashboard.riot'
         import {synchronizeOrderBook} from "../../common/0x/0x_order_book_proxy";
-        import {
-            loadTokenList,
-            tokensList
-        } from "../../common/tokens/token_fetch";
+        import { loadTokenList } from "../../common/tokens/token_fetch";
         import {initWeb3} from "../../common/wallet/wallet_manager";
-        import {Router, Route, setBase} from "@riotjs/route";
         import {initLocalizations} from "../../common/localization/localize";
         import Logo from '../theme_colors/logo.svg'
 
         export default {
             components: {
-                Route,
-                Router,
                 Settings,
                 OrderDashboard,
                 Logo
@@ -77,17 +63,9 @@
 
                 synchronizeOrderBook()
 
-                setBase(`/`)
-
                 this.i18next.on("languageChanged", (lng, ns) => {
                     this.update()
                 })
-            },
-            defaultInputTokenAddress() {
-                return tokensList().find(t => t.symbol.toLowerCase() === "metric").address
-            },
-            defaultOutputTokenAddress() {
-                return tokensList().find(t => t.symbol.toLowerCase() === "dai").address
             }
         }
     </script>

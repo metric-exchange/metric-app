@@ -77,16 +77,18 @@
         },
         "submit" : {
             "insufficient_balance" : "SOLDE INSUFFISANT",
+            "checking_approval" : "VÉRIFICATION DE PERMISSION POUR {{token.symbol}}",
             "approve": "APPROUVER {{token.symbol}}",
             "approving" : "{{token.symbol}} EN COURS D'APPROBATION",
-            "approval_rejected": "{{token.symbol}} APPROBATION REJETE",
+            "approval_rejected": "{{token.symbol}} APPROBATION REJETÉ",
+            "fill_order_params": "SAISIR LES MONTANTS & PRIX",
             "place_order" : "PLACER l'ORDRE",
             "matching_order": "RECHERCHE D'ORDRES A EXECUTER",
             "filling_orders": "EXECUTION {{amount}} {{token.symbol}}",
-            "order_fill_rejected": "EXECUTION REJETE",
-            "order_fill_succeeded": "EXECUTION REUSSIE POUR {{amount}} {{token.symbol}}",
+            "order_fill_rejected": "EXÉCUTION REJETÉ",
+            "order_fill_succeeded": "EXÉCUTION RÉUSSIE POUR {{amount}} {{token.symbol}}",
             "submitting_order": "OUVERTURE D'ORDRE POUR {{amount}} {{token.symbol}}",
-            "order_placement_rejected": "OUVERTURE D'ORDRE REJETE"
+            "order_placement_rejected": "OUVERTURE D'ORDRE REJETÉ"
         },
         "language_selector" : {
             "title" : "Langue",

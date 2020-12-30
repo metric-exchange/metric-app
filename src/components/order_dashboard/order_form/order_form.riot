@@ -119,7 +119,6 @@
         } from "../../../common/0x/0x_orders_proxy";
         import { BigNumber } from '@0x/utils';
         import {calculateMetricFee, MetricReferralAddress} from "../../../common/metric_fee";
-        import { router } from '@riotjs/route'
         import {registerForOrderPriceUpdates} from "../../../common/prices/OrderPriceManager";
         import moment from 'moment';
         import flatpickr from "flatpickr";
@@ -128,10 +127,16 @@
         import {isWalletConnected, registerForWalletChanges} from "../../../common/wallet/wallet_manager";
         import {
             approveToken,
-            approving, connectWalletMessage, fillingOrder, insufficientBalance,
+            approving,
+            checkingApprovalMessage,
+            connectWalletMessage,
+            fillingOrder,
+            fillOrderAmountPriceMessage,
+            insufficientBalance,
             matchingOrder,
             orderFillExecuted,
-            placeOrder, submittingOrder
+            placeOrder,
+            submittingOrder
         } from "./order_messages";
 
         export default {
@@ -158,8 +163,6 @@
                 registerForTokenBalancesUpdate(this)
                 registerForOrderPriceUpdates(this)
                 registerForWalletChanges(this)
-
-                this.setOrderMessage()
             },
             onUpdated() {
                 let dateinput = document.getElementById("order-expiry-date-input")
@@ -227,7 +230,7 @@
                 this.state.outputToken = input
                 this.resetInputAmount(NaN)
 
-                router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
+                history.replaceState({}, '', `/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
 
                 document.getElementById("order-switch").classList.toggle("transition-half-rotate")
 
@@ -235,33 +238,15 @@
 
             },
             async updateTokens() {
-                console.debug("updating tokens: ", this.props.inputTokenAddress, this.props.outputTokenAddress)
+                this.state.inputToken = await this.urlInputToken()
+                this.state.outputToken = await this.urlOutputToken()
 
-                if (this.props.inputTokenAddress !== undefined && this.props.inputTokenAddress !== null) {
+                setBaseToken(this.state.inputToken)
+                setQuoteToken(this.state.outputToken)
 
-                    let tokenFromRoute = await findOrAddTokenWithAddress(this.props.inputTokenAddress)
+                this.state.isLoadingTokens = false
 
-                    if (tokenFromRoute !== undefined && tokenFromRoute !== null) {
-                        console.log("input token found", tokenFromRoute)
-                        this.state.inputToken = tokenFromRoute
-                        setBaseToken(this.state.inputToken)
-                    }
-                }
-
-                if (this.props.outputTokenAddress !== undefined && this.props.outputTokenAddress !== null) {
-                    let tokenFromRoute = await findOrAddTokenWithAddress(this.props.outputTokenAddress)
-
-                    if (tokenFromRoute !== undefined && tokenFromRoute !== null) {
-                        console.log("output token found", tokenFromRoute)
-                        this.state.outputToken = tokenFromRoute
-                        setQuoteToken(this.state.outputToken)
-                    }
-                }
-
-                if (this.state.inputToken !== null && this.state.outputToken !== null) {
-                    this.state.isLoadingTokens = false
-                    router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
-                }
+                history.replaceState({}, '', `/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
             },
             onOrderPriceUpdate(price) {
                 this.setPrice(price)
@@ -293,11 +278,15 @@
                     }
                 }
             },
-            onTokenAllowancesUpdate() {
-                this.refreshOrderMessage()
+            onTokenAllowancesUpdate(token) {
+                if (token.address.toLowerCase() === this.state.inputToken.address.toLowerCase()) {
+                    this.refreshOrderMessage()
+                }
             },
-            onTokenBalancesUpdate() {
-                this.refreshOrderMessage()
+            onTokenBalancesUpdate(token) {
+                if (token.address.toLowerCase() === this.state.inputToken.address.toLowerCase()) {
+                    this.refreshOrderMessage()
+                }
             },
             closeTokenSelector() {
                 this.state.showTokenSelector = false
@@ -326,7 +315,8 @@
                     await setQuoteToken(token)
                     this.state.outputToken = token
                 }
-                router.push(`/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
+
+                history.replaceState({}, '', `/#/${this.state.inputToken.address}/${this.state.outputToken.address}`)
 
                 this.refreshOrderMessage()
                 this.closeTokenSelector()
@@ -348,7 +338,13 @@
             updateSubmitButtonState() {
                 let button = document.getElementById("place-order-button")
                 if (button !== null) {
-                    if (!isWalletConnected() || !this.isValidInputs() || !this.isSufficientBalance()) {
+                    if (!isWalletConnected()) {
+                        if (!button.classList.contains("active-button")) {
+                            button.classList.add("active-button")
+                        }
+                        button.classList.add("clickable")
+                        button.onclick = this.connectWallet
+                    } else if (!this.isValidInputs() || !this.isSufficientBalance()) {
                         button.classList.remove("active-button")
                         button.classList.remove("clickable")
                         button.onclick = null
@@ -522,9 +518,11 @@
                     if (!isWalletConnected()) {
                         this.state.buttonDisplay = connectWalletMessage()
                     } else if (!this.isValidInputs()) {
-                        this.state.buttonDisplay = placeOrder()
+                        this.state.buttonDisplay = fillOrderAmountPriceMessage()
                     } else if (!this.isSufficientBalance()) {
                         this.state.buttonDisplay = insufficientBalance()
+                    } else if (isNaN(this.state.inputToken.allowance)) {
+                        this.state.buttonDisplay = checkingApprovalMessage(this.state.inputToken)
                     } else if(!this.isApproved()) {
                         this.state.buttonDisplay = approveToken(this.state.inputToken)
                     } else {
@@ -534,8 +532,8 @@
             },
             refreshOrderMessage() {
                 this.setOrderMessage()
-                this.updateSubmitButtonState()
                 this.update()
+                this.updateSubmitButtonState()
             },
             isApproved() {
                 return tokensList()
@@ -578,7 +576,35 @@
             },
             isTokenInfoUpdated() {
                 return !isWalletConnected() ||
-                    (this.state.inputToken !== null && this.state.inputToken.initialized)
+                    (this.state.inputToken !== null && !isNaN(this.state.inputToken.balance))
+            },
+            async urlInputToken() {
+                let token = tokensList().find(t => t.symbol.toLowerCase() === "metric")
+                let url = window.location.href.split('/#/')
+                if (url.length === 2) {
+                    let addresses = url[1].split('/')
+                    if (addresses.length === 2) {
+                        let requestedToken = await findOrAddTokenWithAddress(addresses[0])
+                        if (requestedToken !== undefined) {
+                            token = requestedToken
+                        }
+                    }
+                }
+                return token
+            },
+            async urlOutputToken() {
+                let token = tokensList().find(t => t.symbol.toLowerCase() === "dai")
+                let url = window.location.href.split('/#/')
+                if (url.length === 2) {
+                    let addresses = url[1].split('/')
+                    if (addresses.length === 2) {
+                        let requestedToken = await findOrAddTokenWithAddress(addresses[1])
+                        if (requestedToken !== undefined) {
+                            token = requestedToken
+                        }
+                    }
+                }
+                return token
             }
         }
 

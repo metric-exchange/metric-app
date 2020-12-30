@@ -73,6 +73,10 @@
     grid-template-columns: 33% 33% 33%;
 }
 
-.order-book-columns:hover {
+.order:hover {
+    background-color: var(--main-background-color);
+}
+
+#orders-separator:hover {
     background-color: var(--main-background-color);
 }

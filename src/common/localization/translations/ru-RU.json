@@ -57,7 +57,7 @@
                 "sell" : "Продажа",
                 "buy" : "Покупа"
             },
-            "price": "Цена {{token.symbol}}",
+            "price": "Цена {{token.left}}/{{token.right}}",
             "amount" : "Количество {{token.symbol}}",
             "amount_simple" : "Количество",
             "total" : "Итого {{token.symbol}}",

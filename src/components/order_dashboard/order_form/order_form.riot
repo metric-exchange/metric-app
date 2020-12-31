@@ -40,10 +40,8 @@
 
         <div class="order-line exchange-price">
             <div class="order-input">
-                <div class="input-sticky-placeholder" if={ !isNaN(state.price) }>{ this.i18next.t('order.price') }</div>
-                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price') }"/>
-                <label if={!props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.outputToken, quote: state.inputToken}) }</label>
-                <label if={props.isPriceDirectionReverted}>{ this.i18next.t('order.price_direction', {base: state.inputToken, quote: state.outputToken}) }</label>
+                <div class="input-sticky-placeholder" if={ !isNaN(state.price) }>{ this.i18next.t('order.price', { token: priceTokens() }) }</div>
+                <input id="order-price-input" type="number" onkeyup={ updatePrice } placeholder="{ this.i18next.t('order.price', { token: priceTokens() }) }"/>
             </div>
             <div class="order-input">
                 <div id="price-switch" class="switch-button" onclick={ changePriceDirection }>
@@ -605,6 +603,13 @@
                     }
                 }
                 return token
+            },
+            priceTokens() {
+                if (this.props.isPriceDirectionReverted) {
+                    return {left: this.state.inputToken.symbol, right: this.state.outputToken.symbol}
+                } else {
+                    return {left: this.state.outputToken.symbol, right: this.state.inputToken.symbol}
+                }
             }
         }
 

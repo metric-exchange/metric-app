@@ -57,7 +57,7 @@
                 "sell" : "卖出",
                 "buy" : "买入"
             },
-            "price": "价格：{{token.symbol}}",
+            "price": "价格：{{token.left}}/{{token.right}}",
             "amount" : "数量：{{token.symbol}}",
             "amount_simple" : "数量",
             "total" : "总额：{{token.symbol}}",

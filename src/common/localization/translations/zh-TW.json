@@ -57,7 +57,7 @@
                 "sell" : "賣出",
                 "buy" : "買入"
             },
-            "price": "價格：{{token.symbol}}",
+            "price": "價格：{{token.left}}/{{token.right}}",
             "amount" : "數量：{{token.symbol}}",
             "amount_simple" : "數量",
             "total" : "總額：{{token.symbol}}",

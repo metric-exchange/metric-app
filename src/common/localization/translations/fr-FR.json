@@ -57,7 +57,7 @@
                 "sell" : "Vente",
                 "buy" : "Achat"
             },
-            "price": "Prix {{token.symbol}}",
+            "price": "Prix {{token.left}}/{{token.right}}",
             "amount" : "Montant {{token.symbol}}",
             "amount_simple" : "Montant",
             "total" : "Totale {{token.symbol}}",

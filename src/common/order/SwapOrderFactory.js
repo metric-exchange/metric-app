@@ -4,7 +4,7 @@ import {ExchangeProxyAllowanceTargetAddress} from "../tokens/token_fetch";
 import {OrderState} from "./OrderStateManager";
 import {formatNumber} from "../helpers";
 import {BigNumber} from "@0x/utils";
-import {DEFAULT_SWAP_SLIPPAGE} from "./constants";
+import {getSlippageConfig, setSlippageConfig} from "./SlippageConfig";
 
 export class SwapOrderFactory extends OrderFactory {
 
@@ -15,7 +15,12 @@ export class SwapOrderFactory extends OrderFactory {
             ExchangeProxyAllowanceTargetAddress,
             accountAddress
         );
-        this.slippagePercentage = DEFAULT_SWAP_SLIPPAGE
+        this.slippagePercentage = getSlippageConfig()
+    }
+
+    setSlippage(slippage) {
+        setSlippageConfig(slippage)
+        this.slippagePercentage = slippage
     }
 
     async sendOrder() {

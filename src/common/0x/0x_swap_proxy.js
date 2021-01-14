@@ -1,14 +1,14 @@
 import {fetchJson} from "../json_api_fetch";
 import {stringify} from "query-string";
 import {BigNumber} from "@0x/utils";
-import {DEFAULT_SWAP_SLIPPAGE} from "../order/constants";
+import {getSlippageConfig} from "../order/SlippageConfig";
 
 export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
     let quote = await callPriceApi({
         sellToken: inputToken.address,
         buyToken: outputToken.address,
         sellAmount: `${new BigNumber(sellAmount).multipliedBy(10 ** inputToken.decimals).integerValue(BigNumber.ROUND_DOWN)}`,
-        slippagePercentage: DEFAULT_SWAP_SLIPPAGE
+        slippagePercentage: getSlippageConfig()
     })
 
     if (quote.price !== null) {
@@ -23,7 +23,7 @@ export async function getSwapPriceWithForBuy(inputToken, outputToken, buyAmount 
         sellToken: inputToken.address,
         buyToken: outputToken.address,
         buyAmount: `${new BigNumber(buyAmount).multipliedBy(10 ** outputToken.decimals).integerValue(BigNumber.ROUND_DOWN)}`,
-        slippagePercentage: DEFAULT_SWAP_SLIPPAGE
+        slippagePercentage: getSlippageConfig()
     })
 
     if (quote.price !== null) {

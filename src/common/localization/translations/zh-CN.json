@@ -75,7 +75,8 @@
             "valid_until" : "有效期至",
             "recipient_address_placeholder" : "收件人地址（可选）",
             "market_type" : "销售",
-            "limit_type" : "限"
+            "limit_type" : "限",
+            "slippage" :  "滑移公差"
         },
         "submit" : {
             "initializing" : "初始化",

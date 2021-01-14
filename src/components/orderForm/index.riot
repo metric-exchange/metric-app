@@ -25,7 +25,8 @@
                 order-factory={ props.orderFactory }
         />
 
-        <div if={ props.orderFactory.order.isMarketOrder() }></div>
+        <slippage-percentage if={ props.orderFactory.order.isMarketOrder() } order-factory={ props.orderFactory } />
+
         <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">
             <div class="order-input order-valid-until-label">
                 { this.i18next.t('order.valid_until') }
@@ -72,6 +73,7 @@
         import OrderBuyAmount from './orderBuyAmount/index.riot'
         import OrderPrice from './orderPrice/index.riot'
         import DatePicker from '../datePicker/index.riot'
+        import SlippagePercentage from './slippagePercentage/index.riot'
 
         export default {
             components: {
@@ -81,7 +83,8 @@
                 OrderStateButton,
                 OrderSellAmount,
                 OrderBuyAmount,
-                OrderPrice
+                OrderPrice,
+                SlippagePercentage
             },
             state: {
                 showTokenSelector: false

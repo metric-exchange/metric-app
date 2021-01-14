@@ -1,0 +1,44 @@
+<slippage-percentage>
+
+    <div class="order-line slippage-line">
+        <div class="order-input">{ this.i18next.t('order.slippage') }</div>
+        <div class="order-input slippage-options">
+            <div id="slippage-0-1" class="slippage-value" onclick={ () => setSlippage(0.1) }>0.1%</div>
+            <div id="slippage-0-5" class="slippage-value" onclick={ () => setSlippage(0.5) }>0.5%</div>
+            <div id="slippage-1-0" class="slippage-value" onclick={ () => setSlippage(1) }>1.0%</div>
+        </div>
+    </div>
+
+    <script>
+        import './index.css'
+
+        export default {
+            onMounted() {
+                this.setActiveSlippage()
+            },
+            setSlippage(slippage) {
+                this.props.orderFactory.setSlippage(slippage / 100)
+                this.setActiveSlippage()
+            },
+            setActiveSlippage() {
+                if (this.props.orderFactory.slippagePercentage === 0.001) {
+                    document.getElementById("slippage-0-1").classList.add("selected-slippage")
+                    document.getElementById("slippage-0-5").classList.remove("selected-slippage")
+                    document.getElementById("slippage-1-0").classList.remove("selected-slippage")
+                }
+                if (this.props.orderFactory.slippagePercentage === 0.005) {
+                    document.getElementById("slippage-0-1").classList.remove("selected-slippage")
+                    document.getElementById("slippage-0-5").classList.add("selected-slippage")
+                    document.getElementById("slippage-1-0").classList.remove("selected-slippage")
+                }
+
+                if (this.props.orderFactory.slippagePercentage === 0.01) {
+                    document.getElementById("slippage-0-1").classList.remove("selected-slippage")
+                    document.getElementById("slippage-0-5").classList.remove("selected-slippage")
+                    document.getElementById("slippage-1-0").classList.add("selected-slippage")
+                }
+            }
+        }
+    </script>
+
+</slippage-percentage>

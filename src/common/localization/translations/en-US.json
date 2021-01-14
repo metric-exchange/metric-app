@@ -75,7 +75,8 @@
             "valid_until" : "Valid Until",
             "recipient_address_placeholder" : "Recipient address (optional)",
             "market_type" : "MARKET",
-            "limit_type" : "LIMIT"
+            "limit_type" : "LIMIT",
+            "slippage": "Slippage tolerance"
         },
         "submit" : {
             "initializing" : "INITIALIZING",

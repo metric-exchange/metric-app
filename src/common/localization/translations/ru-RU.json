@@ -75,7 +75,8 @@
             "valid_until" : "действует до",
             "recipient_address_placeholder" : "адрес получателя (необязательно)",
             "market_type" : "РЫНОЧНЫЙ",
-            "limit_type" : "ПРЕДЕЛЬНЫЙ"
+            "limit_type" : "ПРЕДЕЛЬНЫЙ",
+            "slippage" : "допуск проскальзывания"
         },
         "submit" : {
             "initializing" : "ИНИЦИАЛИЗАЦИЯ",

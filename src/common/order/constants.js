@@ -1,2 +1,2 @@
 
-export let DEFAULT_SWAP_SLIPPAGE = 0.01
+export let DEFAULT_SWAP_SLIPPAGE = 0.001

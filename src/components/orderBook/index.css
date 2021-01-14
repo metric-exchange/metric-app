@@ -1,0 +1,89 @@
+@import "../themeColors/index.css";
+
+#order-table-canvas {
+    height: 420px;
+    width: 335px;
+    overflow-y: scroll;
+}
+
+.bid {
+    color: #3FCCB0;
+}
+
+.ask {
+    color: #CC3F3F;
+}
+
+.order {
+    line-height: 25px;
+}
+
+#orders-separator {
+    line-height: 70px;
+}
+
+.order-price {
+    cursor: pointer;
+}
+
+.mid-market-price {
+    color: var(--main-text-color);
+}
+
+.orders-header {
+    line-height: 40px;
+    font-weight: normal;
+    background: var(--token-selector-background-color);
+}
+
+.order-book-body {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    height: 476px;
+    width: 335px;
+    padding: 10px;
+}
+
+.order-book-title {
+    line-height: 32px;
+}
+
+.order-book-content {
+    display: grid;
+    grid-template-rows: 10% 90%;
+    color: var(--token-selector-table-text-color);
+    place-content: center;
+    align-content: center;
+}
+
+.order-book-columns {
+    display: grid;
+    place-content: center;
+    justify-content: center;
+    grid-template-columns: 107px 107px 107px;
+}
+
+.order:hover {
+    background-color: var(--main-background-color);
+}
+
+#orders-separator:hover {
+    background-color: var(--main-background-color);
+}
+
+
+@media(min-width: 600px) {
+
+    .order-book-body {
+        width: 415px;
+    }
+
+    #order-table-canvas {
+        width: 420px;
+    }
+
+    .order-book-columns {
+        grid-template-columns: 138px 138px 138px;
+    }
+}

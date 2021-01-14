@@ -1,0 +1,71 @@
+<order-state-button>
+
+    <div id={ buttonId() }
+         class={ "order-state-button " + buttonClass() }
+         onclick={ buttonAction }
+    >
+        <div class="order-state-loader" if={ props.orderFactory.stateManager.isInProgress() }>
+            <loader/>
+        </div>
+        <div>{ state.display.messageForState(props.orderFactory.stateManager.current).toUpperCase() }</div>
+    </div>
+
+    <script>
+        import {isWalletConnected} from "../../../common/wallet/wallet_manager";
+        import {OrderStateDisplays} from "./OrderStateDisplays";
+        import Loader from '../../loader/index.riot'
+        import './index.css'
+        import {METRIC_TOKEN_ADDRESS} from "../../../common/tokens/token_fetch";
+
+        const {registerForTokenBalancesUpdate} = require("../../../common/tokens/token_fetch");
+
+        export default {
+            components: {
+                Loader
+            },
+            state: {
+                display: new OrderStateDisplays()
+            },
+            onMounted() {
+                registerForTokenBalancesUpdate(this)
+                this.props.orderFactory.stateManager.observe(this, 'updateOnStateChanges')
+                this.props.orderFactory.order.sellAmount.observe(this, 'updateOnParamsChanges')
+                this.props.orderFactory.order.buyAmount.observe(this, 'updateOnParamsChanges')
+                this.props.orderFactory.order.observeTokenChanges(this, 'updateOnParamsChanges')
+            },
+            onTokenBalancesUpdate(token) {
+                if (token.address === this.props.orderFactory.order.sellToken.address) {
+                    this.updateOnParamsChanges()
+                }
+                if (token.address === METRIC_TOKEN_ADDRESS) {
+                    this.updateOnParamsChanges()
+                }
+            },
+            updateOnStateChanges() {
+                this.update()
+            },
+            updateOnParamsChanges() {
+                this.props.orderFactory.refreshOrderState()
+                this.update()
+            },
+            buttonClass() {
+                if (this.props.orderFactory.stateManager.isReady()) {
+                    return "order-state-active"
+                } else {
+                    return ""
+                }
+            },
+            async buttonAction() {
+                if (!isWalletConnected()) {
+                    await this.connectWallet()
+                } else if (this.props.orderFactory.stateManager.isReady()) {
+                    await this.props.orderFactory.submitOrder()
+                }
+            },
+            buttonId() {
+                return `${this.props.id}-state-button`
+            }
+        }
+    </script>
+
+</order-state-button>

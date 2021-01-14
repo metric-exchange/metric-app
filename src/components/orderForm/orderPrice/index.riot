@@ -1,0 +1,70 @@
+<order-price>
+
+    <div class="order-line exchange-price">
+        <div class="order-input">
+            <div id="price-switch" class="switch-button" onclick={ changePriceDirection } if={ props.orderFactory.order.isLimitOrder() || !isNaN(props.orderFactory.order.sellPrice.price.value)}>
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="15" cy="15" r="15" fill="#262626"/>
+                    <path d="M18 11L19.5 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19.5 12.5H13C12 12.5 10.5 12.5 10.5 14.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 19L10.5 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="max-amount-loader" if={ props.orderFactory.order.isMarketOrder() && isNaN(props.orderFactory.order.sellPrice.price.value)}>
+                <loader/>
+            </div>
+        </div>
+        <div class="order-input">
+            <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellPrice.price.value) }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
+            <input id="order-price-input"
+                   type="number"
+                   onkeyup={ updatePrice }
+                   placeholder="{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }"
+                   disabled={ props.orderFactory.order.isMarketOrder() }
+            />
+        </div>
+    </div>
+
+    <script>
+
+        import {
+            OrderEventActions,
+            OrderEventProperties,
+            OrderEventSource
+        } from "../../../common/order/OrderEventSource";
+        import Loader from '../../loader/index.riot'
+
+        export default {
+            components: {
+                Loader
+            },
+            config: {
+                event: new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Input)
+            },
+            onMounted() {
+                this.props.orderFactory.order.sellPrice.price.observe(this, 'onPriceChange')
+                this.props.orderFactory.order.sellPrice.refreshMarketPrice()
+            },
+            onPriceChange(source) {
+                if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
+                    document.getElementById("order-price-input").value = this.props.orderFactory.order.sellPrice.displayPrice()
+                    this.update()
+                }
+            },
+            updatePrice(e) {
+                let value = parseFloat(e.target.value)
+                this.props.orderFactory.order.sellPrice.set(this.config.event, value)
+                this.update()
+            },
+            changePriceDirection() {
+                this.props.orderFactory.order.sellPrice.invert()
+                document.getElementById("price-switch").classList.toggle("transition-half-rotate")
+                document.getElementById("order-price-input").value = this.props.orderFactory.order.sellPrice.displayPrice()
+                this.update()
+            },
+        }
+
+    </script>
+
+</order-price>

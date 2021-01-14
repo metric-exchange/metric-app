@@ -1,0 +1,58 @@
+<order-buy-amount>
+
+    <div class="order-line exchange-amount">
+        <div class="order-input">
+            <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) }>{ this.i18next.t('order.you_get') }</div>
+            <input type="number" id="order-amount-output" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.you_get') }"/>
+        </div>
+        <div class="order-input">
+            <div id="order-switch" class="order-line switch-button" onclick={ switchDirection }>
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="15" cy="15" r="15" transform="rotate(-90 15 15)" fill="#262626"/>
+                    <path d="M12.5 11V19L11 17.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17.5 18.9872L17.5 10.9985L19 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+        <div class="order-input">
+            <div class="token-selector-button" onclick={ props.openTokenSelector }>{ props.orderFactory.order.buyToken.symbol }</div>
+        </div>
+    </div>
+
+    <script>
+
+        import {
+            OrderEventActions,
+            OrderEventProperties,
+            OrderEventSource
+        } from "../../../common/order/OrderEventSource";
+
+        export default {
+            config: {
+                event: new OrderEventSource(OrderEventProperties.BuyAmount, OrderEventActions.Input)
+            },
+            onMounted() {
+                this.props.orderFactory.order.buyAmount.observe(this, 'onAmountChange')
+                this.props.orderFactory.order.observeTokenChanges(this, 'update')
+            },
+            onAmountChange(source) {
+                if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
+                    document.getElementById("order-amount-output").value = this.props.orderFactory.order.buyAmount.value
+                    this.update()
+                }
+            },
+            switchDirection(e) {
+                this.props.orderFactory.order.switchTokens()
+                document.getElementById("order-switch").classList.toggle("transition-half-rotate")
+                this.update()
+            },
+            updateAmount(e) {
+                let value = parseFloat(e.target.value)
+                this.props.orderFactory.order.buyAmount.set(this.config.event, value)
+                this.update()
+            }
+        }
+
+    </script>
+
+</order-buy-amount>

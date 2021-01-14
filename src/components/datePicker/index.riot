@@ -1,0 +1,43 @@
+<date-picker>
+
+    <div class="order-input">
+        <input class="date-input" id={ inputId() }/>
+    </div>
+
+    <script>
+        import {supportedDateTranslations} from "../../common/localization/localize";
+        import moment from "moment";
+        import flatpickr from "flatpickr"
+        import "./index.css";
+
+        export default {
+            state: {
+                datepicker: null
+            },
+            onMounted() {
+                let dateInput = document.getElementById(this.inputId())
+                let that = this
+                this.state.datepicker = flatpickr(dateInput, {
+                    disableMobile: true,
+                    enableTime: true,
+                    defaultDate: this.props.defaultTime,
+                    altFormat: "F j, Y H:i K",
+                    altInput: true,
+                    dateFormat: "Y-m-d H:i",
+                    onChange: function(selectedDates, dateStr) {
+                        that.props.setTime(dateStr, "yyyy-MM-DD HH:mm")
+                    },
+                    minDate: moment().format("yyyy-MM-DD"),
+                    locale: supportedDateTranslations[this.i18next.language]
+                });
+                this.i18next.on("languageChanged", (lng) => {
+                    flatpickr.localize(supportedDateTranslations[lng]);
+                })
+            },
+            inputId() {
+                return `${this.props.id}-time-input`
+            }
+        }
+    </script>
+
+</date-picker>

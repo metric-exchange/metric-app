@@ -1,0 +1,70 @@
+<main>
+    <header class="header">
+        <div class="header-logo">
+            <img width="142" height="32" src={ config.Logo }>
+        </div>
+
+        <div class="header-links">
+           <a href="http://build.finance/" target="_blank">{ this.i18next.t('footer.build_by_finance') }</a>
+           <a href="https://docs.build.finance/metric-exchange/" target="_blank">{ this.i18next.t('footer.documentation') }</a>
+           <a href="https://0xtracker.com/apps/metric" target="_blank">{ this.i18next.t('footer.tracker') }</a>
+           <a href="https://twitter.com/metricexchange" target="_blank">{ this.i18next.t('footer.twitter') }</a>
+           <a href="https://discord.gg/FN3sNSE" target="_blank">{ this.i18next.t('footer.discord') }</a>
+           <a href="https://build-finance.medium.com" target="_blank">{ this.i18next.t('footer.medium') }</a>
+        </div>
+
+        <div class="header-settings">
+            <settings/>
+        </div>
+
+    </header>
+
+    <div class="main-content">
+      <order-dashboard/>
+    </div>
+
+    <div id="footer">
+        <ul class="footer-content">
+            <li><a href="https://build.finance/" target="_blank">{ this.i18next.t('footer.build_by_finance') }</a></li>
+            <li><a href="https://docs.build.finance/metric-exchange/" target="_blank">{ this.i18next.t('footer.documentation') }</a></li>
+            <li><a href="https://0xtracker.com/apps/metric" target="_blank">{ this.i18next.t('footer.tracker') }</a></li>
+            <li><a href="https://twitter.com/metricexchange" target="_blank">{ this.i18next.t('footer.twitter') }</a></li>
+            <li><a href="https://discord.gg/FN3sNSE" target="_blank">{ this.i18next.t('footer.discord') }</a></li>
+            <li><a href="https://build-finance.medium.com" target="_blank">{ this.i18next.t('footer.medium') }</a></li>
+        </ul>
+    </div>
+
+    <script>
+        import './index.css'
+        import Settings from '../settings/index.riot'
+        import OrderDashboard from '../orderDashboard/index.riot'
+        import { loadTokenList } from "../../common/tokens/token_fetch";
+        import {initWeb3} from "../../common/wallet/wallet_manager";
+        import {initLocalizations} from "../../common/localization/localize";
+        import Logo from '../themeColors/logo.svg'
+
+        export default {
+            components: {
+                Settings,
+                OrderDashboard,
+                Logo
+            },
+            config: {
+                Logo: Logo
+            },
+            onBeforeMount() {
+                initLocalizations()
+                document.title = "Metric Exchange"
+            },
+            async onMounted() {
+                initWeb3()
+                loadTokenList()
+
+                this.i18next.on("languageChanged", (lng, ns) => {
+                    this.update()
+                })
+            }
+        }
+    </script>
+
+</main>

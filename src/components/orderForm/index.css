@@ -1,0 +1,234 @@
+@import "../themeColors/index.css";
+
+
+input {
+    -moz-appearance: textfield;
+    border: 0;
+    color: var(--token-selector-text-color);
+    background: var(--token-selector-background-color);
+    border-bottom: 1px solid var(--token-selector-border-color);
+    padding: 5px 0;
+    outline: none;
+    margin-right: 10px;
+    width: 100%;
+}
+
+::placeholder {
+    color: var(--token-placeholder-text-color);
+    font-family: 'Roboto Mono', monospace;
+    opacity: 1; /* Firefox */
+}
+
+input:disabled {
+    border: unset;
+    -webkit-text-fill-color: var(--token-selector-text-color);
+    opacity: 1; /* required on iOS */
+}
+
+#order-form {
+    height: 476px;
+    display: grid;
+    grid-template-rows: 10% 10% 10% 10% 10% 10%;
+    grid-gap: 8%;
+    padding: 20px;
+}
+
+.order-validity-input {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    align-items: end;
+}
+
+.order-line label {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+}
+
+.order-param-values {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.order-param-values .wallet-amount {
+    text-align: right;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.order-form .button {
+    position: relative;
+    background: var(--inactive-button-background-color);
+    width: 100%;
+    text-align: center;
+    padding-bottom: 11px;
+    padding-top: 11px;
+    border-radius: 3px;
+}
+
+.order-form .error-message {
+    color: #CC3F3F;
+}
+
+.order-form .select-message {
+    width: 100%;
+    text-align: left;
+    padding-bottom: 11px;
+    padding-top: 11px;
+}
+
+.order-form .order-form-loader {
+    height: 516px;
+    display: grid;
+    place-content: center;
+}
+
+.order-buttons {
+    display: grid;
+    grid-template-columns: auto auto;
+    place-content: stretch;
+    justify-items: center;
+    margin-bottom: 40px;
+}
+
+.order-input {
+    position: relative;
+    width: 100%;
+}
+
+.order-type-switch {
+    display: grid;
+    grid-template-columns: 40% 10% 40%;
+    justify-items: center;
+    grid-gap: 5%;
+}
+
+.market-button {
+    cursor: pointer;
+}
+
+.limit-button {
+    cursor: pointer;
+}
+
+.active-order-type {
+    color: var(--active-text-color);
+}
+
+.exchange-price {
+    display: grid;
+    grid-template-columns: 10% 86%;
+    align-items: center;
+    justify-items: center;
+    grid-gap: 2%;
+}
+
+.exchange-amount {
+    display: grid;
+    grid-template-columns: 64% 10% 20%;
+    align-items: center;
+    justify-items: center;
+    grid-gap: 2%;
+}
+
+.exchange-receive-amount {
+    display: grid;
+    grid-template-columns: 83% 15%;
+    align-items: center;
+    justify-items: center;
+    grid-gap: 2%;
+}
+
+.token-selector-button {
+    cursor: pointer;
+    background-color: var(--main-background-color);
+    border-radius: 3px;
+    padding: 3px;
+    text-align: center;
+    line-height: 20px;
+}
+.token-selector-button:hover {
+    color: var(--theme-switch-active-button-text-color);
+    background-color: var(--theme-switch-active-button-background-color);
+}
+
+#token-selector-box {
+    position: absolute;
+    top: 20px;
+    width: 310px;
+    background: var(--swap-form-background-color);
+    border-radius: 3px;
+    color: var(--token-selector-box-text-color);
+}
+
+.order-form .active-button {
+    background-color: var(--swap-button-background-color);
+    color: var(--swap-button-text-color);
+}
+
+.switch-button {
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    -webkit-transition: 0.3s  ease-in-out;
+}
+
+.switch-button svg circle {
+    fill: var(--main-background-color);
+}
+
+.switch-button:hover svg circle {
+    fill: var(--theme-switch-active-button-background-color);
+}
+
+.switch-button svg path {
+    stroke: var(--token-selector-table-text-color);
+}
+
+.switch-button:hover svg path {
+    stroke: var(--theme-switch-active-button-text-color);
+}
+
+.transition-half-rotate {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+
+.label-amount {
+    grid-template-columns: auto auto;
+    justify-items: center;
+    grid-gap: 10%;
+    cursor: pointer;
+}
+
+.order-valid-until-label {
+    padding-bottom: 8px;
+}
+
+.date-input {
+    color: var(--token-selector-table-text-color);
+    cursor: pointer;
+}
+
+.input-sticky-placeholder {
+    font-size: xx-small;
+}
+
+.order-submit-loader {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+}
+
+@media(min-width: 600px) {
+    #token-selector-box {
+        width: 400px;
+    }
+    #order-form {
+        height: 456px;
+        padding: 30px;
+    }
+}

@@ -2,17 +2,16 @@ import {BigNumber} from '@0x/utils';
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
 import {accountAddress, getContractWrapper, getProvider} from '../wallet/wallet_manager'
 import {Erc20ContractProxy} from "../erc20_contract_proxy";
-import {getBidsMatching, getReplayClient, zeroXContractAddresses} from "./0x_order_book_proxy";
-import {updateTokenAllowance} from "../tokens/token_fetch";
+import {zeroXContractAddresses, ZeroXOrderBook} from "./0x_order_book_proxy";
+import {updateAllowance} from "../tokens/token_fetch";
 import {getFastGasPriceInWei} from "../gas_price_oracle";
 
-export async function approveZeroXAllowance(tokenAddress, confirmationCallback, errorCallback) {
-    let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
+export async function approveZeroXAllowance(token, target, confirmationCallback, errorCallback) {
     await Erc20ContractProxy.approveTokenForTargetAddress(
-        tokenAddress,
-        zeroXAllowanceTargetAddress,
+        token.address,
+        target,
         async (a, b) => {
-            updateTokenAllowance(tokenAddress, Erc20ContractProxy.maxAllowance.toNumber())
+            await updateAllowance(token, Erc20ContractProxy.maxAllowance.toNumber())
             await confirmationCallback(a, b)
         },
         errorCallback
@@ -21,7 +20,7 @@ export async function approveZeroXAllowance(tokenAddress, confirmationCallback, 
 
 export async function findCandidateOrders(order) {
     let myPrice = order.takerAssetAmount.dividedBy(order.makerAssetAmount)
-    let orders = await getBidsMatching(order.makerAssetAddress, order.takerAssetAddress)
+    let orders = await ZeroXOrderBook.getBidsMatching(order.makerAssetAddress, order.takerAssetAddress)
 
     let myUnfilledMakerAmount = order.makerAssetAmount
     let candidateFillOrders = []
@@ -91,24 +90,7 @@ export async function fillOrders(candidates) {
     return NaN
 }
 
-export function calculateRemainingOrderDetails(order, filledAmount) {
-
-    let remainingMakerAmount =
-        order.makerAssetAmount.minus(filledAmount)
-
-    let remainingTakerAmount =
-        order.takerAssetAmount.multipliedBy(remainingMakerAmount).dividedToIntegerBy(order.makerAssetAmount)
-
-    return {
-        makerAssetAmount: remainingMakerAmount,
-        takerAssetAmount: remainingTakerAmount,
-        makerAssetAddress: order.makerAssetAddress,
-        takerAssetAddress: order.takerAssetAddress,
-        expirationTimeSeconds: order.expirationTimeSeconds,
-    }
-}
-
-export async function submitOrder(order, referralAddress, feePercentage) {
+export async function submitOrder(order) {
 
     let contractWrapper = await getContractWrapper()
 
@@ -119,10 +101,10 @@ export async function submitOrder(order, referralAddress, feePercentage) {
         await contractWrapper.devUtils.encodeERC20AssetData(order.takerAssetAddress).callAsync();
 
     let orderParams = {
-        makerFee: `${order.makerAssetAmount.multipliedBy(feePercentage).integerValue(BigNumber.ROUND_DOWN)}`,
-        takerFee: `${order.takerAssetAmount.multipliedBy(feePercentage).integerValue(BigNumber.ROUND_DOWN)}`,
-        feeRecipientAddress: referralAddress,
-        expirationTimeSeconds: `${order.expirationTimeSeconds}`
+        makerFee: order.makerFeeAmount,
+        takerFee: order.takerFeeAmount,
+        feeRecipientAddress: order.feeRecipientAddress,
+        expirationTimeSeconds: order.expirationTimeSeconds
     }
 
     if (isValidAddress(order.takerAddress)) {
@@ -140,7 +122,7 @@ export async function submitOrder(order, referralAddress, feePercentage) {
         orderParams
     )
 
-    return getReplayClient().submitOrderAsync(signedOrder)
+    return ZeroXOrderBook.relayClient.submitOrderAsync(signedOrder)
 }
 
 export async function cancelOrder(order) {

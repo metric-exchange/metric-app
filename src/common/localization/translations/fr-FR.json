@@ -57,7 +57,7 @@
                 "sell" : "Vente",
                 "buy" : "Achat"
             },
-            "price": "Prix {{token.left}}/{{token.right}}",
+            "price": "Prix {{token.symbol}}",
             "amount" : "Montant {{token.symbol}}",
             "amount_simple" : "Montant",
             "total" : "Totale {{token.symbol}}",
@@ -73,22 +73,30 @@
             "max_amount" : "MAX",
             "price_direction" : "{{base.symbol}} par {{quote.symbol}}",
             "valid_until" : "Valide jusqu'au",
-            "recipient_address_placeholder" : "adresse du destinataire (optionelle)"
+            "recipient_address_placeholder" : "adresse du destinataire (optionelle)",
+            "market_type" : "MARCHÉ",
+            "limit_type" : "LIMITE"
         },
         "submit" : {
-            "insufficient_balance" : "SOLDE INSUFFISANT",
+            "initializing" : "INITIALIZATION EN COURS",
+            "insufficient_balance" : "SOLDE DE {{token.symbol}} INSUFFISANT",
+            "use_market_orders_for_eth" : "ETH INDISPONIBLE, UTILISEZ WETH",
             "checking_approval" : "VÉRIFICATION DE PERMISSION POUR {{token.symbol}}",
+            "checking_metric_balance" : "VÉRIFICATION AVOIRS EN METRIC",
+            "checking_token_balance" : "VÉRIFICATION AVOIRS EN {{token.symbol}}",
             "approve": "APPROUVER {{token.symbol}}",
             "approving" : "{{token.symbol}} EN COURS D'APPROBATION",
-            "approval_rejected": "{{token.symbol}} APPROBATION REJETÉ",
             "fill_order_params": "SAISIR LES MONTANTS & PRIX",
+            "fill_swap_params": "SAIRIR LES MONTANTS",
             "place_order" : "PLACER l'ORDRE",
+            "wrap_eth" : "OBTENIR WETH",
+            "unwrap_eth" : "RECUPERER ETH",
             "matching_order": "RECHERCHE D'ORDRES A EXECUTER",
             "filling_orders": "EXECUTION {{amount}} {{token.symbol}}",
-            "order_fill_rejected": "EXÉCUTION REJETÉ",
             "order_fill_succeeded": "EXÉCUTION RÉUSSIE POUR {{amount}} {{token.symbol}}",
             "submitting_order": "OUVERTURE D'ORDRE POUR {{amount}} {{token.symbol}}",
-            "order_placement_rejected": "OUVERTURE D'ORDRE REJETÉ"
+            "swapping": "SWAP EN COURS {{sellAmount}} {{sellToken.symbol}}/{{buyAmount}} {{buyToken.symbol}}",
+            "rejected": "REJETÉ"
         },
         "language_selector" : {
             "title" : "Langue",

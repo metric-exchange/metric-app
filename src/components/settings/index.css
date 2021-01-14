@@ -1,0 +1,75 @@
+@import "../themeColors/index.css";
+
+.identicon {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 10px;
+    justify-items: center;
+    align-items: center;
+    height: 100%;
+}
+
+.identicon-image {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 29px;
+    height: 29px;
+    cursor: pointer;
+}
+
+.identicon-address {
+    cursor: pointer;
+    color: var(--main-text-color);
+    font-style: normal;
+}
+
+.dropdown {
+    display: none;
+    position: relative;
+    width: 40px;
+    height: 41px;
+    -webkit-border-radius: 5px;
+            border-radius: 5px;
+    background: var(--settings-button-background-color);
+    -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.01);
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.01);
+    cursor: pointer;
+    margin-top: 5px;
+    right: 5px;
+}
+
+.wallet-switch {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.dropdown-content{
+    padding: 5px 0;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    background: var(--main-background-color);
+    -webkit-box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+@media(min-width: 600px){
+
+    .dropdown-content {
+        position: absolute;
+        margin-top: 5px;
+        right: 5px;
+        min-width: 316px;
+        width: unset;
+        z-index: 1;
+        background: var(--settings-drop-down-background-color);
+        -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        -webkit-border-radius: 5px;
+                border-radius: 5px;
+    }
+
+}

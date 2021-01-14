@@ -1,0 +1,183 @@
+<token-selector>
+
+    <div id="token-selector">
+        <div class="close">
+            <img
+                    src={ config.closeImage }
+                    width="15"
+                    height="15"
+                    onclick={ this.cleanUpAndClose }
+                    alt={ this.i18next.t('token_selector.close.alt') } />
+        </div>
+        <input id="token-selector-input-text" type="text" placeholder={ this.i18next.t('token_selector.input.message') } oninput={ filterTokenSearch }>
+        <div class="tokens">
+            <div class="token-selection empty-token" if={ state.showLoader }>
+                <div class="loader">
+                    <loader/>
+                </div>
+            </div>
+            <token-selection
+                each={ token in state.sortedTokens }
+                key={ token.address }
+                token={ token }
+                fetch-token-info={ (e) => fetchTokenInfo(token) }
+            />
+        </div>
+    </div>
+
+    <script>
+
+        import Image from './close.svg'
+        import './index.css'
+        import {
+            addTokenWithAddress,
+            fetchTokensInfo,
+            findTokenWithAddress, isTokenListInitialized, registerForTokenBalancesUpdate,
+            registerForTokenListUpdate, resetTokensInfo,
+            tokensList
+        } from "../../../common/tokens/token_fetch";
+        import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../../common/wallet/wallet_manager";
+        import TokenSelection from './tokenSelection/index.riot'
+        import Loader from '../../loader/index.riot'
+
+        export default {
+            components: {
+                TokenSelection,
+                Loader
+            },
+            config: {
+                closeImage: Image
+            },
+            state: {
+                sortedTokens: [],
+                showLoader: false,
+                addressRegEx: new RegExp("0x[0-9a-zA-Z]{40}")
+            },
+            async onBeforeMount() {
+                await this.buildSortedTokenList(null, false)
+            },
+            onMounted() {
+                document.addEventListener('click', this.listenToSelectorCloseClick)
+                registerForTokenListUpdate(this)
+                registerForTokenBalancesUpdate(this)
+                registerForWalletChanges(this)
+
+                if (isTokenListInitialized() && isWalletConnected()) {
+                    fetchTokensInfo(accountAddress())
+                }
+            },
+            onWalletChanges() {
+                resetTokensInfo()
+                if (isWalletConnected() && isTokenListInitialized()) {
+                    fetchTokensInfo(accountAddress())
+                }
+                this.update()
+            },
+            async onTokenListUpdate() {
+                if (isWalletConnected()) {
+                    fetchTokensInfo(accountAddress())
+                }
+                await this.filterTokenSearch()
+            },
+            async onTokenBalancesUpdate(token) {
+                if (token.balance > 0) {
+                    await this.filterTokenSearch()
+                    this.update()
+                }
+            },
+            listenToSelectorCloseClick(e) {
+                let selector = document.getElementById('token-selector');
+                let swap = document.getElementById('swap-form');
+
+                if (selector !== null && !selector.contains(e.target) &&
+                    swap !== null && !swap.contains(e.target)) {
+                    this.cleanUpAndClose();
+                }
+            },
+            cleanUpAndClose() {
+                this.props.closeTokenSelector()
+                setTimeout(this.clearFilter, 10)
+            },
+            async clearFilter() {
+                this.$("#token-selector input").value = null
+                await this.filterTokenSearch()
+                this.update()
+            },
+            fetchTokenInfo(token) {
+                this.props.selectToken(token)
+                this.cleanUpAndClose()
+            },
+            async filterTokenSearch() {
+                let filter = this.extractFilter()
+                await this.buildSortedTokenList(filter, true)
+            },
+            extractFilter() {
+                let filter = null
+                let input = this.$("#token-selector input")
+
+                if (input !== undefined) {
+                    filter = this.$("#token-selector input").value.toLowerCase()
+                }
+
+                if (filter !== null && filter.length === 0) {
+                    filter = null
+                }
+                return filter
+            },
+            async buildSortedTokenList(filter, canUpdate) {
+
+                let excluded = this.props.excludedTokens()
+
+                if (filter !== null &&
+                    filter.match(this.state.addressRegEx) &&
+                    (findTokenWithAddress(filter) === undefined)
+                )
+                {
+                    if (canUpdate) {
+                        this.hideAllTokens()
+                        this.update({ showLoader: true })
+                    }
+                    await addTokenWithAddress(filter)
+                }
+                let that = this
+                this.state.sortedTokens =
+                    this.sortTokens(tokensList().filter(t => !t.disabled), filter)
+                        .filter(t => {
+                            return excluded.find(te => te.address === t.address) === undefined
+                        })
+                        .filter(function(x) {
+                            return filter == null ||
+                                x.symbol.toLowerCase().startsWith(filter) ||
+                                (filter.match(that.state.addressRegEx) && x.address.toLowerCase().startsWith(filter))
+                        }).splice(0, 50)
+
+                if (canUpdate) {
+                    this.update({ showLoader: false })
+                }
+
+            },
+            hideAllTokens() {
+                tokensList().forEach(t => {
+                    let tr = document.getElementById(t.address.toLowerCase())
+                    tr.style.display = 'none'
+                })
+            },
+            sortTokens(tokens, value) {
+                let that = this
+                return tokens.sort(function(a, b) {
+                    if (a.balance > 0 || b.balance > 0) {
+                        return b.balance - a.balance
+                    } else if (value === null) {
+                        return a.symbol.localeCompare(b.symbol, 'en', { sensitivity: 'base' })
+                    } else if (value.match(that.state.addressRegEx)) {
+                        return a.address.localeCompare(value, 'en', { sensitivity: 'base' })
+                    } else {
+                        return a.symbol.localeCompare(value, 'en', { sensitivity: 'base' })
+                    }
+                })
+            }
+        }
+
+    </script>
+
+</token-selector>

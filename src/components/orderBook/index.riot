@@ -1,0 +1,226 @@
+<order-book>
+    <div class="order-book-body">
+        <loader if={ state.isLoadingOrders } />
+        <div class="order-book-content" if={ !state.isLoadingOrders }>
+            <div class="order-book-columns orders-header">
+                <div>{ this.i18next.t('order.price', { token: props.orderFactory.order.sellPrice.priceTokens().base }) }</div>
+                <div>{ this.i18next.t('order.amount', { token: props.orderFactory.order.sellToken }) }</div>
+                <div>{ this.i18next.t('order.total', { token: props.orderFactory.order.buyToken }) }</div>
+            </div>
+            <div id="order-table-canvas" onscroll={ disableScrollToView } >
+
+                <div each={bid in state.bids} class="order order-book-columns" if={ props.orderFactory.order.sellPrice.inverted }>
+                    <div class="ask order-price clickable-price" onclick={ (e) => setPriceFromClick(bid.price) }>{ this.formatNumber(bid.price, config.displayedDecimalPoints, true) }</div>
+                    <div>{ this.formatNumber(bid.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                    <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                </div>
+
+                <div each={ask in state.asks} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
+                    <div class="ask order-price clickable-price" onclick={ (e) => setPriceFromClick(ask.price) }>{ this.formatNumber(ask.price, config.displayedDecimalPoints, true) }</div>
+                    <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                    <div>{ this.formatNumber(ask.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                </div>
+
+                <div id="orders-separator" class="order-book-columns" >
+                    <div class="order-price clickable-price mid-market-price" onclick={ (e) => setPriceFromClick(state.marketPrice) }>{ this.formatNumber(state.marketPrice, config.displayedDecimalPoints, true) }</div>
+                    <div/>
+                    <div/>
+                </div>
+
+                <div each={bid in state.bids} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
+                    <div class="bid order-price clickable-price" onclick={ (e) => setPriceFromClick(bid.price) }>{ this.formatNumber(bid.price, config.displayedDecimalPoints, true) }</div>
+                    <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                    <div>{ this.formatNumber(bid.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                </div>
+
+                <div each={ask in state.asks} class="order order-book-columns" if={ props.orderFactory.order.sellPrice.inverted }>
+                    <div class="bid order-price clickable-price" onclick={ (e) => setPriceFromClick(ask.price) }>{ this.formatNumber(ask.price, config.displayedDecimalPoints, true) }</div>
+                    <div>{ this.formatNumber(ask.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                    <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import './index.css'
+        import Loader from '../loader/index.riot'
+        import {ZeroXOrderBook} from "../../common/0x/0x_order_book_proxy";
+        import {BigNumber} from '@0x/utils';
+        import {Order} from "../../common/order/Order";
+        import {OrderEventActions, OrderEventProperties, OrderEventSource} from "../../common/order/OrderEventSource";
+
+        export default {
+            components: {
+                Loader
+            },
+            config: {
+                displayedDecimalPoints: 4
+            },
+            state: {
+                orderBook: null,
+                asks: [],
+                bids: [],
+                marketPrice: NaN,
+                triggerScrollToView: true,
+                isLoadingOrders: true
+            },
+            async onOrderBookUpdate() {
+                await this.fetchOrderBook(
+                    this.props.orderFactory.order.sellPrice.baseToken,
+                    this.props.orderFactory.order.sellPrice.quoteToken
+                )
+            },
+            setPriceFromClick(price) {
+                if (this.props.orderFactory.order.type === Order.LimitOrderType) {
+                    this.props.orderFactory.order.sellPrice.set(
+                        new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Click),
+                        price
+                    )
+                }
+            },
+            async onUpdated() {
+                if (this.props.orderFactory !== null) {
+
+                    if (this.state.orderBook === null) {
+                        this.state.orderBook = new ZeroXOrderBook(
+                            this.props.orderFactory.order.sellToken,
+                            this.props.orderFactory.order.buyToken
+                        )
+
+                        this.props.orderFactory.order.observeTokenChanges(this, 'onTokenChanges')
+                        this.props.orderFactory.order.sellPrice.observePriceInversions(this, 'onPriceInversion')
+                        this.state.orderBook.observe(this)
+                    }
+
+                    if (this.state.triggerScrollToView && !this.state.isLoadingOrders) {
+
+                        this.scrollOrderBookIntoView()
+                        this.state.triggerScrollToView = false
+
+                        let prices = document.getElementsByClassName("clickable-price")
+                        for (let i = 0; i < prices.length; i++) {
+                            if (this.props.orderFactory.order.type === Order.MarketOrderType) {
+                                if (prices[i].classList.contains("order-price")) {
+                                    prices[i].classList.remove("order-price")
+                                }
+                            } else {
+                                if (!prices[i].classList.contains("order-price")) {
+                                    prices[i].classList.add("order-price")
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            onTokenChanges() {
+                if (
+                    this.state.orderBook.baseToken.address !== this.props.orderFactory.order.sellToken ||
+                    this.state.orderBook.quoteToken.address !== this.props.orderFactory.order.buyToken
+                ) {
+                    this.state.orderBook.setTokens(
+                        this.props.orderFactory.order.sellToken,
+                        this.props.orderFactory.order.buyToken
+                    )
+                    this.update({
+                        isLoadingOrders: true
+                    })
+                }
+            },
+            async onPriceInversion() {
+                this.update({ isLoadingOrders: true })
+                await this.fetchOrderBook(
+                    this.props.orderFactory.order.sellPrice.baseToken,
+                    this.props.orderFactory.order.sellPrice.quoteToken
+                )
+            },
+            disableScrollToView() {
+                this.state.triggerScrollToView = false
+            },
+            async fetchOrderBook(inputToken, outputToken) {
+                    let asks =
+                        this.state.orderBook.asks.map(b => {
+
+                            let makerAmount = b.order.makerAssetAmount.dividedBy(10 ** inputToken.decimals)
+                            let takerAmount = b.order.takerAssetAmount.dividedBy(10 ** outputToken.decimals)
+                            let remainingTakerAmount = new BigNumber(parseInt(b.metaData.remainingFillableTakerAssetAmount)).dividedBy(10 ** outputToken.decimals)
+                            let remainingMakerAmount = makerAmount.multipliedBy(remainingTakerAmount).dividedBy(takerAmount)
+
+                            return {
+                                price: this.calculatePrice(takerAmount, makerAmount, BigNumber.ROUND_UP),
+                                volumeMaker: remainingTakerAmount,
+                                volumeTaker: remainingMakerAmount
+                            }
+                        })
+
+                    let bids =
+                        this.state.orderBook.bids.map(b => {
+
+                            let makerAmount = b.order.makerAssetAmount.dividedBy(10 ** outputToken.decimals)
+                            let takerAmount = b.order.takerAssetAmount.dividedBy(10 ** inputToken.decimals)
+                            let remainingTakerAmount = new BigNumber(parseInt(b.metaData.remainingFillableTakerAssetAmount)).dividedBy(10 ** inputToken.decimals)
+                            let remainingMakerAmount = makerAmount.multipliedBy(remainingTakerAmount).dividedBy(takerAmount)
+
+                            return {
+                                price: this.calculatePrice(makerAmount, takerAmount, BigNumber.ROUND_DOWN),
+                                volumeMaker: remainingMakerAmount,
+                                volumeTaker: remainingTakerAmount
+                            }
+                        })
+
+                Array.prototype.sumByPrice = function() {
+                    return Object.values(this.reduce(function(groups, item) {
+                        const key = item.price
+                        groups[key] = groups[key] || {price: key, volumeMaker: 0, volumeTaker: 0}
+                        groups[key] = {
+                            price:key,
+                            volumeMaker: item.volumeMaker.plus(groups[key].volumeMaker),
+                            volumeTaker: item.volumeTaker.plus(groups[key].volumeTaker)
+                        }
+                        return groups
+                    }, {}))
+                }
+
+                this.state.bids =
+                    bids
+                        .sumByPrice()
+                        .sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
+
+                this.state.asks =
+                    asks
+                        .sumByPrice()
+                        .sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
+
+                this.state.marketPrice = await this.props.orderFactory.order.sellPrice.fetchDisplayMarketPrice()
+                await this.update({
+                    isLoadingOrders: false,
+                    triggerScrollToView: true
+                })
+            },
+            calculatePrice(quote, base, rounding) {
+                if (this.props.orderFactory.order.sellPrice.inverted) {
+                    return base.dividedBy(quote).toFixed(this.config.displayedDecimalPoints, 1 - rounding)
+                } else {
+                    return quote.dividedBy(base).toFixed(this.config.displayedDecimalPoints, rounding)
+                }
+            },
+            scrollOrderBookIntoView() {
+                let canvas = document.getElementById("order-table-canvas")
+                let separator = document.getElementById("orders-separator")
+                if (canvas !== null && separator !== null) {
+                    let top =
+                        separator.offsetTop -
+                        separator.parentNode.offsetTop -
+                        canvas.getBoundingClientRect().height / 2 +
+                        separator.getBoundingClientRect().height / 2
+
+                    canvas.scroll({ top : top, behavior: "smooth" })
+                }
+            },
+            formatPrice(price) {
+                return this.formatNumber(price, this.config.displayedDecimalPoints, true)
+            }
+        }
+
+    </script>
+</order-book>

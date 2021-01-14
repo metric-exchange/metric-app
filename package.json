@@ -38,6 +38,7 @@
     "logrocket": "^1.0.14",
     "moment": "^2.29.1",
     "numeral": "^2.0.6",
+    "query-string": "^6.13.8",
     "riot": "^5.0.0",
     "settings": "^0.1.1",
     "translations": "^2.2.1",

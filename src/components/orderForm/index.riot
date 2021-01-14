@@ -1,0 +1,158 @@
+<order-form>
+    <div class="order-form-loader" if={ props.orderFactory === null }>
+        <loader/>
+    </div>
+
+    <div id="order-form" if={ props.orderFactory !== null }>
+
+        <div class="order-line order-type-switch">
+            <div id="market-button" class="market-button active-order-type" onclick={ () => toggleOrderType(0) }>{ this.i18next.t('order.market_type') }</div>
+            <div>|</div>
+            <div id="limit-button" class="limit-button" onclick={ () => toggleOrderType(1) }>{ this.i18next.t('order.limit_type') }</div>
+        </div>
+
+        <order-sell-amount
+                order-factory={ props.orderFactory }
+                open-token-selector={ openInputTokenSelector }
+        />
+
+        <order-buy-amount
+                order-factory={ props.orderFactory }
+                open-token-selector={ openOutputTokenSelector }
+        />
+
+        <order-price
+                order-factory={ props.orderFactory }
+        />
+
+        <div if={ props.orderFactory.order.isMarketOrder() }></div>
+        <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">
+            <div class="order-input order-valid-until-label">
+                { this.i18next.t('order.valid_until') }
+            </div>
+            <div class="order-input">
+                <date-picker
+                    id="order-expiry-date"
+                    default-time={ props.orderFactory.expiryTime }
+                    set-time={ setTime }
+                />
+            </div>
+        </div>
+
+<!--        <div class="order-line">-->
+<!--            <div class="order-input">-->
+<!--                <div class="input-sticky-placeholder" if={ isValidNonEmptyRecipientAddress() }>{ this.i18next.t('order.recipient_address_placeholder') }</div>-->
+<!--                <input id="order-taker-address-input"-->
+<!--                       type="text"-->
+<!--                       onkeyup={ updateRecipientAddress }-->
+<!--                       placeholder="{ this.i18next.t('order.recipient_address_placeholder') }"-->
+<!--                       value={ state.recipientAddress }-->
+<!--                />-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <order-state-button id="place-order-button" order-factory={ props.orderFactory } />
+
+        <div id="token-selector-box" style="display:none" }>
+            <token-selector
+                    excludedTokens={ excludedTokens }
+                    closeTokenSelector={ closeTokenSelector }
+                    selectToken={ selectToken }
+            />
+        </div>
+    </div>
+
+    <script>
+
+        import './index.css'
+        import TokenSelector from './tokenSelector/index.riot'
+        import Loader from '../loader/index.riot'
+        import OrderStateButton from './orderStateButton/index.riot'
+        import OrderSellAmount from './orderSellAmount/index.riot'
+        import OrderBuyAmount from './orderBuyAmount/index.riot'
+        import OrderPrice from './orderPrice/index.riot'
+        import DatePicker from '../datePicker/index.riot'
+
+        export default {
+            components: {
+                TokenSelector,
+                Loader,
+                DatePicker,
+                OrderStateButton,
+                OrderSellAmount,
+                OrderBuyAmount,
+                OrderPrice
+            },
+            state: {
+                showTokenSelector: false
+            },
+            updateRecipientAddress(e) {
+                this.props.orderFactory.setRecipientAddress(e.target.value)
+            },
+            listenToSelectorCloseClick(e) {
+                if(this.state.showTokenSelector) {
+                    let selector = document.getElementById('token-selector-box');
+                    let formSelector = document.getElementById('order-form');
+
+                    if (selector !== null && !selector.contains(e.target) &&
+                        formSelector !== null && !formSelector.contains(e.target)) {
+                        this.closeTokenSelector();
+                    }
+                }
+            },
+            closeTokenSelector() {
+                this.state.showTokenSelector = false
+                document.getElementById("token-selector-box").style.display = "none"
+                document.removeEventListener('click', this.listenToSelectorCloseClick)
+            },
+            openInputTokenSelector() {
+                this.state.selectionType = "input"
+                this.openTokenSelector()
+            },
+            openOutputTokenSelector() {
+                this.state.selectionType = "output"
+                this.openTokenSelector()
+            },
+            openTokenSelector() {
+                document.addEventListener('click', this.listenToSelectorCloseClick)
+                document.getElementById("token-selector-box").style.display = "block"
+                document.getElementById("token-selector-input-text").focus()
+                this.state.showTokenSelector = true
+            },
+            excludedTokens() {
+                return [this.props.orderFactory.order.buyToken, this.props.orderFactory.order.sellToken]
+            },
+            async selectToken(token) {
+                if (this.state.selectionType === "input") {
+                    this.props.orderFactory.order.setTokens(token, this.props.orderFactory.order.buyToken)
+                } else {
+                    this.props.orderFactory.order.setTokens(this.props.orderFactory.order.sellToken, token)
+                }
+            },
+            toggleOrderType(type) {
+                if (type === 1) {
+                    document.getElementById("market-button").classList.remove("active-order-type")
+                    document.getElementById("market-button").onclick = () => { this.toggleOrderType(0) }
+
+                    document.getElementById("limit-button").classList.add("active-order-type")
+                    document.getElementById("limit-button").onclick = null
+
+                    this.props.setLimitOrderType()
+                } else {
+                    document.getElementById("market-button").classList.add("active-order-type")
+                    document.getElementById("market-button").onclick = null
+
+                    document.getElementById("limit-button").classList.remove("active-order-type")
+                    document.getElementById("limit-button").onclick = () => { this.toggleOrderType(1) }
+
+                    this.props.setMarketOrderType()
+                }
+            },
+            setTime(dateString, format) {
+                this.props.orderFactory.setExpiryTime(dateString, format)
+            }
+        }
+
+    </script>
+
+</order-form>

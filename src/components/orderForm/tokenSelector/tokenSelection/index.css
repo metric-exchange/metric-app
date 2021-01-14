@@ -1,0 +1,36 @@
+
+.token-selection {
+    position: relative;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: var(--token-selector-table-text-color);
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 25px auto 100px;
+    grid-gap: 20px;
+    line-height: 45px;
+    align-items: center;
+}
+
+.token-selection img {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    border-collapse: collapse;
+}
+
+.token-selection:hover {
+    background: var(--token-selector-table-hover-background-color);
+}
+
+.token-selection .balance {
+    text-align: right;
+}
+
+.token-selection .loader {
+    position: absolute;
+    right: 10px;
+}
+
+.token-selection .symbol {
+    text-align: left;
+}

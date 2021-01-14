@@ -1,0 +1,70 @@
+<order-sell-amount>
+
+    <div class="order-line exchange-amount">
+        <div class="order-input">
+            <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellAmount.value) }>
+                { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
+            </div>
+            <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
+        </div>
+        <div if={ isTokenInfoUpdated() } class="max-amount" onclick={ () => props.orderFactory.order.setMaxSellAmount() }>{ this.i18next.t('order.max_amount') }</div>
+        <div class="max-amount-loader" if={ !isTokenInfoUpdated() } >
+            <loader/>
+        </div>
+        <div class="order-input">
+            <div class="token-selector-button" onclick={ props.openTokenSelector }>{ props.orderFactory.order.sellToken.symbol }</div>
+        </div>
+    </div>
+
+    <script>
+
+        import {isWalletConnected} from "../../../common/wallet/wallet_manager"
+        import {OrderPrice} from "../../../common/order/OrderPrice";
+        import './index.css'
+        import {registerForTokenBalancesUpdate} from "../../../common/tokens/token_fetch";
+        import {
+            OrderEventActions,
+            OrderEventProperties,
+            OrderEventSource
+        } from "../../../common/order/OrderEventSource";
+        import Loader from '../../loader/index.riot'
+
+        export default {
+            components: {
+                Loader
+            },
+            config: {
+                event: new OrderEventSource(OrderEventProperties.SellAmount, OrderEventActions.Input)
+            },
+            onMounted() {
+                registerForTokenBalancesUpdate(this)
+                this.props.orderFactory.order.sellAmount.observe(this, 'onAmountChange')
+                this.props.orderFactory.order.observeTokenChanges(this, 'update')
+            },
+            onTokenBalancesUpdate(token) {
+                if (token.address === this.props.orderFactory.order.sellToken.address) {
+                    this.update()
+                }
+            },
+            onAmountChange(source) {
+                if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
+                    document.getElementById("order-amount-input").value = this.props.orderFactory.order.sellAmount.value
+                    this.update()
+                }
+            },
+            updateAmount(e) {
+                let value = parseFloat(e.target.value)
+                this.props.orderFactory.order.sellAmount.set(this.config.event, value)
+                this.update()
+            },
+            isTokenInfoUpdated() {
+                return !isWalletConnected() || !isNaN(this.props.orderFactory.order.sellToken.balance)
+            },
+            formattedFeeAmount() {
+                return this.formatNumber(this.props.orderFactory.order.sellPrice.buyFeeAmountFor(this.props.orderFactory.order.sellAmount.value))
+            }
+        }
+
+    </script>
+
+</order-sell-amount>

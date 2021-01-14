@@ -1,16 +1,18 @@
+import EthIcon from './eth.png'
 import HypeIcon from './hype.png'
 import UpdownIcon from './updown.jpg'
+import GoldIcon from './gold.png'
 import {accountAddress, isWalletConnected} from "../wallet/wallet_manager";
 import {Erc20Abi, Erc20ContractProxy} from "../erc20_contract_proxy";
 import {fetchJson} from "../json_api_fetch";
 import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
-import {zeroXContractAddresses} from "../0x/0x_order_book_proxy";
 
 export function resetTokensInfo() {
     tokens.forEach(t => {
         t.balance = NaN
-        t.allowance = NaN
+        t.allowance.ExchangeProxyAllowanceTarget = NaN
+        t.allowance.Erc20Proxy = NaN
     })
 }
 
@@ -35,8 +37,7 @@ export function disableToken(symbol) {
 }
 
 export async function findOrAddTokenWithAddress(address) {
-    let token = findTokenWithAddress(address)
-    if (token === undefined) {
+    if (findTokenWithAddress(address) === undefined) {
         await addTokenWithAddress(address)
     }
     return findTokenWithAddress(address)
@@ -47,11 +48,6 @@ export function findTokenWithAddress(address) {
 }
 
 export function tokensList() { return tokens }
-
-export function updateTokenAllowance(address, allowance) {
-    let token = tokens.find(t => t.address.toLowerCase() === address.toLowerCase())
-    token.allowance = formatAmount(allowance / (10 ** token.decimals))
-}
 
 export async function fetchTokensInfo(address) {
     await executeBatch(address, 0, 100, 500)
@@ -64,14 +60,23 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
                 let batch = new window.web3.BatchRequest();
                 for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
                     let token = tokens[index]
-                    let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
-                    batch.add(
-                        contract
-                            .methods
-                            .balanceOf(address)
-                            .call
-                            .request({from: address}, (err, b) => updateBalance(index, address, b))
-                    );
+                    if (token.symbol === "ETH" && isNaN(token.balance)) {
+                        batch.add(
+                            window.web3.eth
+                                .getBalance
+                                .request(address, 'latest', (err, b) => updateBalance(token, address, b))
+                        );
+                    }
+                    else if (isNaN(token.balance) || isNaN(token.allowance[Erc20ProxyAddress]) || isNaN(token.allowance[ExchangeProxyAllowanceTargetAddress])) {
+                        let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
+                        batch.add(
+                            contract
+                                .methods
+                                .balanceOf(address)
+                                .call
+                                .request({from: address}, (err, b) => updateBalance(token, address, b))
+                        );
+                    }
                 }
                 await batch.execute();
             } catch(e) {
@@ -81,64 +86,79 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
         } else {
             console.debug("Token Balances/allowances startup update finished")
+            if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]) || isNaN(t.allowance[ExchangeProxyAllowanceTargetAddress]))) {
+                setTimeout(() => fetchTokensInfo(address), 1000)
+            }
         }
     }
 }
 
-async function updateBalance(index, address, balance) {
+async function updateBalance(token, address, balance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
-        let newBalance = balance / (10 ** tokens[index].decimals)
+        let newBalance = balance / (10 ** token.decimals)
         if (newBalance > 0) {
-            console.debug("update balance", tokens[index].symbol, newBalance)
+            console.debug("update balance", token.symbol, newBalance)
         }
 
-        tokens[index].balance = newBalance
+        token.balance = newBalance
 
         await Promise.all(
-            balancesRegister.map(item => item.onTokenBalancesUpdate(tokens[index]))
+            balancesRegister.map(item => item.onTokenBalancesUpdate(token))
         )
 
-        if (newBalance > 0) {
-            let zeroXAllowanceTargetAddress = await zeroXContractAddresses().then(a => a.erc20Proxy)
-            let contract = new window.web3.eth.Contract(Erc20Abi, tokens[index].address);
-            await contract
-                .methods
-                .allowance(address, zeroXAllowanceTargetAddress)
-                .call(
-                    { from: accountAddress()},
-                    async (error, allowance) => {
-                        if (error === null) {
-                            await updateAllowance(index, address, allowance)
-                        } else {
-                            console.log("Failed to fetch allowance for: ", tokens[index].symbol)
-                        }
-                    }
-                )
-        } else {
-            tokens[index].allowance = 0
+        if (newBalance > 0 && token.symbol !== "ETH") {
             await Promise.all(
-                allowancesRegister.map(item => item.onTokenAllowancesUpdate(tokens[index]))
+                [
+                    fetchAllowance(token, address, Erc20ProxyAddress),
+                    fetchAllowance(token, address, ExchangeProxyAllowanceTargetAddress)
+                ]
+            )
+        } else {
+            let allowance = token.symbol !== "ETH" ? 0 : 1e27
+            token.allowance[Erc20ProxyAddress] = allowance
+            token.allowance[ExchangeProxyAllowanceTargetAddress] = allowance
+            await Promise.all(
+                allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
             )
         }
 
     }
 }
 
-async function updateAllowance(index, address, allowance) {
-    if (isWalletConnected() && address === accountAddress() && isNaN(allowance) === false) {
-        let newAllowance = allowance / (10 ** tokens[index].decimals)
-        if (newAllowance > 0) {
-            console.debug("update allowance", tokens[index].symbol, newAllowance)
-        }
-        tokens[index].allowance = newAllowance
-        await Promise.all(
-            allowancesRegister.map(item => item.onTokenAllowancesUpdate(tokens[index]))
-        )
-    }
+async function fetchBalance(token, address) {
+    let contract = Erc20ContractProxy.erc20Contract(address)
+    let balance = await contract.methods.balanceOf(address).call()
+    await updateBalance(token, address, balance)
 }
 
-function formatAmount(amount) {
-    return isNaN(amount) ? 0 : amount
+async function fetchAllowance(token, address, target) {
+    let contract = Erc20ContractProxy.erc20Contract(token.address)
+    await contract
+        .methods
+        .allowance(address, target)
+        .call(
+            { from: address},
+            async (error, allowance) => {
+                if (error === null && isWalletConnected() && address === accountAddress()) {
+                    await updateAllowance(token, target, allowance)
+                } else {
+                    console.error("Failed to fetch allowance for: ", token.symbol)
+                }
+            }
+        )
+}
+
+export async function updateAllowance(token, target, allowance) {
+    if (isNaN(allowance) === false) {
+        let newAllowance = allowance / (10 ** token.decimals)
+        if (newAllowance > 0) {
+            console.debug("update allowance", token.symbol, newAllowance, target)
+        }
+        token.allowance[target] = newAllowance
+        await Promise.all(
+            allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
+        )
+    }
 }
 
 export async function loadTokenList()
@@ -156,7 +176,10 @@ export async function loadTokenList()
                 at.forEach(t => {
                     addToken({
                         balance: NaN,
-                        allowance: NaN,
+                        allowance: {
+                            Erc20Proxy: NaN,
+                            ExchangeProxyAllowanceTarget: NaN
+                        },
                         address: t.address,
                         symbol: t.symbol,
                         decimals: t.decimals,
@@ -193,11 +216,22 @@ export async function addTokenWithAddress(address) {
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
         token.balance = NaN
-        token.allowance = NaN
+        token.allowance = {
+            Erc20Proxy: NaN,
+            ExchangeProxyAllowanceTarget: NaN
+        }
 
         customTokensManager.addToken(new Token(token.symbol, token.address, token.decimals))
 
         addToken(token)
+
+        await Promise.all(
+            register.map(item => item.onTokenListUpdate())
+        )
+
+        if (isWalletConnected()) {
+            fetchBalance(token, address)
+        }
 
     } catch (e) {
         console.error("Invalid token address:", address, e)
@@ -210,7 +244,10 @@ function initTokenList() {
     customTokensManager.customtokens.tokens.forEach(t => {
         tokens.push({
             balance: NaN,
-            allowance: NaN,
+            allowance: {
+                Erc20Proxy: NaN,
+                ExchangeProxyAllowanceTarget: NaN
+            },
             address: t.address,
             symbol: t.symbol,
             decimals: t.decimals,
@@ -223,12 +260,27 @@ function initTokenList() {
 
 let defaultTokens = [
     {
+        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        decimals: 18,
+        symbol: "ETH",
+        logoURI: EthIcon,
+        balance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
+        disabled: false
+    },
+    {
         address: "0x6e36556b3ee5aa28def2a8ec3dae30ec2b208739",
         decimals: 18,
         symbol: "BUILD",
         logoURI: "https://etherscan.io/token/images/build_32.png",
         balance: NaN,
-        allowance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
         disabled: false
     },
     {
@@ -237,7 +289,10 @@ let defaultTokens = [
         symbol: "METRIC",
         logoURI: "https://etherscan.io/token/images/metric_32.png",
         balance: NaN,
-        allowance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
         disabled: false
     },
     {
@@ -246,7 +301,10 @@ let defaultTokens = [
         symbol: "DAI",
         logoURI: "https://etherscan.io/token/images/MCDDai_32.png",
         balance: NaN,
-        allowance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
         disabled: false
     },
     {
@@ -255,16 +313,21 @@ let defaultTokens = [
         symbol: "HYPE",
         logoURI: HypeIcon,
         balance: NaN,
-        allowance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
         disabled: false
     },
     {
         address: "0xb7412e57767ec30a76a4461d408d78b36688409c",
         decimals: 18,
         symbol: "bCRED",
-        logoURI: "https://",
         balance: NaN,
-        allowance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
         disabled: false
     },
     {
@@ -273,9 +336,47 @@ let defaultTokens = [
         symbol: "UPDOWN",
         logoURI: UpdownIcon,
         balance: NaN,
-        allowance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
+        disabled: false
+    },
+    {
+        address: "0xb34ab2f65c6e4f764ffe740ab83f982021faed6d",
+        decimals: 18,
+        symbol: "BSG",
+        logoURI: GoldIcon,
+        balance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
+        disabled: false
+    },
+    {
+        address: "0xa9d232cc381715ae791417b624d7c4509d2c28db",
+        decimals: 18,
+        symbol: "BSGS",
+        balance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
+        disabled: false
+    },
+    {
+        address: "0x940c7ccd1456b29a6f209b641fb0edaa96a15c2d",
+        decimals: 18,
+        symbol: "BSGB",
+        balance: NaN,
+        allowance: {
+            ExchangeProxyAllowanceTarget : NaN,
+            Erc20Proxy : NaN
+        },
         disabled: false
     }
+
 ]
 let customTokensManager = new CustomTokenManager()
 
@@ -284,3 +385,9 @@ let register = []
 let balancesRegister = []
 let allowancesRegister = []
 let tokenListInitialized = false
+
+export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
+export let DAI_TOKEN_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+
+export let ExchangeProxyAllowanceTargetAddress = "0xf740b67da229f2f10bcbd38a7979992fcc71b8eb"
+export let Erc20ProxyAddress = "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"

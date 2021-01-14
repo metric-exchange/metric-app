@@ -1,0 +1,24 @@
+@import "../../themeColors/index.css";
+
+.order-state-button {
+    position: relative;
+    background: var(--inactive-button-background-color);
+    width: 100%;
+    text-align: center;
+    padding-bottom: 13px;
+    padding-top: 13px;
+    border-radius: 3px;
+}
+
+
+.order-state-loader {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+}
+
+.order-state-active {
+    background-color: var(--swap-button-background-color);
+    color: var(--swap-button-text-color);
+    cursor: pointer;
+}

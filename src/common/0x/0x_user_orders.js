@@ -12,13 +12,17 @@ export function registerForUserOrderUpdates(item) {
 export async function synchronizeUserOrders(userAddress) {
     if (isWalletConnected()) {
         if (userAddress === accountAddress()) {
-            orders = await retrieveUserOrders(accountAddress())
-            await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
+            try {
+                orders = await retrieveUserOrders(accountAddress())
+                await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
+            } catch (e) {
+                console.warn("user order fetch failed, will keep retrying", e)
+            }
         }
     }
 
     if (!isWalletConnected() || (userAddress === accountAddress())) {
-        setTimeout(() => synchronizeUserOrders(userAddress), 10000)
+        setTimeout(synchronizeUserOrders, 10000, userAddress)
     }
 }
 

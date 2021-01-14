@@ -1,0 +1,65 @@
+<token-selection>
+
+    <div
+        id={ props.token.address.toLowerCase() }
+        class="token-selection"
+        onclick={ (e) => props.fetchTokenInfo() }>
+        <img
+            height="30"
+            width="30"
+            src="{ fetchTokenLogoURI(props.token) }"
+            alt={ props.token.symbol }
+            onerror={ changeLogoToDefault }
+        >
+        <div class="symbol">{ props.token.symbol }</div>
+        <div class="balance" if={ isTokenInfoInitialized() }>{ safeRound() }</div>
+        <div class="loader" if={ !isTokenInfoInitialized() }>
+            <loader/>
+        </div>
+    </div>
+
+    <script>
+
+        import './index.css'
+        import Loader from '../../../loader/index.riot'
+
+        import {registerForThemeUpdates} from "../../../../common/theme_manager";
+        import {isWalletConnected} from "../../../../common/wallet/wallet_manager";
+        import {registerForTokenBalancesUpdate} from "../../../../common/tokens/token_fetch";
+        import makeBlockie from 'ethereum-blockies-base64';
+
+        export default {
+            components: {
+                Loader
+            },
+            onMounted() {
+                registerForTokenBalancesUpdate(this)
+            },
+            onTokenBalancesUpdate(token) {
+                if (token.address.toLowerCase() === this.props.token.address.toLowerCase()) {
+                    this.update()
+                }
+            },
+            safeRound() {
+                return this.formatNumber(this.props.token.balance, 4)
+            },
+            fetchTokenLogoURI(token) {
+                if (token.logoURI !== undefined) {
+                    return token.logoURI
+                } else {
+                    return this.defaultTokenLogo()
+                }
+            },
+            changeLogoToDefault(e) {
+                e.target.setAttribute("src", this.defaultTokenLogo())
+            },
+            defaultTokenLogo() {
+                return makeBlockie(this.props.token.address)
+            },
+            isTokenInfoInitialized() {
+                return !isWalletConnected() || !isNaN(this.props.token.balance)
+            }
+        }
+    </script>
+
+</token-selection>

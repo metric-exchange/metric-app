@@ -57,7 +57,7 @@
                 "sell" : "Продажа",
                 "buy" : "Покупа"
             },
-            "price": "Цена {{token.left}}/{{token.right}}",
+            "price": "Цена {{token.symbol}}",
             "amount" : "Количество {{token.symbol}}",
             "amount_simple" : "Количество",
             "total" : "Итого {{token.symbol}}",
@@ -73,22 +73,31 @@
             "max_amount" : "Макс",
             "price_direction" : "{{base.symbol}} на {{quote.symbol}}",
             "valid_until" : "действует до",
-            "recipient_address_placeholder" : "адрес получателя (необязательно)"
+            "recipient_address_placeholder" : "адрес получателя (необязательно)",
+            "market_type" : "РЫНОЧНЫЙ",
+            "limit_type" : "ПРЕДЕЛЬНЫЙ"
         },
         "submit" : {
+            "initializing" : "ИНИЦИАЛИЗАЦИЯ",
             "insufficient_balance" : "НЕДОСТАТОЧНЫЙ БАЛАНС",
+            "use_market_orders_for_eth" : "ETH НЕДОСТУПЕН, ИСПОЛЬЗУЙТЕ WETH",
             "checking_approval" : "проверка разрешений для {{token.symbol}}",
+            "checking_metric_balance" : "АУДИТ АКТИВОВ В METRIC",
+            "checking_token_balance" : "АУДИТ АКТИВОВ В {{token.symbol}}",
             "approve": "УТВЕРДИТЬ {{token.symbol}}",
             "approving" : "Идёт утверждение {token.symbol}}",
             "approval_rejected": "{{token.symbol}} УТВЕРЖДЕНИЕ ОТКЛОНЕНО",
             "fill_order_params": "ВВЕДИТЕ СУММЫ И ЦЕНЫ",
+            "fill_swap_params": "УЗНАТЬ СУММЫ",
             "place_order" : "РАЗМЕСТИТЬ ЗАКАЗ",
+            "wrap_eth" : "получать WETH",
+            "unwrap_eth" : "рекуперировать ETH",
             "matching_order": "МАТЧИКИ ЗАКАЗ",
             "filling_orders": "ЗАПОЛНЕНИЕ {{amount}} {{token.symbol}}",
-            "order_fill_rejected": "ЗАКАЗ ОТКЛОНЕН",
             "order_fill_succeeded": "ЗАКАЗ ЗАПОЛНЕН НА {{amount}} {{token.symbol}}",
             "submitting_order": "РАЗМЕЩЕНИЕ ЗАКАЗА НА {{amount}} {{token.symbol}}",
-            "order_placement_rejected": "РАЗМЕЩЕНИЕ ЗАКАЗА ОТКЛОНЕНО"
+            "swapping": "ОБМЕН В ПРОЦЕССЕ {{sellAmount}} {{sellToken.symbol}}/{{buyAmount}} {{buyToken.symbol}}",
+            "rejected": "ОТКЛОНЕНО"
 
         },
         "language_selector" : {

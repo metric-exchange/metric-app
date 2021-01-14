@@ -1,0 +1,47 @@
+@import '../themeColors/index.css';
+
+.theme-switch-line {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding-left: 15px;
+}
+
+.theme-switch-line-group {
+    display: -ms-grid;
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 15px;
+    padding-top: 10px;
+    line-height: 16px;
+}
+
+.theme-switch-button {
+    display: inline-block;
+    margin: 4px 2px;
+
+    background: var(--theme-switch-button-background-color);
+    -webkit-border-radius: 10px;
+            border-radius: 10px;
+
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    color: var(--theme-switch-button-text-color);
+
+    border: none;
+    padding: 10px;
+
+    cursor: pointer;
+}
+
+.theme-switch-button.active {
+    color: var(--theme-switch-active-button-text-color);
+    background: var(--theme-switch-active-button-background-color);
+    border: 1px solid var(--theme-switch-active-button-border-color);
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    -webkit-border-radius: 10px;
+            border-radius: 10px;
+}

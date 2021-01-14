@@ -8,7 +8,7 @@ import { isDarkThemeSet, isLightThemeSet, initTheme } from './common/theme_manag
 
 export default (window.$ = window.jQuery = jquery);
 
-import Main from './components/main/main.riot'
+import Main from './components/main/index.riot'
 import i18next from "i18next";
 import {formatNumber} from "./common/helpers";
 import {supportedLanguages} from "./common/localization/localize";

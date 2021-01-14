@@ -57,10 +57,10 @@
                 "sell" : "賣出",
                 "buy" : "買入"
             },
-            "price": "價格：{{token.left}}/{{token.right}}",
-            "amount" : "數量：{{token.symbol}}",
+            "price": "價格 {{token.symbol}}",
+            "amount" : "數量 {{token.symbol}}",
             "amount_simple" : "數量",
-            "total" : "總額：{{token.symbol}}",
+            "total" : "總額 {{token.symbol}}",
             "with_fee" : "（費用：{{amount}}）",
             "you_get" : "您將獲得",
             "you_pay" : "你要付錢",
@@ -73,22 +73,30 @@
             "max_amount" : "最大",
             "price_direction" : "{{base.symbol}} 對於 {{quote.symbol}}",
             "valid_until" : "有效期至",
-            "recipient_address_placeholder" : "收件人地址（可選）"
+            "recipient_address_placeholder" : "收件人地址（可選）",
+            "market_type" : "銷售",
+            "limit_type" : "限"
         },
         "submit" : {
+            "initializing" : "初始化",
             "insufficient_balance" : "余額不足",
+            "use_market_orders_for_eth" : "ETH無法使用，請使用WETH",
             "checking_approval" : "權限檢查{{token.symbol}}",
+            "checking_metric_balance" : "檢查METRIC餘額",
+            "checking_token_balance" : "檢查{{token.symbol}}餘額",
             "approve": "批準{{token.symbol}}",
             "approving" : "正在批準{{token.symbol}}",
-            "approval_rejected": "{{token.symbol}}拒簽",
             "fill_order_params": "輸入金額和價格",
+            "fill_swap_params": "輸入金額",
             "place_order" : "發送訂單",
+            "wrap_eth" : "得到WETH",
+            "unwrap_eth" : "恢復ETH",
             "matching_order": "配對訂單",
             "filling_orders": "填充{{amount}}{{token.symbol}}",
-            "order_fill_rejected": "訂單被拒",
             "order_fill_succeeded": "訂單已填寫{{amount}}{{token.symbol}}",
             "submitting_order": "下訂單{{amount}}{{token.symbol}}",
-            "order_placement_rejected": "訂單下單被拒"
+            "swapping": "交換 {{sellAmount}} {{sellToken.symbol}}/{{buyAmount}} {{buyToken.symbol}}",
+            "rejected": "拒絕"
         },
         "language_selector" : {
             "title" : "選擇語言",

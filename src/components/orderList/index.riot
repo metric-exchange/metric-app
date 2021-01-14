@@ -1,0 +1,139 @@
+<order-list>
+    <div class="order-list-title">{ this.i18next.t('my_order_list.title') }</div>
+    <div class="filled-order-list">
+        <div class="my-orders-line my-orders-header">
+            <div>{ this.i18next.t('my_order_list.header.pair') }</div>
+            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.cost') }</div>
+            <div>{ this.i18next.t('my_order_list.header.amount') }</div>
+            <div>{ this.i18next.t('my_order_list.header.filled') }</div>
+            <div>{ this.i18next.t('order.price') }</div>
+            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</div>
+            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.recipient') }</div>
+            <div class="order-select-check-box"><check-box checked={ state.allOrdersSelected } onclick={ toggleSelectAllOrders }/></div>
+        </div>
+        <div class="order-list-canvas">
+            <div class="empty-order-list" if={ state.isLoadingOrders }>
+                <loader inverted={ false } />
+            </div>
+            <order-line
+                    if={ !state.isLoadingOrders }
+                    each={ order in state.orders }
+                    key={ order.metaData.orderHash }
+                    order={ order }
+                    selected-orders={ state.selectedOrders }
+                    toggle-order-selection={ toggleOrderSelection }
+            />
+        </div>
+    </div>
+
+    <div class="order-action-button"
+         if={ state.someOrdersAreSelected }
+         onclick={ cancelSelectedOrders }
+    >{ this.i18next.t('my_order_list.order.cancel') }
+    </div>
+
+    <script>
+        import './index.css'
+        import Loader from '../loader/index.riot'
+        import OrderLine from './orderLine/index.riot'
+        import CheckBox from '../checkBox/index.riot'
+        import {
+            accountAddress,
+            isWalletConnected,
+            registerForWalletChanges
+        } from "../../common/wallet/wallet_manager";
+        import {
+            registerForUserOrderUpdates,
+            synchronizeUserOrders,
+            userOrders
+        } from "../../common/0x/0x_user_orders";
+        import {registerForTokenListUpdate} from "../../common/tokens/token_fetch";
+        import {batchCancelOrders, cancelOrder} from "../../common/0x/0x_orders_proxy";
+
+        export default {
+            components: {
+                Loader,
+                OrderLine,
+                CheckBox
+            },
+            state: {
+                orders: [],
+                selectedOrders: [],
+                isLoadingOrders: false,
+                allOrdersSelected: false,
+                someOrdersAreSelected: false
+            },
+            onMounted() {
+                registerForTokenListUpdate(this)
+                registerForUserOrderUpdates(this)
+                registerForWalletChanges(this)
+                if (isWalletConnected()) {
+                    this.update({ isLoadingOrders: true })
+                    synchronizeUserOrders(accountAddress())
+                }
+            },
+            onTokenListUpdate() {
+                this.update()
+            },
+            onWalletChanges() {
+                this.update({orders: []})
+                if (isWalletConnected()) {
+                    this.update({isLoadingOrders: true})
+                    synchronizeUserOrders(accountAddress())
+                }
+            },
+            async onUserOrderUpdates() {
+
+                if (isWalletConnected()) {
+                    this.state.orders = userOrders()
+                } else {
+                    this.state.orders = []
+                }
+
+                this.update({isLoadingOrders: false})
+            },
+            toggleOrderSelection(order) {
+                let index = this.state.selectedOrders.indexOf(order.metaData.orderHash)
+                if (index >= 0) {
+                    this.state.selectedOrders.splice(index, 1)
+                } else {
+                    this.state.selectedOrders.push(order.metaData.orderHash)
+                }
+                this.update({
+                    allOrdersSelected : this.state.orders.length === this.state.selectedOrders.length,
+                    someOrdersAreSelected: (this.state.selectedOrders.length > 0)
+                })
+            },
+            toggleSelectAllOrders() {
+                if (this.state.selectedOrders.length === this.state.orders.length) {
+                    this.update({
+                        selectedOrders: [],
+                        allOrdersSelected: false,
+                        someOrdersAreSelected: false
+                    })
+                } else {
+                    this.update({
+                        selectedOrders: this.state.orders.map(o => o.metaData.orderHash),
+                        allOrdersSelected: true,
+                        someOrdersAreSelected: true
+                    })
+                }
+            },
+            async cancelSelectedOrders() {
+                if (this.state.selectedOrders.length > 1) {
+                    let ordersToCancel =
+                        this.state.orders
+                            .filter(o => this.state.selectedOrders.find(hash => o.metaData.orderHash === hash) > -1)
+
+                    await batchCancelOrders(ordersToCancel)
+                } else {
+                    let hash = this.state.selectedOrders[this.state.selectedOrders.length-1]
+                    let order = this.state.orders.find(o => o.metaData.orderHash === hash)
+                    await cancelOrder(order)
+                }
+            }
+        }
+
+    </script>
+
+</order-list>

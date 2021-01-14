@@ -57,7 +57,7 @@
                 "sell" : "Sell",
                 "buy" : "Buy"
             },
-            "price": "Price {{token.left}}/{{token.right}}",
+            "price": "Price {{token.symbol}}",
             "amount" : "Amount {{token.symbol}}",
             "amount_simple" : "Amount",
             "total" : "Total {{token.symbol}}",
@@ -73,22 +73,30 @@
             "max_amount" : "MAX",
             "price_direction" : "{{base.symbol}} per {{quote.symbol}}",
             "valid_until" : "Valid Until",
-            "recipient_address_placeholder" : "Recipient address (optional)"
+            "recipient_address_placeholder" : "Recipient address (optional)",
+            "market_type" : "MARKET",
+            "limit_type" : "LIMIT"
         },
         "submit" : {
-            "insufficient_balance" : "INSUFFICIENT BALANCE",
+            "initializing" : "INITIALIZING",
+            "insufficient_balance" : "INSUFFICIENT {{token.symbol}} BALANCE",
+            "use_market_orders_for_eth" : "ETH UNAVAILABLE, USE WETH",
             "checking_approval" : "CHECKING ALLOWANCE FOR {{token.symbol}}",
+            "checking_metric_balance" : "CHECKING METRIC BALANCE",
+            "checking_token_balance" : "CHECKING {{token.symbol}} BALANCE",
             "approve": "APPROVE {{token.symbol}}",
             "approving" : "APPROVING {{token.symbol}}",
-            "approval_rejected": "{{token.symbol}} APPROVAL REJECTED",
             "fill_order_params": "ENTER ORDER AMOUNTS & PRICE",
+            "fill_swap_params": "ENTER AMOUNTS",
             "place_order" : "PLACE ORDER",
+            "wrap_eth" : "WRAP ETH",
+            "unwrap_eth" : "UNWRAP ETH",
             "matching_order": "MATCHING ORDER",
             "filling_orders": "FILLING {{amount}} {{token.symbol}}",
-            "order_fill_rejected": "ORDER FILL REJECTED",
             "order_fill_succeeded": "ORDER FILLED FOR {{amount}} {{token.symbol}}",
             "submitting_order": "PLACING ORDER FOR {{amount}} {{token.symbol}}",
-            "order_placement_rejected": "ORDER PLACEMENT REJECTED"
+            "swapping": "SWAPPING {{sellAmount}} {{sellToken.symbol}}/{{buyAmount}} {{buyToken.symbol}}",
+            "rejected": "REJECTED"
         },
         "language_selector" : {
             "title" : "Language",

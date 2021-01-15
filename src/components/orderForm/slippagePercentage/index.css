@@ -20,7 +20,7 @@
     text-decoration: none;
     text-align: center;
     font-size: 12px;
-    color: var(--theme-switch-button-text-color);
+    color: var(--token-selector-table-text-color);
 
     padding: 3px;
     cursor: pointer;

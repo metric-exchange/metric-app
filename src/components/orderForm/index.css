@@ -101,9 +101,9 @@ input:disabled {
 
 .order-type-switch {
     display: grid;
-    grid-template-columns: 40% 10% 40%;
+    grid-template-columns: 45% 45%;
     justify-items: center;
-    grid-gap: 5%;
+    grid-gap: 10%;
 }
 
 .market-button {

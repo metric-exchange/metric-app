@@ -1,10 +1,8 @@
-import {BigNumber} from '@0x/utils';
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
 import {accountAddress, getContractWrapper, getProvider} from '../wallet/wallet_manager'
 import {Erc20ContractProxy} from "../erc20_contract_proxy";
 import {zeroXContractAddresses, ZeroXOrderBook} from "./0x_order_book_proxy";
 import {updateAllowance} from "../tokens/token_fetch";
-import {getFastGasPriceInWei} from "../gas_price_oracle";
 
 export async function approveZeroXAllowance(token, target, confirmationCallback, errorCallback) {
     await Erc20ContractProxy.approveTokenForTargetAddress(
@@ -16,78 +14,6 @@ export async function approveZeroXAllowance(token, target, confirmationCallback,
         },
         errorCallback
     )
-}
-
-export async function findCandidateOrders(order) {
-    let myPrice = order.takerAssetAmount.dividedBy(order.makerAssetAmount)
-    let orders = await ZeroXOrderBook.getBidsMatching(order.makerAssetAddress, order.takerAssetAddress)
-
-    let myUnfilledMakerAmount = order.makerAssetAmount
-    let candidateFillOrders = []
-
-    for(let bid of orders) {
-
-        let orderPrice = bid.order.makerAssetAmount.dividedBy(bid.order.takerAssetAmount)
-        let remainingUnfilledOrderAmount = new BigNumber(parseInt(bid.metaData.remainingFillableTakerAssetAmount))
-
-        if ((!isValidAddress(order.takerAddress) || order.takerAddress.toLowerCase() === bid.order.takerAddress.toLowerCase()) &&
-            orderPrice.isGreaterThanOrEqualTo(myPrice) &&
-            myUnfilledMakerAmount.isGreaterThan(0) &&
-            remainingUnfilledOrderAmount.isGreaterThan(0))
-        {
-            let possibleFillAmount = BigNumber.min(remainingUnfilledOrderAmount, myUnfilledMakerAmount);
-
-            candidateFillOrders.push({order: bid.order, takerFillAmount: possibleFillAmount})
-            myUnfilledMakerAmount = myUnfilledMakerAmount.minus(possibleFillAmount)
-        }
-
-        if (myUnfilledMakerAmount.isZero()) {
-            break
-        }
-    }
-
-    return candidateFillOrders
-}
-
-export async function fillOrders(candidates) {
-
-    let contractWrapper = await getContractWrapper()
-
-    if (candidates.length === 0) {
-        return new BigNumber(0)
-    }
-
-    let candidateFillOrdersTakerAmount = candidates.map(o => o.takerFillAmount)
-    let candidateFillOrdersSignatures = candidates.map(o => o.order.signature)
-
-    let gasPriceWei = await getFastGasPriceInWei()
-    let protocolFeeMultiplier = await contractWrapper.exchange.protocolFeeMultiplier().callAsync()
-
-    let fillOrderFunction =
-        contractWrapper
-            .exchange
-            .batchFillOrdersNoThrow(
-                candidates.map(o => o.order),
-                candidateFillOrdersTakerAmount,
-                candidateFillOrdersSignatures
-            )
-
-    let gas = await fillOrderFunction.estimateGasAsync({from: accountAddress()})
-    let callData = {
-        from: accountAddress(),
-        gas: gas,
-        gasPrice: gasPriceWei,
-        value: gasPriceWei * protocolFeeMultiplier.toNumber() * candidates.length
-    }
-
-    let fillResults = await fillOrderFunction.callAsync(callData)
-    let receipt = await fillOrderFunction.awaitTransactionSuccessAsync(callData);
-
-    if (receipt.status === 1 && fillResults.length > 0) {
-        return fillResults.map(l => l.takerAssetAmount).reduce((a,b) => BigNumber.sum(a, b))
-    }
-
-    return NaN
 }
 
 export async function submitOrder(order) {

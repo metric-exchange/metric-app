@@ -98,12 +98,11 @@ export class OrderPrice {
     }
 
     feeAdjustedSellAmountFor(amount) {
-        return amount / (1 + this.tryMetricFee())
+        return amount * 1000 / (1000 + this.tryMetricFee() * 1000)
     }
 
-    sellFeeAmountFor(amount) {
-        let fee = this.tryMetricFee()
-        return amount * fee / (1 + fee)
+    sellFeeAmountFor(sellAmount) {
+        return this.feeAdjustedSellAmountFor(sellAmount) * this.tryMetricFee()
     }
 
     buyFeeAmountFor(amount) {
@@ -115,7 +114,7 @@ export class OrderPrice {
     }
 
     convertBuyAmount(token, amount) {
-        let feeAdjustedAmount = amount * (1 + this.tryMetricFee())
+        let feeAdjustedAmount = amount * (1000 + this.tryMetricFee() * 1000) / 1000
         return this.convertTokenAmount(token, feeAdjustedAmount)
     }
 

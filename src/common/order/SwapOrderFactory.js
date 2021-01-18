@@ -16,6 +16,7 @@ export class SwapOrderFactory extends OrderFactory {
             accountAddress
         );
         this.slippagePercentage = getSlippageConfig()
+        this.order.sellPrice.calculated = false
     }
 
     setSlippage(slippage) {

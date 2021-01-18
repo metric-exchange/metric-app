@@ -17,6 +17,7 @@ export class LimitOrderFactory extends OrderFactory {
         );
         this.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
         this.recipientAddress = null
+        this.order.sellPrice.calculated = true
     }
 
     async clearValues() {

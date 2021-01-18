@@ -83,26 +83,32 @@ export class Order {
     }
 
     async setPriceOnSellAmountChange(source, sellAmount) {
-        if (
-            this.isMarketOrder() &&
-            source.property === OrderEventProperties.SellAmount &&
+        if (source.property === OrderEventProperties.SellAmount &&
             (source.action === OrderEventActions.Input || source.action === OrderEventActions.SetToMax)
         ) {
-            let amount = isNaN(sellAmount) ? 1 : sellAmount
-            await this.sellPrice.set(source, NaN)
-            await this.sellPrice.refreshMarketPrice(amount, source)
+            if (this.isMarketOrder()) {
+                let amount = isNaN(sellAmount) ? 1 : sellAmount
+                await this.sellPrice.set(source, NaN)
+                await this.sellPrice.refreshMarketPrice(amount, source)
+            } else if (sellAmount > 0 && this.buyAmount.value > 0 && (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
+                this.sellPrice.calculated = true
+                await this.sellPrice.set(source, this.buyAmount.value / this.sellPrice.feeAdjustedSellAmountFor(sellAmount))
+            }
         }
     }
 
     async setPriceOnBuyAmountChange(source, buyAmount) {
-        if (
-            this.isMarketOrder() &&
-            source.property === OrderEventProperties.BuyAmount &&
+        if (source.property === OrderEventProperties.BuyAmount &&
             source.action === OrderEventActions.Input
         ) {
-            let amount = isNaN(buyAmount) ? 1 : buyAmount
-            await this.sellPrice.set(source, NaN)
-            await this.sellPrice.refreshMarketPriceForBuy(amount, source)
+            if (this.isMarketOrder()) {
+                let amount = isNaN(buyAmount) ? 1 : buyAmount
+                await this.sellPrice.set(source, NaN)
+                await this.sellPrice.refreshMarketPriceForBuy(amount, source)
+            } else if (buyAmount > 0 && this.sellAmount.value > 0 && (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
+                this.sellPrice.calculated = true
+                await this.sellPrice.set(source, buyAmount / this.sellPrice.feeAdjustedSellAmountFor(this.sellAmount.value))
+            }
         }
     }
 
@@ -110,6 +116,7 @@ export class Order {
         if (
             source.property !== OrderEventProperties.BuyAmount &&
             !isNaN(this.sellPrice.price.value) &&
+            !this.sellPrice.calculated &&
             source.property !== OrderEventProperties.Price
         ) {
             await this.buyAmount.set(source, this.sellPrice.convertSellAmount(this.sellToken, sellAmount).amount)
@@ -117,13 +124,19 @@ export class Order {
     }
 
     async setBuyAmountOnPriceChange(source, price) {
-        if (source.property !== OrderEventProperties.BuyAmount && !isNaN(price) && !isNaN(this.sellAmount.value)) {
+        if (source.property !== OrderEventProperties.BuyAmount &&
+            source.action !== OrderEventActions.Calculation &&
+            !isNaN(price) &&
+            !isNaN(this.sellAmount.value)) {
             await this.buyAmount.set(source, this.sellPrice.convertSellAmount(this.sellToken, this.sellAmount.value).amount)
         }
     }
 
     async setSellAmountOnPriceChange(source, price) {
-        if (source.property !== OrderEventProperties.SellAmount && !isNaN(price) && !isNaN(this.buyAmount.value)) {
+        if (source.property !== OrderEventProperties.SellAmount &&
+            source.action !== OrderEventActions.Calculation &&
+            !isNaN(price) &&
+            !isNaN(this.buyAmount.value)) {
             await this.sellAmount.set(source, this.sellPrice.convertBuyAmount(this.buyToken, this.buyAmount.value).amount)
         }
     }
@@ -132,6 +145,7 @@ export class Order {
         if (
             source.property !== OrderEventProperties.SellAmount &&
             !isNaN(this.sellPrice.price.value) &&
+            !this.sellPrice.calculated &&
             source.property !== OrderEventProperties.Price
         ) {
             await this.sellAmount.set(source, this.sellPrice.convertBuyAmount(this.buyToken, buyAmount).amount)

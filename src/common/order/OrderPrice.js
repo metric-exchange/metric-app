@@ -11,6 +11,7 @@ export class OrderPrice {
         this.baseToken = baseToken
         this.quoteToken = quoteToken
         this.inverted = false
+        this.calculated = false
 
         this.priceInversionObservers = new ObservationRegister()
     }
@@ -46,10 +47,19 @@ export class OrderPrice {
     }
 
     async set(source, price) {
-        if (this.inverted && price > 0) {
-            await this.price.set(source, 1/price)
+        let priceEvent = new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Calculation)
+        let event = source
+
+        if (this.calculated && source.property !== OrderEventProperties.Price) {
+            event = priceEvent
         } else {
-            await this.price.set(source, price)
+            this.calculated = false
+        }
+
+        if (this.inverted && price > 0 && !this.calculated) {
+            await this.price.set(event, 1/price)
+        } else {
+            await this.price.set(event, price)
         }
     }
 

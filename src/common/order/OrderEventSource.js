@@ -15,6 +15,7 @@ export class OrderEventActions {
     static Reset = 4
     static Click = 5
     static Inversion = 6
+    static Calculation = 7
 }
 
 export class OrderEventProperties {

@@ -19,10 +19,10 @@
 
     text-decoration: none;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--token-selector-table-text-color);
 
-    padding: 3px;
+    padding: 6px;
     cursor: pointer;
 }
 

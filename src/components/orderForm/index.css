@@ -120,7 +120,7 @@ input:disabled {
 
 .exchange-price {
     display: grid;
-    grid-template-columns: 10% 86%;
+    grid-template-columns: 10% 88%;
     align-items: center;
     justify-items: center;
     grid-gap: 2%;
@@ -128,7 +128,7 @@ input:disabled {
 
 .exchange-amount {
     display: grid;
-    grid-template-columns: 64% 10% 20%;
+    grid-template-columns: 66% 10% 20%;
     align-items: center;
     justify-items: center;
     grid-gap: 2%;

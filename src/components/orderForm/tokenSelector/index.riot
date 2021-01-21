@@ -159,7 +159,9 @@
             hideAllTokens() {
                 tokensList().forEach(t => {
                     let tr = document.getElementById(t.address.toLowerCase())
-                    tr.style.display = 'none'
+                    if (null !== tr) {
+                        tr.style.display = 'none'
+                    }
                 })
             },
             sortTokens(tokens, value) {

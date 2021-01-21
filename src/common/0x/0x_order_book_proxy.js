@@ -1,9 +1,8 @@
 import {HttpClient} from "@0x/connect";
 import {getProvider} from "../wallet/wallet_manager";
-import {BigNumber, providerUtils} from "@0x/utils";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
-import {getTokenUsdPrice} from "../tokens/token_price_proxy";
 import {tokensList} from "../tokens/token_fetch";
+import {providerUtils} from "@0x/utils";
 
 export class ZeroXOrderBook {
 
@@ -75,9 +74,6 @@ export class ZeroXOrderBook {
 
     static async getOrdersMatching(baseToken, quoteToken, keepOtcOrders) {
 
-        let baseTokenPrice = await getTokenUsdPrice(baseToken)
-        let quoteTokenPrice = await getTokenUsdPrice(quoteToken)
-
         const baseAssetData = `0xf47261b0000000000000000000000000${baseToken.address.substr(2).toLowerCase()}`
         const quoteAssetData = `0xf47261b0000000000000000000000000${quoteToken.address.substr(2).toLowerCase()}`
 
@@ -91,12 +87,7 @@ export class ZeroXOrderBook {
         let filteredAsks = []
 
         for(let bid of orders.bids.records) {
-            let takerAmount =
-                new BigNumber(parseInt(bid.metaData.remainingFillableTakerAssetAmount))
-                    .multipliedBy(baseTokenPrice)
-                    .dividedBy(10 ** baseToken.decimals)
-
-            let isValidOrder = (isNaN(baseTokenPrice) || takerAmount.isGreaterThan(10)) &&
+            let isValidOrder =
                 (keepOtcOrders || bid.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
             if (isValidOrder) {
@@ -105,12 +96,7 @@ export class ZeroXOrderBook {
         }
 
         for(let ask of orders.asks.records) {
-            let takerAmount =
-                new BigNumber(parseInt(ask.metaData.remainingFillableTakerAssetAmount))
-                    .multipliedBy(quoteTokenPrice)
-                    .dividedBy(10 ** quoteToken.decimals)
-
-            let isValidOrder = (isNaN(quoteTokenPrice) || takerAmount.isGreaterThan(10) )&&
+            let isValidOrder =
                 (keepOtcOrders || ask.order.takerAddress === "0x0000000000000000000000000000000000000000")
 
             if (isValidOrder) {

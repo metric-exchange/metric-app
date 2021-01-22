@@ -2,14 +2,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Metric.exchange</title>
+  <title>Metric Exchange</title>
+  <link rel="dns-prefetch" href="//api.coingecko.com">
+  <link rel="dns-prefetch" href="//assets.coingecko.com">
+  <link rel="dns-prefetch" href="//api.0x.org">
+  <link rel="dns-prefetch" href="//etherscan.io">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
   <link rel="icon" type="image/ico" href="favicon.ico"/>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
   
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-320VCTCTXQ"></script>
-  <script>
+  <script defer src="https://www.googletagmanager.com/gtag/js?id=G-320VCTCTXQ"></script>
+  <script defer>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -20,7 +24,7 @@
 <body>
 
   <div id="app"></div>
-  <script src="src/app.js"></script>
+  <script src="src/app.js" defer></script>
 
 </body>
 </html>

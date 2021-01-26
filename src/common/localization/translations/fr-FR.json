@@ -24,6 +24,8 @@
         "footer": {
             "build_by_finance" : "Par BUILD Finance",
             "documentation" : "Documentation",
+            "trading_metrics": "Analytique",
+            "trading_dashboard": "Trading",
             "twitter" : "Twitter",
             "tracker" : "0xTracker",
             "discord" : "Discord",
@@ -123,6 +125,14 @@
             "MM" : "%d mois",
             "y" : "un an",
             "yy" : "%d ans"
+        },
+        "analytics" : {
+            "activity_period" : "Activité sur les derniers 30 jours",
+            "largest_trade" : "La plus grande transaction",
+            "most_active_trader" : "Tradeur le plus actif ",
+            "largest_metric_trade" : "La plus grande trade en $METRIC",
+            "top_daily_metric_traders" : "Les top tradeurs de $METRIC par jour",
+            "top_traders" : "Classement des tradeurs par volume cumulé"
         }
     }
 }

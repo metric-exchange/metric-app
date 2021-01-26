@@ -76,16 +76,31 @@ a {
     display: none;
     height: 110px;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 80px;
     margin-bottom: 30px;
 }
 
 .social-media-links {
     position: fixed;
     right: 20px;
-    top: 70px;
     display: grid;
     grid-template-columns: auto;
+    grid-gap: 30px;
+}
+
+.social-media-links a svg path {
+    fill: var(--token-selector-table-text-color);
+}
+
+.social-media-links a:hover svg path {
+    fill: #60FFD9;
+}
+
+.dashboard-links {
+    position: fixed;
+    left: 20px;
+    display: grid;
+    grid-template-rows: auto auto;
     grid-gap: 30px;
 }
 
@@ -104,6 +119,13 @@ a {
     }
     #footer {
         display: block;
+    }
+    .dashboard-links {
+        position: unset;
+        place-items: center;
+        align-content: center;
+        display: grid;
+        grid-template-columns: auto auto;
     }
 }
 
@@ -150,4 +172,29 @@ a {
 .main-content{
     width: 100%;
     position: relative;
+    top: 70px;
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.analytics-link {
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+.analytics-link svg path {
+    fill: var(--token-selector-table-text-color)
+}
+
+#analytics-dashboard {
+    display: none;
+}
+
+.active-dashboard {
+    cursor: unset;
+}
+
+.active-dashboard svg path {
+    fill: #60FFD9;
 }

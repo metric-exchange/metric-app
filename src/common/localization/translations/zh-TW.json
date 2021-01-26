@@ -24,6 +24,8 @@
         "footer": {
             "build_by_finance" : "BUILD Finance產品",
             "documentation" : "文檔",
+            "trading_metrics" : "分析工具",
+            "trading_dashboard": "商業",
             "twitter" : "Twitter",
             "discord" : "Discord",
             "tracker" : "0xTacker",
@@ -123,6 +125,14 @@
             "MM" : "%d 月",
             "y" : "一年",
             "yy" : "%d 歲"
+        },
+        "analytics" : {
+            "activity_period" : "最近30天的活動",
+            "largest_trade" : "最大的貿易",
+            "most_active_trader" : "最活躍的交易者",
+            "largest_metric_trade" : "最大的$METRIC交易",
+            "top_daily_metric_traders" : "每日最佳$METRIC交易員",
+            "top_traders" : "頂級交易員"
         }
     }
 }

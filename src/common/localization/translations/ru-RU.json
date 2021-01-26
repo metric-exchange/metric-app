@@ -24,6 +24,8 @@
         "footer": {
             "build_by_finance" : "сделано в BUILD Finance",
             "documentation" : "Документация",
+            "trading_metrics" : "Аналитика",
+            "trading_dashboard": "Торгующий",
             "twitter" : "Твиттер",
             "tracker" : "0хTracker",
             "discord" : "Дискорд",
@@ -125,6 +127,14 @@
             "MM" : "%d месяцы",
             "y" : "один год",
             "yy" : "%d лет"
+        },
+        "analytics" : {
+            "activity_period" : "Активность за последние 30 дней",
+            "largest_trade" : "Крупнейшая сделка",
+            "most_active_trader" : "Самый активный трейдер",
+            "largest_metric_trade" : "Крупнейшая сделка на $METRIC",
+            "top_daily_metric_traders" : "Лучшие ежедневные трейдеры по $METRIC",
+            "top_traders" : "Лучшие трейдеры"
         }
     }
 }

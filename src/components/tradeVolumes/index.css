@@ -1,0 +1,51 @@
+
+.trade-stat-header {
+    line-height: 40px;
+    color: var(--token-selector-table-text-color);
+    margin-bottom: 5px;
+    font-weight: normal;
+    position: sticky;
+    top: 0;
+    background: var(--token-selector-background-color);
+}
+
+.trade-stat-body {
+    background: var(--token-selector-background-color);
+    line-height: 25px;
+}
+
+.trade-stat-line {
+    display: grid;
+    grid-template-columns: 10% 15% 5% 54%;
+    grid-gap: 2%;
+}
+
+.trade-stat-body:hover {
+    background-color: var(--main-background-color);
+}
+
+.traders-list {
+    height: 425px;
+    overflow-y: scroll;
+}
+
+.trader-logo {
+    border-radius: 3px;
+}
+
+.trader-address a {
+    display: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--main-text-color);
+}
+
+@media(min-width: 600px){
+    .trader-address a {
+        display: block;
+    }
+
+    .trade-stat-line {
+        grid-template-columns: 10% 10% 30% 44%;
+    }
+}

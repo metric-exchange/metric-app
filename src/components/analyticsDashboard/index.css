@@ -1,0 +1,67 @@
+.analytics-dashboard {
+    display: grid;
+    grid-template-columns: auto;
+    place-items: stretch;
+    place-content: stretch;
+    column-gap: 15px;
+    row-gap: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.trade-volumes{
+    background-color: var(--token-selector-background-color);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 275px;
+    font-style: normal;
+    font-weight: normal;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+}
+
+.top-daily-trade-volumes{
+    background-color: var(--token-selector-background-color);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 275px;
+    font-style: normal;
+    font-weight: normal;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+}
+
+.largest-trades{
+    font-style: normal;
+    font-weight: normal;
+}
+
+.activity-period {
+    color: var(--token-selector-table-text-color);
+}
+
+@media(min-width: 1000px) {
+    .analytics-dashboard {
+        grid-template-columns: 50% 50%;
+        grid-template-areas:
+            "activity-period activity-period"
+            "top-trades top-trades"
+            "top-daily-traders top-traders";
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+
+    .activity-period {
+        grid-area: activity-period;
+    }
+
+    .trade-volumes{
+        grid-area: top-traders;
+    }
+
+    .top-daily-trade-volumes{
+        grid-area: top-daily-traders;
+    }
+
+    .largest-trades{
+        grid-area: top-trades;
+    }
+}

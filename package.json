@@ -25,6 +25,7 @@
     "@0x/subproviders": "^6.1.5",
     "@0x/utils": "^5.5.1",
     "@0x/web3-wrapper": "^7.2.4",
+    "@ensdomains/ensjs": "^0.2.0",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/contracts": "^5.0.1",
     "@ethersproject/providers": "^5.0.4",

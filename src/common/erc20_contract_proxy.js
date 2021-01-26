@@ -22,7 +22,7 @@ export const Erc20ContractProxy = {
     approveTokenForTargetAddress: async function(tokenAddress, targetAddress, confirmationCallBack, errorCallback) {
         await contract(Erc20Abi, tokenAddress)
             .methods
-            .approve(targetAddress, window.web3.utils.toBN(maxAllowance.toFixed()))
+            .approve(targetAddress, window.web3Modal.utils.toBN(maxAllowance.toFixed()))
             .send({from: accountAddress()})
             .on('confirmation', async (confirmationNumber, receipt) => {
                 if (confirmationNumber === 1) {
@@ -35,7 +35,7 @@ export const Erc20ContractProxy = {
 }
 
 function contract(abi, address) {
-    return new window.web3.eth.Contract(abi, address)
+    return new window.web3Modal.eth.Contract(abi, address)
 }
 
 function fallbackContract(abi, address) {

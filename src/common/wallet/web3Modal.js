@@ -7,7 +7,7 @@ let infuraId = "12522e5176814bfda74dd672929641a3";
 
 export async function connectToWallet() {
     web3ModalPovider = await web3Modal.connect();
-    window.web3 = new Web3(web3ModalPovider);
+    window.web3Modal = new Web3(web3ModalPovider);
 }
 
 export function clearWalletProvider() {

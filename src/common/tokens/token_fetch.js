@@ -57,18 +57,18 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
     if (isWalletConnected() && address === accountAddress()) {
         if (batchIndex*batchSize < tokens.length) {
             try {
-                let batch = new window.web3.BatchRequest();
+                let batch = new window.web3Modal.BatchRequest();
                 for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
                     let token = tokens[index]
                     if (token.symbol === "ETH" && isNaN(token.balance)) {
                         batch.add(
-                            window.web3.eth
+                            window.web3Modal.eth
                                 .getBalance
                                 .request(address, 'latest', (err, b) => updateBalance(token, address, b))
                         );
                     }
                     else if (isNaN(token.balance) || isNaN(token.allowance[Erc20ProxyAddress]) || isNaN(token.allowance[ExchangeProxyAllowanceTargetAddress])) {
-                        let contract = new window.web3.eth.Contract(Erc20Abi, token.address);
+                        let contract = new window.web3Modal.eth.Contract(Erc20Abi, token.address);
                         batch.add(
                             contract
                                 .methods

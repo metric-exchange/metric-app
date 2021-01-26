@@ -42,7 +42,7 @@ export class SwapOrderFactory extends OrderFactory {
             true
         )
 
-        await window.web3.eth.sendTransaction(quote);
+        await window.web3Modal.eth.sendTransaction(quote);
     }
 
     async buildOrderDetails() {

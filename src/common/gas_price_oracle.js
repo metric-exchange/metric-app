@@ -24,5 +24,5 @@ async function getEtherChainFasGasPriceInWei() {
 }
 
 async function getDefaultGasPriceInWei() {
-    return await window.web3.eth.getGasPrice()
+    return await window.web3Modal.eth.getGasPrice()
 }

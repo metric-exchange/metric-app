@@ -32,7 +32,7 @@ export async function connectWallet() {
 }
 
 async function updateAccount() {
-    const accounts = await window.web3.eth.getAccounts()
+    const accounts = await window.web3Modal.eth.getAccounts()
     updateAccountAddress(accounts)
 
     if (web3ModalPovider !== undefined && web3ModalPovider !== null) {

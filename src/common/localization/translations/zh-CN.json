@@ -44,6 +44,11 @@
                 "cancel" : "取消订单"
             }
         },
+        "my_trade_list" : {
+            "title": "我的交易",
+            "order_filled_at": "订单已填写",
+            "details": "细节"
+        },
         "wallet" : {
             "balance" : "钱包余额: {{balance}}",
             "connect_wallet" : "连接钱包",

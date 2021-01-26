@@ -1,0 +1,76 @@
+
+.my-trades-header {
+    line-height: 40px;
+    color: var(--token-selector-table-text-color);
+    margin-bottom: 5px;
+    font-weight: normal;
+    position: sticky;
+    top: 0;
+    background: var(--token-selector-background-color);
+}
+
+.my-trade-list-canvas {
+    height: 425px;
+    overflow-y: scroll;
+}
+
+.my-empty-trade-list{
+    display: grid;
+    place-content: center;
+    height: 80%;
+}
+
+
+.my-trade-list {
+    line-height: 25px;
+}
+
+.my-trade-item{
+    display: grid;
+    grid-template-columns: 70% 28%;
+    grid-gap: 2%;
+    place-items: center;
+    border-radius: 5px;
+    background-color: var(--inactive-button-background-color);
+    margin-bottom: 5px;
+    line-height: 40px;
+}
+
+.my-trade {
+    display: grid;
+    grid-template-columns: 43% 10% 43%;
+    grid-gap: 2%;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+}
+
+.my-trade-amount {
+    display: grid;
+    grid-template-rows: auto auto;
+    place-items: center;
+    line-height: 25px;
+    padding: 5px;
+}
+
+.sell-trade {
+    color: #CC3F3F;
+}
+
+.buy-trade {
+    color: #3FCCB0;
+}
+
+.trade-price {
+    color: var(--token-selector-table-text-color);
+}
+
+.trade-date {
+    color: var(--token-selector-table-text-color);
+}
+
+.trade-details a {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--main-text-color);
+}

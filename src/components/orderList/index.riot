@@ -1,16 +1,13 @@
 <order-list>
-    <div class="order-list-title">{ this.i18next.t('my_order_list.title') }</div>
-    <div class="filled-order-list">
-        <div class="my-orders-line my-orders-header">
-            <div>{ this.i18next.t('my_order_list.header.pair') }</div>
-            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.cost') }</div>
-            <div>{ this.i18next.t('my_order_list.header.amount') }</div>
-            <div>{ this.i18next.t('my_order_list.header.filled') }</div>
-            <div>{ this.i18next.t('order.price') }</div>
-            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.expires_in') }</div>
-            <div class="order-list-big-screen-column">{ this.i18next.t('my_order_list.header.recipient') }</div>
-            <div class="order-select-check-box"><check-box checked={ state.allOrdersSelected } onclick={ toggleSelectAllOrders }/></div>
+    <div class="my-orders-header">
+        <div class="order-list-title">{ this.i18next.t('my_order_list.title') }</div>
+        <div class="order-action-button"
+             if={ state.someOrdersAreSelected }
+             onclick={ cancelSelectedOrders }
+        >{ this.i18next.t('my_order_list.order.cancel') }
         </div>
+    </div>
+    <div class="filled-order-list">
         <div class="order-list-canvas">
             <div class="empty-order-list" if={ state.isLoadingOrders }>
                 <loader inverted={ false } />
@@ -24,12 +21,6 @@
                     toggle-order-selection={ toggleOrderSelection }
             />
         </div>
-    </div>
-
-    <div class="order-action-button"
-         if={ state.someOrdersAreSelected }
-         onclick={ cancelSelectedOrders }
-    >{ this.i18next.t('my_order_list.order.cancel') }
     </div>
 
     <script>

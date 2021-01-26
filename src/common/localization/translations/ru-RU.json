@@ -44,6 +44,11 @@
                 "cancel" : "Отменить заказы"
             }
         },
+        "my_trade_list" : {
+            "title": "МОИ СДЕЛКИ",
+            "order_filled_at": "Заказ выполнен",
+            "details": "Детали"
+        },
         "wallet" : {
             "balance" : "Кошелёк: {{balance}}",
             "connect_wallet" : "Подключить кошелёк",

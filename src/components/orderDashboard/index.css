@@ -53,6 +53,17 @@
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
 }
 
+.trade-list {
+    grid-row: 4;
+    grid-column: 1;
+    background-color: var(--token-selector-background-color);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 275px;
+    font-style: normal;
+    font-weight: normal;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+}
 
 .dashboard #token-selector .tokens {
     height: 420px;
@@ -97,9 +108,16 @@
         grid-column: 2;
     }
 
+    .trade-list {
+        grid-row: 2;
+        grid-column: 1;
+        height: 496px;
+    }
+
     .order-list{
         grid-row: 2;
-        grid-column: 1 / span 2;
+        grid-column: 2;
+        height: 496px;
     }
 
 }

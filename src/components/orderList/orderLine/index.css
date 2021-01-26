@@ -26,16 +26,31 @@
 
 .my-orders {
     width: 100%;
-    line-height: 25px;
+    line-height: 40px;
     border-radius: 5px;
+    background-color: var(--inactive-button-background-color);
     margin-bottom: 5px;
-}
-
-.my-orders:hover {
-    background-color: var(--main-background-color);
+    cursor: pointer;
 }
 
 .selected-order {
-    background-color: var(--main-background-color);
+    background-color: var(--theme-switch-active-button-background-color);
+    color: var(--swap-button-text-color);
+}
+
+.my-order-amount {
+    display: grid;
+    grid-template-rows: auto auto;
+    place-items: center;
+    line-height: 25px;
+    padding: 5px;
+}
+
+.sell-amount {
+    color: #CC3F3F;
+}
+
+.buy-amount {
+    color: #3FCCB0;
 }
 

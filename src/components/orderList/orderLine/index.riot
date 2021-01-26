@@ -4,25 +4,22 @@
     <div id="{ props.order.metaData.orderHash }"
          class="my-orders my-orders-line"
          if={ state.makerToken !== undefined && state.takerToken !== undefined }
+         onclick={ handleClick }
     >
-        <div class="order-pair">
-            <div>{ state.makerToken.symbol }</div>
+        <div class="my-order-volume">
+            <div class="my-order-amount sell-amount">
+                <div>{ this.formatNumber(makerTotalAmount(props.order).toNumber()) }</div>
+                <div>{ state.makerToken.symbol }</div>
+            </div>
             <div>&#8594;</div>
-            <div>{ state.takerToken.symbol }</div>
+            <div class="my-order-amount buy-amount">
+                <di>{ this.formatNumber(takerAmount(props.order).toNumber()) }</di>
+                <div>{ state.takerToken.symbol }</div>
+            </div>
         </div>
-        <div class="order-list-big-screen-column ask">{ this.formatNumber(makerTotalAmount(props.order).toNumber()) }</div>
-        <div class="bid">{ this.formatNumber(takerAmount(props.order).toNumber()) }</div>
-        <div>{ this.formatNumber(filledTakerPercentage(props.order).toNumber()) }%</div>
-        <div>{ this.formatNumber(orderPrice(props.order).toNumber()) }</div>
-        <div class="order-list-big-screen-column">{ getDateDiff(props.order.order.expirationTimeSeconds) }</div>
-        <div class="order-list-big-screen-column">
-            <a class="order-recipient"
-                href="https://etherscan.io/address/{ props.order.order.takerAddress }"
-                target="_blank">
-                { takerAddress() }
-            </a>
-        </div>
-        <div class="order-select-check-box"><check-box checked={ state.selected } onclick={ handleClick }/></div>
+        <div class="my-order-fill">{ this.i18next.t('my_order_list.header.filled') } { this.formatNumber(filledTakerPercentage(props.order).toNumber()) }%</div>
+        <div class="my-order-expiry">{ this.i18next.t('my_order_list.header.expires_in') } { getDateDiff(props.order.order.expirationTimeSeconds) }</div>
+        <div class="my-order-price">{ this.i18next.t('order.price') } { this.formatNumber(orderPrice(props.order).toNumber()) }</div>
     </div>
 
     <script>

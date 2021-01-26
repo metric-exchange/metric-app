@@ -44,6 +44,11 @@
                 "cancel" : "Cancel orders"
             }
         },
+        "my_trade_list" : {
+            "title": "MY TRADES",
+            "order_filled_at": "Order filled on",
+            "details": "Details"
+        },
         "order_book" : {
             "title" : "ORDER BOOK"
         },

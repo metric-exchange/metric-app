@@ -44,6 +44,11 @@
                 "cancel" : "取消訂單"
             }
         },
+        "my_trade_list" : {
+            "title": "我的交易",
+            "order_filled_at": "訂單已填寫",
+            "details": "細節"
+        },
         "wallet" : {
             "balance" : "錢包余額: {{balance}}",
             "connect_wallet" : "連接錢包",

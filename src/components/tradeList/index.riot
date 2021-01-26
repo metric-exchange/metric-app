@@ -1,0 +1,77 @@
+<order-list>
+
+    <div class="my-trades-header">
+        <div class="trade-list-title">{ this.i18next.t('my_trade_list.title') }</div>
+    </div>
+    <div class="my-trade-list">
+        <div class="my-trade-list-canvas">
+            <div class="my-empty-trade-list" if={ state.isLoadingTrades }>
+                <loader/>
+            </div>
+            <div if={ !state.isLoadingTrades }>
+                <div class="my-trade-item"
+                     each={ trade in myTrades() }
+                     key={ trade.id }>
+                    <div class="my-trade">
+                        <div class="my-trade-amount sell-trade">
+                            <div>{ this.formatNumber(trade.details.makerTokenAmount) }</div>
+                            <div>{trade.details.makerTokenSymbol }</div>
+                        </div>
+                        <div>&#8594;</div>
+                        <div class="my-trade-amount buy-trade">
+                            <div>{ this.formatNumber(trade.details.takerTokenAmount) }</div>
+                            <div>{trade.details.takerTokenSymbol }</div>
+                        </div>
+                    </div>
+                    <div class="trade-details"><a target="_blank" href="https://0xtracker.com/fills/{ trade.id }">{ this.i18next.t('my_trade_list.details') }</a></div>
+                    <div class="trade-date">{ this.i18next.t('my_trade_list.order_filled_at') } { trade.date }</div>
+                    <div class="trade-price">{ this.i18next.t('order.price') } { this.formatNumber(trade.details.takerTokenAmount / trade.details.makerTokenAmount) }</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        import Loader from '../loader/index.riot'
+        import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../common/wallet/wallet_manager";
+        import './index.css'
+        import {ZeroXTradesProxy} from "../../common/0x/ZeroXTradesProxy";
+
+        export default {
+            components: {
+                Loader
+            },
+            state: {
+                isLoadingTrades: true,
+                fillsProxy: new ZeroXTradesProxy()
+            },
+            onBeforeMount() {
+                registerForWalletChanges(this)
+                this.state.fillsProxy.fills.observe(this, 'onFillsRefresh')
+            },
+            onMounted() {
+                if (isWalletConnected()) {
+                    this.state.fillsProxy.refreshFills(undefined, accountAddress())
+                } else {
+                    this.update({ isLoadingTrades: false })
+                }
+            },
+            onWalletChanges() {
+                this.update({ isLoadingTrades: true })
+                this.state.fillsProxy.refreshFills(undefined, accountAddress())
+            },
+            onFillsRefresh() {
+                this.update({ isLoadingTrades: false })
+            },
+            myTrades() {
+                if (isWalletConnected()) {
+                    return this.state.fillsProxy.userTrades()
+                }
+                return []
+            }
+        }
+
+    </script>
+
+</order-list>

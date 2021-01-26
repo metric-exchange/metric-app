@@ -23,12 +23,12 @@
 
 .my-orders-line {
     display: grid;
-    grid-template-columns: 35% 20% 15% 20% 10%;
-    margin-right: 5px;
+    line-height: 40px;
+    grid-template-columns: 70% 30%;
 }
 
 .order-list-canvas {
-    height: 190px;
+    height: 425px;
     overflow-y: scroll;
 }
 
@@ -37,6 +37,7 @@
 }
 
 .order-action-button {
+    position: relative;
     display: grid;
     align-content: center;
     justify-content: center;
@@ -44,12 +45,10 @@
     padding: 7px;
     white-space: pre-wrap;
     text-align: center;
-    height: 30px;
+    height: 20px;
     background: var(--theme-switch-active-button-background-color);
     color: var(--theme-switch-active-button-text-color);
     cursor: pointer;
-    margin-top: 15px;
-    width: 30%;
 }
 
 .order-select-check-box {
@@ -63,11 +62,31 @@
     background-color: var(--main-background-color);
 }
 
-@media(min-width: 1000px) {
-    .order-list-big-screen-column {
-        display: unset;
-    }
-    .my-orders-line {
-        grid-template-columns: 20% 13% 13% 13% 13% 13% 12% 3%;
-    }
+.my-orders-header {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 40px;
+}
+
+.my-order-volume {
+    display: grid;
+    grid-template-columns: 45% 10% 45%;
+    place-items: center;
+}
+.my-order-price {
+    display: grid;
+    place-items: center;
+    color: var(--token-selector-table-text-color);
+}
+.my-order-expiry {
+    display: grid;
+    place-items: center;
+    color: var(--token-selector-table-text-color);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.my-order-fill {
+    display: grid;
+    place-items: center;
+    color: var(--token-selector-table-text-color);
 }

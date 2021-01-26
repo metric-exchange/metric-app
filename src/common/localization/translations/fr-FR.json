@@ -30,7 +30,7 @@
             "medium" : "Medium"
         },
         "my_order_list" : {
-            "title" : "MES ORDRES",
+            "title" : "MES ORDRES OUVERTS",
             "header" : {
                 "type" : "Type",
                 "amount" : "Montant",
@@ -43,6 +43,11 @@
             "order" : {
                 "cancel" : "Annuler les ordres"
             }
+        },
+        "my_trade_list" : {
+            "title": "MES ORDRES EXÉCUTÉS",
+            "order_filled_at": "Ordre exécuté le",
+            "details": "Détails"
         },
         "wallet" : {
             "balance" : "Wallet: {{balance}}",

@@ -28,7 +28,7 @@
     width: 100%;
     line-height: 40px;
     border-radius: 5px;
-    background-color: var(--inactive-button-background-color);
+    background-color: var(--item-card-color);
     margin-bottom: 5px;
     cursor: pointer;
 }

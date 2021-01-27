@@ -35,7 +35,7 @@
                 "type" : "Type",
                 "amount" : "Montant",
                 "filled" : "Exécuté",
-                "expires_in" : "Expire dans",
+                "expires_in" : "Expire",
                 "pair" : "Paire",
                 "cost" : "Coût",
                 "recipient" : "Destinataire"

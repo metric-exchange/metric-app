@@ -35,7 +35,7 @@
                 "type" : "Type",
                 "amount" : "Amount",
                 "filled" : "Filled",
-                "expires_in" : "Expires in",
+                "expires_in" : "Expires",
                 "cost" : "Cost",
                 "pair" : "Pair",
                 "recipient" : "Recipient"

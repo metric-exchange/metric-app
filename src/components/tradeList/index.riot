@@ -51,9 +51,8 @@
                 this.state.fillsProxy.fills.observe(this, 'onFillsRefresh')
             },
             onMounted() {
-                if (isWalletConnected()) {
-                    this.state.fillsProxy.refreshFills(undefined, accountAddress())
-                } else {
+                this.synchronizeTrades()
+                if (!isWalletConnected()) {
                     this.update({ isLoadingTrades: false })
                 }
             },
@@ -69,6 +68,12 @@
                     return this.state.fillsProxy.userTrades()
                 }
                 return []
+            },
+            async synchronizeTrades() {
+                if (isWalletConnected()) {
+                    await this.state.fillsProxy.refreshFills(undefined, accountAddress())
+                }
+                setTimeout(this.synchronizeTrades, 10000)
             }
         }
 

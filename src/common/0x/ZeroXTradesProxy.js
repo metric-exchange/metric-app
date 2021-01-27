@@ -12,9 +12,7 @@ export class ZeroXTradesProxy {
     }
 
     async refreshFills(source, address) {
-        if (this.fills.value.length > 0) {
-            await this.fills.set(source, [])
-        }
+        this.fills.value = []
         await this.fetchFills(source, address)
     }
 

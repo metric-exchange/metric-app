@@ -10,7 +10,7 @@
             </div>
             <div if={ !state.isLoadingTrades }>
                 <div class="my-trade-item"
-                     each={ trade in myTrades() }
+                     each={ trade in state.fillsProxy.userTrades() }
                      key={ trade.id }>
                     <div class="my-trade">
                         <div class="my-trade-amount sell-trade">
@@ -58,16 +58,9 @@
             },
             onWalletChanges() {
                 this.update({ isLoadingTrades: true })
-                this.state.fillsProxy.refreshFills(undefined, accountAddress())
             },
             onFillsRefresh() {
                 this.update({ isLoadingTrades: false })
-            },
-            myTrades() {
-                if (isWalletConnected()) {
-                    return this.state.fillsProxy.userTrades()
-                }
-                return []
             },
             async synchronizeTrades() {
                 if (isWalletConnected()) {

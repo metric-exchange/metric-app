@@ -57,7 +57,8 @@ export class ZeroXTradesProxy {
     }
 
     extractFillData(fill, address) {
-        if (fill.makerAddress === address) {
+
+        if (!fill.orderHash || (fill.makerAddress === address && fill.orderHash)) {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
@@ -68,7 +69,7 @@ export class ZeroXTradesProxy {
                     takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount)
                 }
             }
-        } else if (this.extractTakerAddress(fill) === address) {
+        } else if (this.extractTakerAddress(fill) === address && fill.orderHash) {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),

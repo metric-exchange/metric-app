@@ -85,7 +85,7 @@ export class OrderFactory {
             }
             await this.order.clearValues()
         } catch (e) {
-            Rollbar.warn("order submit failed with error", e)
+            Rollbar.warn(`order submit failed with error. ${e}`)
             await this.stateManager.setInProgressState(OrderState.REJECTED, true)
         }
 

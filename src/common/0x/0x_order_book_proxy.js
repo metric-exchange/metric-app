@@ -61,7 +61,7 @@ export class ZeroXOrderBook {
                 setTimeout((that, id) => { that.runSynchronizationLoop(id) }, 10000, this, id)
             }
         } catch (e) {
-            Rollbar.error("Unexpected error while synchronizing the order book, will keep retrying", e)
+            Rollbar.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
             setTimeout((that, id) => { that.runSynchronizationLoop(id) }, 1000, this, id)
         }
     }

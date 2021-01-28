@@ -35,7 +35,7 @@ export class ZeroXTradesProxy {
             }
 
         } catch (e) {
-            Rollbar.error('Failed to fetch order fills', e)
+            Rollbar.warn(`Failed to fetch order fills. ${e}`)
         }
     }
 
@@ -45,9 +45,12 @@ export class ZeroXTradesProxy {
 
     async updateFills(source, address, fills) {
         let storedFills = [...this.fills.value]
-        let newFills = fills.map(f => {
-            return this.extractFillData(f, address)
-        })
+        let newFills =
+            fills
+            .filter(f => f.assets.find(a => a.type !== 'erc-20') === undefined)
+            .map(f => {
+                return this.extractFillData(f, address)
+            })
 
         storedFills = storedFills.concat(newFills)
 
@@ -59,15 +62,18 @@ export class ZeroXTradesProxy {
 
     extractFillData(fill, address) {
 
+        let makerToken = fill.assets.find(a => a.traderType === "maker")
+        let takerToken = fill.assets.find(a => a.traderType === "taker")
+
         if (!fill.orderHash || (fill.makerAddress === address && fill.orderHash)) {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
                 details: {
-                    makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,
-                    makerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "maker").amount),
-                    takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
-                    takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount)
+                    makerTokenSymbol: makerToken.tokenSymbol,
+                    makerTokenAmount: parseFloat(makerToken.amount),
+                    takerTokenSymbol: takerToken.tokenSymbol,
+                    takerTokenAmount: parseFloat(takerToken.amount)
                 }
             }
         } else if (this.extractTakerAddress(fill) === address && fill.orderHash) {
@@ -75,10 +81,10 @@ export class ZeroXTradesProxy {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
                 details: {
-                    takerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,
-                    takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "maker").amount),
-                    makerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
-                    makerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount)
+                    takerTokenSymbol: makerToken.tokenSymbol,
+                    takerTokenAmount: parseFloat(makerToken.amount),
+                    makerTokenSymbol: takerToken.tokenSymbol,
+                    makerTokenAmount: parseFloat(takerToken.amount)
                 }
             }
         }

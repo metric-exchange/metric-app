@@ -19,7 +19,7 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
             return NaN
         }
     } catch (e) {
-        Rollbar.warn("Failed to fetch swap price:", e)
+        Rollbar.warn(`Failed to fetch swap price. ${e}`)
         return NaN
     }
 }

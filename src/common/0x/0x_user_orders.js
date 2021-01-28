@@ -17,7 +17,7 @@ export async function synchronizeUserOrders(userAddress) {
                 orders = await retrieveUserOrders(accountAddress())
                 await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
             } catch (e) {
-                Rollbar.warn("user order fetch failed, will keep retrying", e)
+                Rollbar.warn(`user order fetch failed, will keep retrying ${e}`)
             }
         }
     }

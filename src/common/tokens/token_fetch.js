@@ -81,7 +81,7 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
                 }
                 await batch.execute();
             } catch(e) {
-                Rollbar.error("Unexpected error while updating tokens balance/allowance info", e)
+                Rollbar.warn(`Unexpected error while updating tokens balance/allowance info ${e}`)
             }
 
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
@@ -98,7 +98,7 @@ async function updateBalance(token, address, balance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = balance / (10 ** token.decimals)
         if (newBalance > 0) {
-            Rollbar.debug("update balance", token.symbol, newBalance)
+            Rollbar.debug(`update balance of ${token.symbol} to ${newBalance}`)
         }
 
         token.balance = newBalance
@@ -143,7 +143,7 @@ async function fetchAllowance(token, address, target) {
                 if (error === null && isWalletConnected() && address === accountAddress()) {
                     await updateAllowance(token, target, allowance)
                 } else {
-                    Rollbar.error("Failed to fetch allowance for: ", token.symbol)
+                    Rollbar.error(`Failed to fetch allowance for: ${token.symbol}`)
                 }
             }
         )
@@ -153,7 +153,7 @@ export async function updateAllowance(token, target, allowance) {
     if (isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** token.decimals)
         if (newAllowance > 0) {
-            Rollbar.debug("update allowance", token.symbol, newAllowance, target)
+            Rollbar.debug(`update allowance to trade ${token.symbol} to ${newAllowance} for ${target}`)
         }
         token.allowance[target] = newAllowance
         await Promise.all(
@@ -195,7 +195,7 @@ export async function loadTokenList()
             register.map(item => item.onTokenListUpdate())
         )
     } catch (e) {
-        Rollbar.error("Token list fetch failed, search by address can still be used", e)
+        Rollbar.error(`Token list fetch failed, search by address can still be used ${e}`)
     }
 }
 
@@ -235,7 +235,7 @@ export async function addTokenWithAddress(address) {
         }
 
     } catch (e) {
-        Rollbar.error("Invalid token address:", address, e)
+        Rollbar.info(`Invalid token address: ${address} ${e}`)
     }
 }
 

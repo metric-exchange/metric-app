@@ -14,14 +14,29 @@ import {formatNumber} from "./common/helpers";
 import {supportedLanguages} from "./common/localization/localize";
 
 import LogRocket from 'logrocket';
-
-console.debug("Environment:", process.env.NODE_ENV)
-
+/*
 if (process.env.NODE_ENV === 'production') {
     LogRocket.init('5xh2hd/metric', {
         shouldCaptureIP: false
     });
 }
+*/
+
+import * as Rollbar from "rollbar";
+Rollbar.init(
+    {
+        accessToken: "b317442394e7414b92fabd9608992313",
+        captureUncaught: true,
+        captureUnhandledRejections: true,
+        payload: {
+            enabled: true,
+            captureIp: 'anonymize',
+            environment: process.env.NODE_ENV
+        }
+    }
+)
+
+Rollbar.debug("Environment:", process.env.NODE_ENV)
 
 install(c => {
 

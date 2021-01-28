@@ -1,4 +1,5 @@
 import {fetchJson} from "./json_api_fetch";
+import Rollbar from "rollbar";
 
 export async function getFastGasPriceInWei() {
     let fastGasPrice = await getEtherChainFasGasPriceInWei()
@@ -17,7 +18,7 @@ async function getEtherChainFasGasPriceInWei() {
             fastGasPrice = gasPrices.fast
         }
     } catch (e) {
-        console.warn("Call to price oracle has failed, fallbacking on web3 gas price")
+        Rollbar.warn("Call to price oracle has failed, fallbacking on web3 gas price")
     }
 
     return fastGasPrice * (10 ** 9)

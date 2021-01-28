@@ -1,4 +1,5 @@
 import {fetchJson} from "../json_api_fetch";
+import Rollbar from "rollbar";
 
 export async function getTokenUsdPrice(token) {
     let price = NaN
@@ -12,7 +13,7 @@ export async function getTokenUsdPrice(token) {
         }
 
     } catch (e) {
-        console.warn(`Could not fetch price for token: ${token.symbol}`)
+        Rollbar.warn(`Could not fetch price for token: ${token.symbol}`)
     }
 
     return price

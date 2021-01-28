@@ -40,6 +40,7 @@
     "numeral": "^2.0.6",
     "query-string": "^6.13.8",
     "riot": "^5.0.0",
+    "rollbar": "^2.19.4",
     "settings": "^0.1.1",
     "translations": "^2.2.1",
     "web3": "1.2.8",

@@ -3,6 +3,7 @@ import {getProvider} from "../wallet/wallet_manager";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
 import {tokensList} from "../tokens/token_fetch";
 import {providerUtils} from "@0x/utils";
+import Rollbar from "rollbar";
 
 export class ZeroXOrderBook {
 
@@ -60,7 +61,7 @@ export class ZeroXOrderBook {
                 setTimeout((that, id) => { that.runSynchronizationLoop(id) }, 10000, this, id)
             }
         } catch (e) {
-            console.error("Unexpected error while synchronizing the order book, will keep retrying", e)
+            Rollbar.error("Unexpected error while synchronizing the order book, will keep retrying", e)
             setTimeout((that, id) => { that.runSynchronizationLoop(id) }, 1000, this, id)
         }
     }

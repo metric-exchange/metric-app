@@ -4,6 +4,7 @@ import {ContractWrappers} from "@0x/contract-wrappers";
 import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalPovider} from "./web3Modal";
 import LogRocket from "logrocket";
 import Web3 from "web3";
+import * as Rollbar from "rollbar";
 
 export let walletAddress = undefined
 
@@ -54,7 +55,14 @@ export function updateAccountAddress(accounts) {
         clearWalletProvider()
         walletAddress = undefined
     }
-    LogRocket.identify(walletAddress)
+    //LogRocket.identify(walletAddress)
+    Rollbar.configure({
+        payload: {
+            person: {
+                id: walletAddress
+            }
+        }
+    });
     walletEventListeners.forEach(item => item.onWalletChanges())
 }
 

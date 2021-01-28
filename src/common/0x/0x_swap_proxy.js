@@ -2,6 +2,7 @@ import {fetchJson} from "../json_api_fetch";
 import {stringify} from "query-string";
 import {BigNumber} from "@0x/utils";
 import {getSlippageConfig} from "../order/SlippageConfig";
+import Rollbar from "rollbar";
 
 export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
     try {
@@ -18,7 +19,7 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
             return NaN
         }
     } catch (e) {
-        console.warn("Failed to fetch swap price:", e)
+        Rollbar.warn("Failed to fetch swap price:", e)
         return NaN
     }
 }

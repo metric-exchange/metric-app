@@ -1,5 +1,6 @@
 import {accountAddress, isWalletConnected} from "../wallet/wallet_manager";
 import { HttpClient } from "@0x/connect"
+import Rollbar from "rollbar";
 
 export function userOrders() {
     return orders
@@ -16,7 +17,7 @@ export async function synchronizeUserOrders(userAddress) {
                 orders = await retrieveUserOrders(accountAddress())
                 await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
             } catch (e) {
-                console.warn("user order fetch failed, will keep retrying", e)
+                Rollbar.warn("user order fetch failed, will keep retrying", e)
             }
         }
     }

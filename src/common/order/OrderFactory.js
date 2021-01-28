@@ -1,6 +1,7 @@
 import {METRIC_TOKEN_ADDRESS, tokensList} from "../tokens/token_fetch";
 import {OrderState} from "./OrderStateManager";
 import {approveZeroXAllowance} from "../0x/0x_orders_proxy";
+import Rollbar from "rollbar";
 
 export class OrderFactory {
 
@@ -71,11 +72,11 @@ export class OrderFactory {
                     this.order.sellToken,
                     this.allowanceAddress,
                     async () => {
-                        console.debug(`${this.order.sellToken.symbol} allowance approved`)
+                        Rollbar.debug(`${this.order.sellToken.symbol} allowance approved`)
                         await this.sendOrder()
                     },
                     async () => {
-                        console.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
+                        Rollbar.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
                         await this.stateManager.setInProgressState(OrderState.REJECTED, true)
                     }
                 )
@@ -84,7 +85,7 @@ export class OrderFactory {
             }
             await this.order.clearValues()
         } catch (e) {
-            console.warn("order submit failed with error", e)
+            Rollbar.warn("order submit failed with error", e)
             await this.stateManager.setInProgressState(OrderState.REJECTED, true)
         }
 

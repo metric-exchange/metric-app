@@ -1,5 +1,6 @@
 import {ObservableValue} from "../order/ObservableValue";
 import {fetchJson} from "../json_api_fetch";
+import Rollbar from "rollbar";
 
 export class ZeroXTradesProxy {
     constructor() {
@@ -34,7 +35,7 @@ export class ZeroXTradesProxy {
             }
 
         } catch (e) {
-            console.error('Failed to fetch order fills', e)
+            Rollbar.error('Failed to fetch order fills', e)
         }
     }
 

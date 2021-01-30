@@ -27,7 +27,8 @@
             "twitter" : "Twitter",
             "tracker" : "0xTracker",
             "discord" : "Discord",
-            "medium" : "Medium"
+            "medium" : "Medium",
+            "telegram": "Telegram"
         },
         "my_order_list" : {
             "title" : "MY ORDERS",

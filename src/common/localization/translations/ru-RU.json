@@ -27,7 +27,8 @@
             "twitter" : "Твиттер",
             "tracker" : "0хTracker",
             "discord" : "Дискорд",
-            "medium" : "Медиум"
+            "medium" : "Медиум",
+            "telegram": "Телеграмма"
         },
         "my_order_list" : {
             "title" : "МОИ ЗАЯВКИ",

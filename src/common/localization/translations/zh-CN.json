@@ -27,7 +27,8 @@
             "twitter" : "Twitter",
             "tracker" : "0xTacker",
             "discord" : "Discord",
-            "medium" : "Medium"
+            "medium" : "Medium",
+            "telegram": "Telegram"
         },
         "my_order_list" : {
             "title" : "我的订单",

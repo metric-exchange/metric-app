@@ -56,7 +56,7 @@ a {
 .header-links {
     width: 60%;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto;
     align-items: center;
     justify-items: center;
     color: var(--token-selector-table-text-color);
@@ -80,8 +80,20 @@ a {
     margin-bottom: 30px;
 }
 
+.social-media-links {
+    position: fixed;
+    right: 20px;
+    top: 70px;
+    display: grid;
+    grid-template-columns: auto;
+    grid-gap: 30px;
+}
+
 @media (max-width: 1000px) {
     .header-links{
+        display: none;
+    }
+    .social-media-links {
         display: none;
     }
     .header-settings{

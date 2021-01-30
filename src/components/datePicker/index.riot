@@ -18,7 +18,6 @@
                 let dateInput = document.getElementById(this.inputId())
                 let that = this
                 this.state.datepicker = flatpickr(dateInput, {
-                    disableMobile: true,
                     enableTime: true,
                     defaultDate: this.props.defaultTime,
                     altFormat: "F j, Y H:i K",

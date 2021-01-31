@@ -15,6 +15,9 @@
                 datepicker: null
             },
             onMounted() {
+                if (navigator.userAgent.includes('iPhone')) {
+                    document.getElementById(this.inputId()).classList.add("iphone-date-input")
+                }
                 let dateInput = document.getElementById(this.inputId())
                 let that = this
                 this.state.datepicker = flatpickr(dateInput, {

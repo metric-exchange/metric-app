@@ -26,6 +26,7 @@ input:disabled {
 }
 
 #order-form {
+    position: relative;
     height: 476px;
     display: grid;
     grid-template-rows: 10% 10% 10% 10% 10% 10%;
@@ -156,9 +157,11 @@ input:disabled {
 }
 
 #token-selector-box {
-    position: fixed;
-    top: 20px;
-    width: 310px;
+    position: absolute;
+    box-sizing: border-box;
+    top: 10px;
+    width: 100%;
+    padding: 20px;
     background: var(--swap-form-background-color);
     border-radius: 3px;
     color: var(--token-selector-box-text-color);
@@ -230,7 +233,7 @@ input:disabled {
 
 @media(min-width: 600px) {
     #token-selector-box {
-        width: 400px;
+        padding: 30px;
     }
     #order-form {
         height: 456px;

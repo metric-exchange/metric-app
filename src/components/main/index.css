@@ -108,17 +108,22 @@ a {
     .header-links{
         display: none;
     }
-    .social-media-links {
-        display: none;
-    }
     .header-settings{
         width: 50%;
     }
     .header-logo {
         width: 50%;
     }
+}
+
+@media (max-width: 1050px) {
+
     #footer {
         display: block;
+    }
+
+    .social-media-links {
+        display: none;
     }
     .dashboard-links {
         position: unset;

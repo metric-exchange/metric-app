@@ -65,7 +65,7 @@
 }
 
 .dashboard #token-selector .tokens {
-    height: 420px;
+    height: 400px;
     overflow: auto;
 }
 
@@ -85,7 +85,7 @@
     }
 
     .dashboard #token-selector .tokens {
-        height: 410px;
+        height: 370px;
     }
 
 }

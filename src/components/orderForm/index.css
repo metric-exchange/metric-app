@@ -156,7 +156,7 @@ input:disabled {
 }
 
 #token-selector-box {
-    position: absolute;
+    position: fixed;
     top: 20px;
     width: 310px;
     background: var(--swap-form-background-color);

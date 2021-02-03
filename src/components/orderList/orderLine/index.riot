@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="my-order-fill">{ this.i18next.t('my_order_list.header.filled') } { this.formatNumber(filledTakerPercentage(props.order).toNumber()) }%</div>
-        <div class="my-order-expiry">{ this.i18next.t('my_order_list.header.expires_in') } { getDateDiff(props.order.order.expirationTimeSeconds) }</div>
+        <div class="my-order-expiry">{ this.i18next.t('my_order_list.header.expires_in') } { getDateDiff(props.order) }</div>
         <div class="my-order-price">{ this.i18next.t('order.price') } { this.formatNumber(orderPrice(props.order).toNumber()) }</div>
     </div>
 
@@ -28,6 +28,7 @@
         import moment from 'moment';
         import Image from '../../orderForm/tokenSelector/close.svg'
         import CheckBox from '../../checkBox/index.riot'
+        import {BigNumber} from "@0x/utils";
 
         export default {
             components: {
@@ -39,7 +40,6 @@
             state: {
                 makerToken: undefined,
                 takerToken: undefined,
-                priceDirectionReverted: false,
                 selected: false
             },
             onBeforeMount() {
@@ -59,61 +59,70 @@
                 }
             },
             initTokens() {
-                let prefixLen = "0xf47261b0000000000000000000000000".length
-                let makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
-                let takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
-                this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === makerAddress)
-                this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === takerAddress)
+                if (this.props.order.version === 3) {
+                    let prefixLen = "0xf47261b0000000000000000000000000".length
+                    let makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
+                    let takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
+                    this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === makerAddress)
+                    this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === takerAddress)
+                } else {
+                    this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === this.props.order.order.makerToken)
+                    this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === this.props.order.order.takerToken)
+                }
             },
             makerTotalAmount(order) {
-                return order.order.makerAssetAmount.plus(order.order.makerFee)
-                    .dividedBy(10**this.state.makerToken.decimals)
+                if (order.version === 3) {
+                    return order.order.makerAssetAmount.plus(order.order.makerFee)
+                        .dividedBy(10**this.state.makerToken.decimals)
+                } else {
+                    return new BigNumber(order.order.makerAmount)
+                        .dividedBy(10**this.state.makerToken.decimals)
+                }
             },
             makerAmount(order) {
-                return order.order.makerAssetAmount
-                    .dividedBy(10**this.state.makerToken.decimals)
+                if (order.version === 3) {
+                    return order.order.makerAssetAmount
+                        .dividedBy(10**this.state.makerToken.decimals)
+                } else {
+                    return new BigNumber(order.order.makerAmount)
+                        .dividedBy(10**this.state.makerToken.decimals)
+                }
             },
             takerAmount(order) {
-                return order.order.takerAssetAmount
-                    .dividedBy(10**this.state.takerToken.decimals)
+                if (order.version === 3) {
+                    return order.order.takerAssetAmount
+                        .dividedBy(10**this.state.takerToken.decimals)
+                } else {
+                    return new BigNumber(order.order.takerAmount)
+                        .dividedBy(10**this.state.takerToken.decimals)
+                }
             },
             filledTakerPercentage(order) {
-                let remaining = parseInt(order.metaData.remainingFillableTakerAssetAmount)
-                return order.order.takerAssetAmount
-                    .minus(remaining)
-                    .multipliedBy(100)
-                    .dividedBy(order.order.takerAssetAmount)
+                if (order.version === 3) {
+                    let remaining = parseInt(order.metaData.remainingFillableTakerAssetAmount)
+                    return order.order.takerAssetAmount
+                        .minus(remaining)
+                        .multipliedBy(100)
+                        .dividedBy(order.order.takerAssetAmount)
+                } else {
+                    return new BigNumber(order.metaData.filledAmount_takerToken)
+                                    .dividedBy(order.order.takerAssetAmount)
+                }
             },
             orderPrice(order) {
-                if (this.state.priceDirectionReverted) {
-                    return this.makerAmount(order).dividedBy(this.takerAmount(order))
+                return this.takerAmount(order).dividedBy(this.makerAmount(order))
+            },
+            getDateDiff(order) {
+                let timestampSeconds = 0
+                if (order.version === 3) {
+                    timestampSeconds = order.order.expirationTimeSeconds
                 } else {
-                    return this.takerAmount(order).dividedBy(this.makerAmount(order))
+                    timestampSeconds = order.order.expiry
                 }
-            },
-            revertPriceDirection() {
-                this.update({priceDirectionReverted : !this.state.priceDirectionReverted})
-            },
-            priceCouple() {
-                if (this.state.priceDirectionReverted) {
-                    return `${this.state.takerToken.symbol}/${this.state.makerToken.symbol}`
-                } else {
-                    return `${this.state.makerToken.symbol}/${this.state.takerToken.symbol}`
-                }
-            },
-            getDateDiff(timestampSeconds) {
                 let langId = this.i18next.language
                 let lang = this.supportedLanguages[langId]
                 moment.locale(langId, { relativeTime: lang.translation.relativeTime});
                 return moment(timestampSeconds * 1000).fromNow()
-            },
-            takerAddress() {
-                let address = this.props.order.order.takerAddress
-                if ( address === "0x0000000000000000000000000000000000000000") {
-                    return null
-                } else {
-                    return address.substr(0, 4) + '...' + address.substr(38, 40)
-                }
             },
             handleClick(e) {
                 this.state.selected = !this.state.selected

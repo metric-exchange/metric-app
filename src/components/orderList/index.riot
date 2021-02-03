@@ -76,7 +76,7 @@
             async onUserOrderUpdates() {
 
                 if (isWalletConnected()) {
-                    this.state.orders = userOrders()
+                    this.state.orders = userOrders().filter(o => o.version === 3 || o.metaData.status === 1)
                 } else {
                     this.state.orders = []
                 }

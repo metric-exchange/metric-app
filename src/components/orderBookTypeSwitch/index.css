@@ -1,0 +1,5 @@
+.order-book-type-switch {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+}

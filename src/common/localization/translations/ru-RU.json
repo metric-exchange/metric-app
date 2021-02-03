@@ -84,7 +84,8 @@
             "recipient_address_placeholder" : "адрес получателя (необязательно)",
             "market_type" : "РЫНОЧНЫЙ",
             "limit_type" : "ПРЕДЕЛЬНЫЙ",
-            "slippage" : "допуск проскальзывания"
+            "slippage" : "допуск проскальзывания",
+            "use_hiding_game": "использовать The Hiding Game"
         },
         "submit" : {
             "initializing" : "ИНИЦИАЛИЗАЦИЯ",

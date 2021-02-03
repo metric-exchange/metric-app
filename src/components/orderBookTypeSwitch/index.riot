@@ -1,0 +1,42 @@
+<order-book-type-switch>
+
+    <div class="order-book-type-switch" if={ isOrderSupportedByHidingGame() }>
+        <div>{ this.i18next.t('order.use_hiding_game') }</div>
+        <div>
+            <check-box checked={ props.orderFactory.order.useHidingGame.value } onclick={ toggleHidingGame } />
+        </div>
+    </div>
+
+    <script>
+
+        import './index.css'
+        import CheckBox from '../checkBox/index.riot'
+        import {getHidingGameProxy} from "../../common/0x/0x_user_orders";
+
+        export default {
+            components: {
+                CheckBox
+            },
+            onBeforeMount() {
+                this.props.orderFactory.order.tokensChangesObservers.register(this, 'updateDisplay')
+                getHidingGameProxy().supportedTokens.observe(this, 'updateDisplay')
+            },
+            updateDisplay() {
+                this.update()
+            },
+            toggleHidingGame() {
+                this.props.orderFactory.toggleHidingGameSupport()
+                this.update()
+            },
+            isOrderSupportedByHidingGame() {
+                return this.props.orderFactory.order.isLimitOrder() &&
+                    getHidingGameProxy().supportedTokens.value
+                        .find(t => t.address.toLowerCase() === this.props.orderFactory.order.sellToken.address.toLowerCase()) &&
+                    getHidingGameProxy().supportedTokens.value
+                        .find(t => t.address.toLowerCase() === this.props.orderFactory.order.buyToken.address.toLowerCase())
+            }
+        }
+
+    </script>
+
+</order-book-type-switch>

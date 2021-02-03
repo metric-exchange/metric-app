@@ -14,6 +14,8 @@ export function resetTokensInfo() {
         t.balance = NaN
         t.allowance.ExchangeProxyAllowanceTarget = NaN
         t.allowance.Erc20Proxy = NaN
+        t.allowance.ExchangeProxyV4Address = NaN
+
     })
 }
 
@@ -111,13 +113,15 @@ async function updateBalance(token, address, balance) {
             await Promise.all(
                 [
                     fetchAllowance(token, address, Erc20ProxyAddress),
-                    fetchAllowance(token, address, ExchangeProxyAllowanceTargetAddress)
+                    fetchAllowance(token, address, ExchangeProxyAllowanceTargetAddress),
+                    fetchAllowance(token, address, ExchangeProxyV4Address)
                 ]
             )
         } else {
             let allowance = token.symbol !== "ETH" ? 0 : 1e27
             token.allowance[Erc20ProxyAddress] = allowance
             token.allowance[ExchangeProxyAllowanceTargetAddress] = allowance
+            token.allowance[ExchangeProxyV4Address] = allowance
             await Promise.all(
                 allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
             )
@@ -179,7 +183,8 @@ export async function loadTokenList()
                         balance: NaN,
                         allowance: {
                             Erc20Proxy: NaN,
-                            ExchangeProxyAllowanceTarget: NaN
+                            ExchangeProxyAllowanceTarget: NaN,
+                            ExchangeProxyV4Address: NaN
                         },
                         address: t.address,
                         symbol: t.symbol,
@@ -219,7 +224,8 @@ export async function addTokenWithAddress(address) {
         token.balance = NaN
         token.allowance = {
             Erc20Proxy: NaN,
-            ExchangeProxyAllowanceTarget: NaN
+            ExchangeProxyAllowanceTarget: NaN,
+            ExchangeProxyV4Address: NaN
         }
 
         customTokensManager.addToken(new Token(token.symbol, token.address, token.decimals))
@@ -247,7 +253,8 @@ function initTokenList() {
             balance: NaN,
             allowance: {
                 Erc20Proxy: NaN,
-                ExchangeProxyAllowanceTarget: NaN
+                ExchangeProxyAllowanceTarget: NaN,
+                ExchangeProxyV4Address: NaN
             },
             address: t.address,
             symbol: t.symbol,
@@ -268,7 +275,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -280,7 +288,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -292,7 +301,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -304,7 +314,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -316,7 +327,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -339,7 +351,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -351,7 +364,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -362,7 +376,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     },
@@ -373,7 +388,8 @@ let defaultTokens = [
         balance: NaN,
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
+            Erc20Proxy : NaN,
+            ExchangeProxyV4Address: NaN
         },
         disabled: false
     }
@@ -392,3 +408,4 @@ export let DAI_TOKEN_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
 export let ExchangeProxyAllowanceTargetAddress = "0xf740b67da229f2f10bcbd38a7979992fcc71b8eb"
 export let Erc20ProxyAddress = "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
+export let ExchangeProxyV4Address = "0xdef1c0ded9bec7f1a1670819833240f027b25eff"

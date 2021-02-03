@@ -8,18 +8,19 @@
     align-items: center;
     justify-items: center;
     cursor: pointer;
+    border-radius: 2px;
 }
 
 .check-box-unchecked {
-    height: 5px;
-    width: 5px;
+    height: 6px;
+    width: 6px;
     background-color: var(--main-background-color);
 }
 
 .check-box-checked {
-    height: 5px;
-    width: 5px;
-    background-color: var(--theme-switch-active-button-background-color);
+    height: 6px;
+    width: 6px;
+    background-color: var(--theme-switch-active-button-border-color);
     border: 1px solid var(--theme-switch-active-button-border-color);
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.2);
     border-radius: 2px;

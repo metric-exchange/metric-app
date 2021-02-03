@@ -3,8 +3,9 @@ import {BigNumber} from "@0x/utils";
 import moment from "moment";
 import {OrderState} from "./OrderStateManager";
 import {submitOrder} from "../0x/0x_orders_proxy";
-import {Erc20ProxyAddress} from "../tokens/token_fetch";
+import {Erc20ProxyAddress, ExchangeProxyV4Address} from "../tokens/token_fetch";
 import {formatNumber} from "../helpers";
+import {getHidingGameProxy} from "../0x/0x_user_orders";
 
 export class LimitOrderFactory extends OrderFactory {
 
@@ -24,6 +25,16 @@ export class LimitOrderFactory extends OrderFactory {
         await super.clearValues();
         this.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
         this.recipientAddress = null
+    }
+
+    async toggleHidingGameSupport() {
+        this.order.sellPrice.disableFee = !this.order.useHidingGame.value
+        if (!this.order.useHidingGame.value) {
+            this.allowanceAddress = ExchangeProxyV4Address
+        } else {
+            this.allowanceAddress = Erc20ProxyAddress
+        }
+        await this.order.useHidingGame.set(undefined, this.order.sellPrice.disableFee)
     }
 
     setExpiryTime(dateString, format) {
@@ -50,7 +61,13 @@ export class LimitOrderFactory extends OrderFactory {
                 token: this.order.sellToken
             },
             true)
-        await submitOrder(order)
+
+        if (this.order.useHidingGame.value) {
+            let hiddenOrder = await getHidingGameProxy().buildSignedOrder(order)
+            await getHidingGameProxy().sendOrder(hiddenOrder)
+        } else {
+            await submitOrder(order)
+        }
 
     }
 

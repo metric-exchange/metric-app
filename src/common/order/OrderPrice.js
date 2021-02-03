@@ -12,6 +12,7 @@ export class OrderPrice {
         this.quoteToken = quoteToken
         this.inverted = false
         this.calculated = false
+        this.disableFee = false
 
         this.priceInversionObservers = new ObservationRegister()
     }
@@ -129,6 +130,10 @@ export class OrderPrice {
     }
 
     tryMetricFee() {
+        if (this.disableFee) {
+            return 0
+        }
+
         if (this.baseToken.symbol === "ETH" && this.quoteToken.symbol === "WETH") {
             return 0
         }

@@ -84,7 +84,8 @@
             "recipient_address_placeholder" : "收件人地址（可选）",
             "market_type" : "销售",
             "limit_type" : "限",
-            "slippage" :  "滑移公差"
+            "slippage" :  "滑移公差",
+            "use_hiding_game": "利用 The Hiding Game"
         },
         "submit" : {
             "initializing" : "初始化",

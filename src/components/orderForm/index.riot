@@ -24,8 +24,6 @@
                 order-factory={ props.orderFactory }
         />
 
-        <slippage-percentage if={ props.orderFactory.order.isMarketOrder() } order-factory={ props.orderFactory } />
-
         <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">
             <div class="order-input order-valid-until-label">
                 { this.i18next.t('order.valid_until') }
@@ -38,6 +36,12 @@
                 />
             </div>
         </div>
+
+        <div class="order-line">
+            <order-book-type-switch order-factory={ props.orderFactory } />
+        </div>
+
+        <slippage-percentage if={ props.orderFactory.order.isMarketOrder() } order-factory={ props.orderFactory } />
 
 <!--        <div class="order-line">-->
 <!--            <div class="order-input">-->
@@ -73,6 +77,7 @@
         import OrderPrice from './orderPrice/index.riot'
         import DatePicker from '../datePicker/index.riot'
         import SlippagePercentage from './slippagePercentage/index.riot'
+        import OrderBookTypeSwitch from '../orderBookTypeSwitch/index.riot'
 
         export default {
             components: {
@@ -83,7 +88,8 @@
                 OrderSellAmount,
                 OrderBuyAmount,
                 OrderPrice,
-                SlippagePercentage
+                SlippagePercentage,
+                OrderBookTypeSwitch
             },
             state: {
                 showTokenSelector: false
@@ -130,6 +136,7 @@
                 } else {
                     this.props.orderFactory.order.setTokens(this.props.orderFactory.order.sellToken, token)
                 }
+                this.update()
             },
             toggleOrderType(type) {
                 if (type === 1) {

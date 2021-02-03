@@ -13,6 +13,15 @@ export async function fetchJson(url) {
     return tryJson
 }
 
+export async function postJson(url, content) {
+    return await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(content)
+        })
+        .then(handleErrors)
+        .then(r => r.json())
+}
+
 function handleErrors(response) {
     if (!response.ok) {
         throw Error(response.statusText);

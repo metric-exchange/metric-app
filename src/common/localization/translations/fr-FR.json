@@ -84,7 +84,8 @@
             "recipient_address_placeholder" : "adresse du destinataire (optionelle)",
             "market_type" : "MARCHÉ",
             "limit_type" : "LIMITE",
-            "slippage": "Tolérance de glissement"
+            "slippage": "Tolérance de glissement",
+            "use_hiding_game": "Utiliser The Hiding Game"
         },
         "submit" : {
             "initializing" : "INITIALIZATION EN COURS",

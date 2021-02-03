@@ -48,20 +48,41 @@ export async function submitOrder(order) {
         orderParams
     )
 
-    return ZeroXOrderBook.relayClient.submitOrderAsync(signedOrder)
+    await ZeroXOrderBook.relayClient.submitOrderAsync(signedOrder)
 }
 
 export async function cancelOrder(order) {
-    return (await getContractWrapper())
+    if (order.version === 3) {
+        return (await getContractWrapper())
             .exchange
             .cancelOrder(order.order)
             .awaitTransactionSuccessAsync({ from: accountAddress() })
+    } else {
+        return (await getContractWrapper())
+            .exchangeProxy
+            .cancelRfqOrder(order.order)
+            .awaitTransactionSuccessAsync({ from: accountAddress() })
+    }
+
 }
 export async function batchCancelOrders(orders) {
-    return (await getContractWrapper())
-        .exchange
-        .batchCancelOrders(orders.map(o => o.order))
-        .awaitTransactionSuccessAsync({ from: accountAddress() })
+    let contractWrapper = await getContractWrapper()
+    let v3Orders = orders.filter(o => o.version === 3)
+    let v4Orders = orders.filter(o => o.version === 4)
+
+    if (v3Orders.length > 0) {
+        await contractWrapper
+            .exchange
+            .batchCancelOrders(orders.map(o => o.order))
+            .awaitTransactionSuccessAsync({ from: accountAddress() })
+    }
+
+    if (v4Orders.length > 0) {
+        await contractWrapper
+            .exchangeProxy
+            .batchCancelRfqOrders(orders.map(o => o.order))
+            .awaitTransactionSuccessAsync({ from: accountAddress() })
+    }
 }
 
 function isValidAddress(address) {

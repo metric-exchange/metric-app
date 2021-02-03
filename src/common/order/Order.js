@@ -26,6 +26,7 @@ export class Order {
         this.buyAmount.observe(this, 'setPriceOnBuyAmountChange')
 
         this.tokensChangesObservers = new ObservationRegister()
+        this.useHidingGame = new ObservableValue(false)
     }
 
     isLimitOrder() {

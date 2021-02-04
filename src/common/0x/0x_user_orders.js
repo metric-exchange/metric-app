@@ -12,6 +12,7 @@ export function registerForUserOrderUpdates(item) {
 }
 
 export async function synchronizeUserOrders(userAddress) {
+    await getHidingGameProxy().init()
     if (isWalletConnected()) {
         if (userAddress === accountAddress()) {
             try {
@@ -29,7 +30,6 @@ export async function synchronizeUserOrders(userAddress) {
 }
 
 async function retrieveUserOrders(address) {
-    await getHidingGameProxy().init()
     let hiddenOrders = await getHidingGameProxy().getOrders(address)
 
     let zeroXOrders = await relay.getOrdersAsync({

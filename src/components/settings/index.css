@@ -14,13 +14,29 @@
     border-radius: 50%;
     width: 29px;
     height: 29px;
-    cursor: pointer;
 }
 
 .identicon-address {
     cursor: pointer;
     color: var(--main-text-color);
     font-style: normal;
+}
+
+.identicon-menu {
+    display: grid;
+    border-radius: 3px;
+    padding: 5px;
+    grid-template-columns: auto auto;
+    grid-gap: 5px;
+    cursor: pointer;
+}
+
+.identicon-menu:hover {
+    background-color: var(--token-selector-table-hover-background-color);
+}
+
+.identicon-menu svg path {
+    stroke: var(--main-text-color);
 }
 
 .dropdown {

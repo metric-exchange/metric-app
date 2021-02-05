@@ -52,13 +52,14 @@ export async function submitOrder(order) {
 }
 
 export async function cancelOrder(order) {
+    let contractWrapper = await getContractWrapper()
     if (order.version === 3) {
-        return (await getContractWrapper())
+        await contractWrapper
             .exchange
             .cancelOrder(order.order)
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     } else {
-        return (await getContractWrapper())
+        await contractWrapper
             .exchangeProxy
             .cancelRfqOrder(order.order)
             .awaitTransactionSuccessAsync({ from: accountAddress() })

@@ -22,6 +22,7 @@
                    onkeyup={ updatePrice }
                    placeholder="{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }"
                    disabled={ props.orderFactory.order.isMarketOrder() }
+                   step="any"
             />
         </div>
     </div>

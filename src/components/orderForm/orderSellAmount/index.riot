@@ -5,7 +5,7 @@
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellAmount.value) }>
                 { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
             </div>
-            <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.you_pay') }"/>
+            <input type="number" id="order-amount-input" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.you_pay') }" step="any"/>
         </div>
         <div if={ isTokenInfoUpdated() } class="max-amount" onclick={ () => props.orderFactory.order.setMaxSellAmount() }>{ this.i18next.t('order.max_amount') }</div>
         <div class="max-amount-loader" if={ !isTokenInfoUpdated() } >

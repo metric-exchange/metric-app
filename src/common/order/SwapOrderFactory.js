@@ -24,9 +24,8 @@ export class SwapOrderFactory extends OrderFactory {
         this.slippagePercentage = slippage
     }
 
-    async sendOrder() {
+    async sendOrder(order) {
 
-        let order = await this.buildOrderDetails()
         let quote = await callSwapApi(order)
 
         quote.from = this.account
@@ -45,10 +44,10 @@ export class SwapOrderFactory extends OrderFactory {
         await window.web3Modal.eth.sendTransaction(quote);
     }
 
-    async buildOrderDetails() {
-        let orderDetails = this.order.buildOrderDetails(this.order.sellAmount.value, this.order.buyAmount.value)
+    buildOrderDetails(sellAmount, buyAmount) {
+        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
 
-        let sellAmount =
+        let sellAmountWithFee =
             new BigNumber(orderDetails.sellAmount + orderDetails.sellFeeAmount).integerValue(BigNumber.ROUND_DOWN)
 
         let fee =
@@ -59,7 +58,7 @@ export class SwapOrderFactory extends OrderFactory {
         return {
             sellToken: this.order.sellToken.address,
             buyToken: this.order.buyToken.address,
-            sellAmount: `${sellAmount}`,
+            sellAmount: `${sellAmountWithFee}`,
             buyTokenPercentageFee: fee,
             feeRecipient : orderDetails.feeRecipient,
             affiliateAddress : orderDetails.feeRecipient,

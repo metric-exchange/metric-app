@@ -45,9 +45,8 @@ export class LimitOrderFactory extends OrderFactory {
         this.recipientAddress = address
     }
 
-    async sendOrder() {
+    async sendOrder(order) {
         await this.stateManager.setInProgressState(OrderState.MATCHING_ORDER, {}, true)
-        let order = this.buildOrderDetails(this.order.sellAmount.value, this.order.buyAmount.value)
 
         let orderAmount =
             order.makerAssetAmount

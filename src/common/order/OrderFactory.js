@@ -66,6 +66,7 @@ export class OrderFactory {
         this.stateManager.lock()
 
         try {
+            let order = this.buildOrderDetails(this.order.sellAmount.value, this.order.buyAmount.value)
             if (this.stateManager.current.code === OrderState.INSUFFICIENT_TOKEN_ALLOWANCE) {
                 await this.stateManager.setInProgressState(OrderState.APPROVING_TOKEN, {token: this.order.sellToken}, true)
                 await approveZeroXAllowance(
@@ -73,7 +74,7 @@ export class OrderFactory {
                     this.allowanceAddress,
                     async () => {
                         Rollbar.debug(`${this.order.sellToken.symbol} allowance approved`)
-                        await this.sendOrder()
+                        await this.sendOrder(order)
                     },
                     async () => {
                         Rollbar.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
@@ -81,7 +82,7 @@ export class OrderFactory {
                     }
                 )
             } else {
-                await this.sendOrder()
+                await this.sendOrder(order)
             }
             await this.order.clearValues()
         } catch (e) {
@@ -96,6 +97,10 @@ export class OrderFactory {
     }
 
     async sendOrder() {
+
+    }
+
+    buildOrderDetails(sellAmount, buyAmount) {
 
     }
 

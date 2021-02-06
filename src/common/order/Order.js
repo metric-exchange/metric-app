@@ -71,10 +71,9 @@ export class Order {
     }
 
     async setMaxSellAmount() {
-
         let maxAmount = this.sellToken.balance
-        if (this.sellToken.symbol === "ETH") {
-            maxAmount = Math.max(0, maxAmount - 0.1)
+        if (this.isMarketOrder() && this.sellToken.symbol === "ETH") {
+            maxAmount -= this.sellPrice.gasCost
         }
 
         await this.sellAmount.set(

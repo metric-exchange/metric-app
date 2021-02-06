@@ -1,6 +1,6 @@
 import {calculateMetricFee} from "../metric_fee";
 import {ObservableValue} from "./ObservableValue";
-import {getSwapPrice, getSwapPriceWithForBuy} from "../0x/0x_swap_proxy";
+import {getSwapPrice, getSwapPriceForBuy} from "../0x/0x_swap_proxy";
 import {ObservationRegister} from "./ObservationRegister";
 import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./OrderEventSource";
 
@@ -13,6 +13,8 @@ export class OrderPrice {
         this.inverted = false
         this.calculated = false
         this.disableFee = false
+
+        this.gasCost = 0
 
         this.priceInversionObservers = new ObservationRegister()
     }
@@ -73,26 +75,29 @@ export class OrderPrice {
     async refreshMarketPrice(amount = 1, source = null) {
         let price = await getSwapPrice(this.baseToken, this.quoteToken, amount)
 
+        this.gasCost = price.gasCost
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,
-            price
+            price.price
         )
     }
 
     async refreshMarketPriceForBuy(amount = 1, source = null) {
-        let price = await getSwapPriceWithForBuy(this.baseToken, this.quoteToken, amount)
+        let price = await getSwapPriceForBuy(this.baseToken, this.quoteToken, amount)
+        this.gasCost = price.gasCost
+
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,
-            price
+            price.price
         )
     }
 
     async fetchDisplayMarketPrice() {
         let price = await getSwapPrice(this.baseToken, this.quoteToken)
-        if (this.inverted && price > 0) {
-            return 1 / price
+        if (this.inverted && price.price > 0) {
+            return 1 / price.price
         } else {
-            return price
+            return price.price
         }
     }
 

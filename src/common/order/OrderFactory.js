@@ -41,6 +41,8 @@ export class OrderFactory {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_BALANCE, {token: this.order.sellToken})
         } else if (this.order.sellToken.balance < this.order.sellAmount.value) {
             await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: this.order.sellToken})
+        } else if (this.order.isMarketOrder() && this.ethOrderValue() > tokensList().find(t => t.symbol === "ETH").balance) {
+            await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: tokensList().find(t => t.symbol === "ETH")})
         } else if (isNaN(this.order.sellToken.allowance[this.allowanceAddress])) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_ALLOWANCE, {token: this.order.sellToken})
         } else if (this.order.sellToken.allowance[this.allowanceAddress] < this.order.sellAmount.value) {
@@ -51,6 +53,14 @@ export class OrderFactory {
             await this.stateManager.setReadyState(OrderState.VALID_UNWRAP)
         } else {
             await this.stateManager.setReadyState(OrderState.VALID_ORDER)
+        }
+    }
+
+    ethOrderValue() {
+        if (this.order.sellToken.symbol === "ETH") {
+            return this.order.sellPrice.gasCost + this.order.sellAmount.value
+        } else {
+            return this.order.sellPrice.gasCost
         }
     }
 

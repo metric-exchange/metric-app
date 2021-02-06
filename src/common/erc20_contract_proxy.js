@@ -25,7 +25,7 @@ export const Erc20ContractProxy = {
             .approve(targetAddress, window.web3Modal.utils.toBN(maxAllowance.toFixed()))
             .send({from: accountAddress()})
             .on('confirmation', async (confirmationNumber, receipt) => {
-                if (confirmationNumber === 1) {
+                if (confirmationNumber === 3) {
                     await confirmationCallBack()
                 }
             })

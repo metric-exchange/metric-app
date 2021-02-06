@@ -16,14 +16,14 @@ export class LimitOrderFactory extends OrderFactory {
             Erc20ProxyAddress,
             accountAddress
         );
-        this.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
+        this.expiryTime = moment().add(7, 'days').format("yyyy-MM-DDTHH:mm")
         this.recipientAddress = null
         this.order.sellPrice.calculated = true
     }
 
     async clearValues() {
         await super.clearValues();
-        this.expiryTime = moment().add(1, 'years').format("yyyy-MM-DDTHH:mm")
+        this.expiryTime = moment().add(7, 'days').format("yyyy-MM-DDTHH:mm")
         this.recipientAddress = null
     }
 

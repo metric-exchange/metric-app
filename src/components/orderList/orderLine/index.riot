@@ -24,7 +24,7 @@
 
     <script>
         import './index.css'
-        import {tokensList} from "../../../common/tokens/token_fetch";
+        import {findOrAddTokenWithAddress, tokensList} from "../../../common/tokens/token_fetch";
         import moment from 'moment';
         import Image from '../../orderForm/tokenSelector/close.svg'
         import CheckBox from '../../checkBox/index.riot'
@@ -46,8 +46,6 @@
                 this.initTokens()
             },
             onBeforeUpdate() {
-                this.initTokens()
-
                 let orderElement = document.getElementById(this.props.order.metaData.orderHash)
                 if (orderElement !== null) {
                     this.state.selected = false
@@ -58,17 +56,21 @@
                     }
                 }
             },
-            initTokens() {
+            async initTokens() {
+                let makerAddress = ""
+                let takerAddress = ""
+
                 if (this.props.order.version === 3) {
                     let prefixLen = "0xf47261b0000000000000000000000000".length
-                    let makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
-                    let takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
-                    this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === makerAddress)
-                    this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === takerAddress)
+                    makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
+                    takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
                 } else {
-                    this.state.makerToken = tokensList().find(t => t.address.toLowerCase() === this.props.order.order.makerToken)
-                    this.state.takerToken = tokensList().find(t => t.address.toLowerCase() === this.props.order.order.takerToken)
+                    makerAddress = this.props.order.order.makerToken
+                    takerAddress = this.props.order.order.takerToken
                 }
+
+                this.state.makerToken = await findOrAddTokenWithAddress(makerAddress)
+                this.state.takerToken = await findOrAddTokenWithAddress(takerAddress)
             },
             makerTotalAmount(order) {
                 if (order.version === 3) {

@@ -3,6 +3,7 @@ import {ObservableValue} from "./ObservableValue";
 import {getSwapPrice, getSwapPriceForBuy} from "../0x/0x_swap_proxy";
 import {ObservationRegister} from "./ObservationRegister";
 import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./OrderEventSource";
+import {BigNumber} from "@0x/utils";
 
 export class OrderPrice {
 
@@ -14,7 +15,7 @@ export class OrderPrice {
         this.calculated = false
         this.disableFee = false
 
-        this.gasCost = 0
+        this.gasCost = new BigNumber(0)
 
         this.priceInversionObservers = new ObservationRegister()
     }
@@ -41,10 +42,10 @@ export class OrderPrice {
         let token = this.baseToken
         this.baseToken = this.quoteToken
         this.quoteToken = token
-        if (this.price.value > 0) {
+        if (this.price.value.isGreaterThan(0)) {
             await this.price.set(
                 new OrderEventSource(OrderEventProperties.Price, OrderEventActions.TokenChange),
-                1 / this.price.value
+                new BigNumber(1).dividedBy(this.price.value)
             )
         }
     }
@@ -59,8 +60,8 @@ export class OrderPrice {
             this.calculated = false
         }
 
-        if (this.inverted && price > 0 && !this.calculated) {
-            await this.price.set(event, 1/price)
+        if (this.inverted && price.isGreaterThan(0) && !this.calculated) {
+            await this.price.set(event, new BigNumber(1).dividedBy(price))
         } else {
             await this.price.set(event, price)
         }
@@ -76,6 +77,7 @@ export class OrderPrice {
         let price = await getSwapPrice(this.baseToken, this.quoteToken, amount)
 
         this.gasCost = price.gasCost
+
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,
             price.price
@@ -95,15 +97,15 @@ export class OrderPrice {
     async fetchDisplayMarketPrice() {
         let price = await getSwapPrice(this.baseToken, this.quoteToken)
         if (this.inverted && price.price > 0) {
-            return 1 / price.price
+            return new BigNumber(1).dividedBy(price.price)
         } else {
             return price.price
         }
     }
 
     displayPrice() {
-        if (this.inverted && this.price.value > 0) {
-            return 1 / this.price.value
+        if (this.inverted && this.price.value.isGreaterThan(0)) {
+            return new BigNumber(1).dividedBy(this.price.value)
         } else {
             return this.price.value
         }
@@ -114,15 +116,15 @@ export class OrderPrice {
     }
 
     feeAdjustedSellAmountFor(amount) {
-        return amount * 1000 / (1000 + this.tryMetricFee() * 1000)
+        return amount.dividedBy(1 + this.tryMetricFee())
     }
 
     sellFeeAmountFor(sellAmount) {
-        return this.feeAdjustedSellAmountFor(sellAmount) * this.tryMetricFee()
+        return this.feeAdjustedSellAmountFor(sellAmount).multipliedBy(this.tryMetricFee())
     }
 
     buyFeeAmountFor(amount) {
-        return amount * this.tryMetricFee()
+        return amount.multipliedBy(this.tryMetricFee())
     }
 
     convertSellAmount(token, amount) {
@@ -130,7 +132,7 @@ export class OrderPrice {
     }
 
     convertBuyAmount(token, amount) {
-        let feeAdjustedAmount = amount * (1000 + this.tryMetricFee() * 1000) / 1000
+        let feeAdjustedAmount = amount.multipliedBy(1 + this.tryMetricFee())
         return this.convertTokenAmount(token, feeAdjustedAmount)
     }
 
@@ -154,13 +156,13 @@ export class OrderPrice {
         if (token.address === this.baseToken.address) {
             return {
                 token: this.quoteToken,
-                amount: amount * this.price.value
+                amount: amount.multipliedBy(this.price.value)
             }
         }
 
         return {
             token: this.baseToken,
-            amount: amount / this.price.value
+            amount: amount.dividedBy(this.price.value)
         }
     }
 

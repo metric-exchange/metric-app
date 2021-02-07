@@ -39,13 +39,13 @@ export class OrderFactory {
             await this.fillMissingParamsStatus()
         } else if (isNaN(this.order.sellToken.balance)) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_BALANCE, {token: this.order.sellToken})
-        } else if (this.order.sellToken.balance < this.order.sellAmount.value) {
+        } else if (this.order.sellToken.balance.isLessThan(this.order.sellAmount.value)) {
             await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: this.order.sellToken})
-        } else if (this.order.isMarketOrder() && this.ethOrderValue() > tokensList().find(t => t.symbol === "ETH").balance) {
+        } else if (this.order.isMarketOrder() && this.ethOrderValue().isGreaterThan(tokensList().find(t => t.symbol === "ETH").balance)) {
             await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: tokensList().find(t => t.symbol === "ETH")})
         } else if (isNaN(this.order.sellToken.allowance[this.allowanceAddress])) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_ALLOWANCE, {token: this.order.sellToken})
-        } else if (this.order.sellToken.allowance[this.allowanceAddress] < this.order.sellAmount.value) {
+        } else if (this.order.sellAmount.value.isGreaterThan(this.order.sellToken.allowance[this.allowanceAddress])) {
             await this.stateManager.setReadyState(OrderState.INSUFFICIENT_TOKEN_ALLOWANCE, {token: this.order.sellToken})
         } else if (this.order.sellToken.symbol === "ETH" && this.order.buyToken.symbol === "WETH") {
             await this.stateManager.setReadyState(OrderState.VALID_WRAP)
@@ -58,7 +58,7 @@ export class OrderFactory {
 
     ethOrderValue() {
         if (this.order.sellToken.symbol === "ETH") {
-            return this.order.sellPrice.gasCost + this.order.sellAmount.value
+            return this.order.sellPrice.gasCost.plus(this.order.sellAmount.value)
         } else {
             return this.order.sellPrice.gasCost
         }
@@ -96,7 +96,7 @@ export class OrderFactory {
             }
             await this.order.clearValues()
         } catch (e) {
-            Rollbar.warn(`order submit failed with error. ${e}`)
+            Rollbar.warn(`order submit failed with error. ${e.message}`)
             await this.stateManager.setInProgressState(OrderState.REJECTED, true)
         }
 

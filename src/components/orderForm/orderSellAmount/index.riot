@@ -28,6 +28,7 @@
             OrderEventSource
         } from "../../../common/order/OrderEventSource";
         import Loader from '../../loader/index.riot'
+        import {BigNumber} from "@0x/utils";
 
         export default {
             components: {
@@ -48,13 +49,13 @@
             },
             onAmountChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
-                    document.getElementById("order-amount-input").value = this.props.orderFactory.order.sellAmount.value
+                    document.getElementById("order-amount-input").value =
+                        this.props.orderFactory.order.sellAmount.value.toFixed(this.props.orderFactory.order.sellToken.decimals)
                     this.update()
                 }
             },
             updateAmount(e) {
-                let value = parseFloat(e.target.value)
-                this.props.orderFactory.order.sellAmount.set(this.config.event, value)
+                this.props.orderFactory.order.sellAmount.set(this.config.event, new BigNumber((e.target.value)))
                 this.update()
             },
             isTokenInfoUpdated() {

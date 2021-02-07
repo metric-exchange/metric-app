@@ -47,12 +47,12 @@ export class SwapOrderFactory extends OrderFactory {
     buildOrderDetails(sellAmount, buyAmount) {
         let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
 
-        let sellAmountWithFee =
-            new BigNumber(orderDetails.sellAmount + orderDetails.sellFeeAmount).integerValue(BigNumber.ROUND_DOWN)
+        let sellAmountWithFee = orderDetails.sellAmount.plus(orderDetails.sellFeeAmount)
+        let buyAmountWithFee = orderDetails.buyAmount.plus(orderDetails.buyFeeAmount)
 
         let fee =
-            new BigNumber(orderDetails.buyFeeAmount)
-                .dividedBy(orderDetails.buyAmount + orderDetails.buyFeeAmount)
+            orderDetails.buyFeeAmount
+                .dividedBy(buyAmountWithFee)
                 .toFixed(4, BigNumber.ROUND_UP)
 
         return {

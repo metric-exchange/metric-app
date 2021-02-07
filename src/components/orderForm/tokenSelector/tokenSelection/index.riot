@@ -40,7 +40,7 @@
                 }
             },
             safeRound() {
-                return this.formatNumber(this.props.token.balance, 4)
+                return this.formatNumber(this.props.token.balance.toNumber(), 4)
             },
             fetchTokenLogoURI(token) {
                 if (token.logoURI !== undefined) {

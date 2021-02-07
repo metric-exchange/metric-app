@@ -10,12 +10,12 @@ export class Order {
     constructor(type, inputToken, outputToken) {
         this.type = type
         this.sellToken = inputToken
-        this.sellAmount = new ObservableValue(NaN)
+        this.sellAmount = new ObservableValue(new BigNumber(NaN))
 
         this.buyToken = outputToken
-        this.buyAmount = new ObservableValue(NaN)
+        this.buyAmount = new ObservableValue(new BigNumber(NaN))
 
-        this.sellPrice = new OrderPrice(inputToken, outputToken, NaN)
+        this.sellPrice = new OrderPrice(inputToken, outputToken, new BigNumber(NaN))
 
         this.sellPrice.price.observe(this, 'setBuyAmountOnPriceChange')
         this.sellPrice.price.observe(this, 'setSellAmountOnPriceChange')
@@ -60,7 +60,7 @@ export class Order {
         this.sellToken = this.buyToken
         this.buyToken = token
 
-        let byAmount = this.buyAmount.value + this.sellPrice.buyFeeAmountFor(this.buyAmount.value)
+        let byAmount = this.buyAmount.value.plus(this.sellPrice.buyFeeAmountFor(this.buyAmount.value))
 
         await this.sellPrice.switchTokens()
         await this.sellAmount.set(
@@ -73,7 +73,7 @@ export class Order {
     async setMaxSellAmount() {
         let maxAmount = this.sellToken.balance
         if (this.isMarketOrder() && this.sellToken.symbol === "ETH") {
-            maxAmount -= this.sellPrice.gasCost
+            maxAmount = maxAmount.minus(this.sellPrice.gasCost)
         }
 
         await this.sellAmount.set(
@@ -87,12 +87,14 @@ export class Order {
             (source.action === OrderEventActions.Input || source.action === OrderEventActions.SetToMax)
         ) {
             if (this.isMarketOrder()) {
-                let amount = isNaN(sellAmount) ? 1 : sellAmount
-                await this.sellPrice.set(source, NaN)
+                let amount = isNaN(sellAmount) ? new BigNumber(1) : sellAmount
+                await this.sellPrice.set(source, new BigNumber(NaN))
                 await this.sellPrice.refreshMarketPrice(amount, source)
-            } else if (sellAmount > 0 && this.buyAmount.value > 0 && (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
-                this.sellPrice.calculated = true
-                await this.sellPrice.set(source, this.buyAmount.value / this.sellPrice.feeAdjustedSellAmountFor(sellAmount))
+            } else if (sellAmount.isGreaterThan(0) &&
+                this.buyAmount.value.isGreaterThan(0) &&
+                (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
+                    this.sellPrice.calculated = true
+                    await this.sellPrice.set(source, this.buyAmount.value.dividedBy(this.sellPrice.feeAdjustedSellAmountFor(sellAmount)))
             }
         }
     }
@@ -102,12 +104,14 @@ export class Order {
             source.action === OrderEventActions.Input
         ) {
             if (this.isMarketOrder()) {
-                let amount = isNaN(buyAmount) ? 1 : buyAmount
-                await this.sellPrice.set(source, NaN)
+                let amount = isNaN(buyAmount) ? new BigNumber(1) : buyAmount
+                await this.sellPrice.set(source, new BigNumber(NaN))
                 await this.sellPrice.refreshMarketPriceForBuy(amount, source)
-            } else if (buyAmount > 0 && this.sellAmount.value > 0 && (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
+            } else if (buyAmount.isGreaterThan(0) &&
+                this.sellAmount.value.isGreaterThan(0) &&
+                (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
                 this.sellPrice.calculated = true
-                await this.sellPrice.set(source, buyAmount / this.sellPrice.feeAdjustedSellAmountFor(this.sellAmount.value))
+                await this.sellPrice.set(source, buyAmount.dividedBy(this.sellPrice.feeAdjustedSellAmountFor(this.sellAmount.value)))
             }
         }
     }
@@ -157,9 +161,9 @@ export class Order {
 
         await Promise.all(
             [
-                this.sellAmount.set(new OrderEventSource(OrderEventProperties.SellAmount, OrderEventActions.Reset), NaN),
-                this.buyAmount.set(new OrderEventSource(OrderEventProperties.BuyAmount, OrderEventActions.Reset), NaN),
-                this.sellPrice.price.set(priceEvent, NaN)
+                this.sellAmount.set(new OrderEventSource(OrderEventProperties.SellAmount, OrderEventActions.Reset), new BigNumber(NaN)),
+                this.buyAmount.set(new OrderEventSource(OrderEventProperties.BuyAmount, OrderEventActions.Reset), new BigNumber(NaN)),
+                this.sellPrice.price.set(priceEvent, new BigNumber(NaN))
             ]
         )
 
@@ -171,16 +175,12 @@ export class Order {
 
     buildOrderDetails(sellAmount, buyAmount) {
         return {
-            sellAmount: this.adjustToIntegerValue(this.sellPrice.feeAdjustedSellAmountFor(sellAmount * (10 ** this.sellToken.decimals))),
-            sellFeeAmount: this.adjustToIntegerValue(this.sellPrice.sellFeeAmountFor(sellAmount * (10 ** this.sellToken.decimals))),
-            buyAmount: this.adjustToIntegerValue(buyAmount * (10 ** this.buyToken.decimals)),
-            buyFeeAmount: this.adjustToIntegerValue(this.sellPrice.buyFeeAmountFor(buyAmount) * (10 ** this.buyToken.decimals)),
+            sellAmount: this.sellPrice.feeAdjustedSellAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)),
+            sellFeeAmount: this.sellPrice.sellFeeAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)),
+            buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals),
+            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals),
             feeRecipient: MetricReferralAddress
         }
-    }
-
-    adjustToIntegerValue(amount) {
-        return new BigNumber(amount).integerValue(BigNumber.ROUND_DOWN).toNumber()
     }
 
     static MarketOrderType = 0

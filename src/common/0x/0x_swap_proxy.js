@@ -22,8 +22,8 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
 
         if (quote.price !== null) {
             return {
-                price: parseFloat(quote.price),
-                gasCost: quote.gas * 1.5 * quote.gasPrice / (10 ** 18)
+                price: new BigNumber(quote.price),
+                gasCost: new BigNumber(quote.gas).multipliedBy(1.5).multipliedBy(quote.gasPrice).dividedBy(10 ** 18)
             }
         }
     } catch (e) {
@@ -31,8 +31,8 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
     }
 
     return {
-        price: 0,
-        gasCost: 0
+        price: new BigNumber(0),
+        gasCost: new BigNumber(0)
     }
 }
 
@@ -51,14 +51,14 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
 
     if (quote.price !== null) {
         return {
-            price: 1 / parseFloat(quote.price),
-            gasCost: quote.gas * 1.5 * quote.gasPrice / (10 ** 18)
+            price: new BigNumber(1).dividedBy(new BigNumber(quote.price)),
+            gasCost: new BigNumber(quote.gas).multipliedBy(1.5).multipliedBy(quote.gasPrice).dividedBy(10 ** 18)
         }
     }
 
     return {
-        price: 0,
-        gasCost: 0
+        price: new BigNumber(0),
+        gasCost: new BigNumber(0)
     }
 }
 

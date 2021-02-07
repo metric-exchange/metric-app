@@ -80,7 +80,7 @@
                 await this.filterTokenSearch()
             },
             async onTokenBalancesUpdate(token) {
-                if (token.balance > 0) {
+                if (token.balance.isGreaterThan(0)) {
                     await this.filterTokenSearch()
                     this.update()
                 }
@@ -167,8 +167,8 @@
             sortTokens(tokens, value) {
                 let that = this
                 return tokens.sort(function(a, b) {
-                    if (a.balance > 0 || b.balance > 0) {
-                        return b.balance - a.balance
+                    if (a.balance.isGreaterThan(0) || b.balance.isGreaterThan(0)) {
+                        return b.balance.minus(a.balance).toNumber()
                     } else if (value === null) {
                         return a.symbol.localeCompare(b.symbol, 'en', { sensitivity: 'base' })
                     } else if (value.match(that.state.addressRegEx)) {

@@ -8,14 +8,14 @@ import {fetchJson} from "../json_api_fetch";
 import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
 import Rollbar from "rollbar";
+import {BigNumber} from "@0x/utils";
 
 export function resetTokensInfo() {
     tokens.forEach(t => {
-        t.balance = NaN
+        t.balance = new BigNumber(NaN)
         t.allowance.ExchangeProxyAllowanceTarget = NaN
         t.allowance.Erc20Proxy = NaN
         t.allowance.ExchangeProxyV4Address = NaN
-
     })
 }
 
@@ -97,10 +97,11 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
 }
 
 async function updateBalance(token, address, balance) {
+
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
-        let newBalance = balance / (10 ** token.decimals)
-        if (newBalance > 0) {
-            Rollbar.debug(`update balance of ${token.symbol} to ${newBalance}`)
+        let newBalance = new BigNumber(balance).dividedBy(10 ** token.decimals)
+        if (newBalance.isGreaterThan(0)) {
+            Rollbar.debug(`update balance of ${token.symbol} to ${newBalance.toString()}`)
         }
 
         token.balance = newBalance
@@ -109,7 +110,7 @@ async function updateBalance(token, address, balance) {
             balancesRegister.map(item => item.onTokenBalancesUpdate(token))
         )
 
-        if (newBalance > 0 && token.symbol !== "ETH") {
+        if (token.balance.isGreaterThan(0) && token.symbol !== "ETH") {
             await Promise.all(
                 [
                     fetchAllowance(token, address, Erc20ProxyAddress),
@@ -180,7 +181,7 @@ export async function loadTokenList()
             .then(at => {
                 at.forEach(t => {
                     addToken({
-                        balance: NaN,
+                        balance: new BigNumber(NaN),
                         allowance: {
                             Erc20Proxy: NaN,
                             ExchangeProxyAllowanceTarget: NaN,
@@ -221,7 +222,7 @@ export async function addTokenWithAddress(address) {
         let contract = Erc20ContractProxy.erc20FallbackContract(address)
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
-        token.balance = NaN
+        token.balance = new BigNumber(NaN)
         token.allowance = {
             Erc20Proxy: NaN,
             ExchangeProxyAllowanceTarget: NaN,
@@ -237,7 +238,7 @@ export async function addTokenWithAddress(address) {
         )
 
         if (isWalletConnected()) {
-            fetchBalance(token, address)
+            await fetchBalance(token, address)
         }
 
     } catch (e) {
@@ -250,7 +251,7 @@ function initTokenList() {
     customTokensManager.init()
     customTokensManager.customtokens.tokens.forEach(t => {
         tokens.push({
-            balance: NaN,
+            balance: new BigNumber(NaN),
             allowance: {
                 Erc20Proxy: NaN,
                 ExchangeProxyAllowanceTarget: NaN,
@@ -272,7 +273,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "ETH",
         logoURI: EthIcon,
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -285,7 +286,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "BUILD",
         logoURI: "https://etherscan.io/token/images/build_32.png",
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -298,7 +299,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "METRIC",
         logoURI: "https://etherscan.io/token/images/metric_32.png",
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -311,7 +312,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "DAI",
         logoURI: "https://etherscan.io/token/images/MCDDai_32.png",
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -324,7 +325,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "HYPE",
         logoURI: HypeIcon,
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -336,7 +337,7 @@ let defaultTokens = [
         address: "0xb7412e57767ec30a76a4461d408d78b36688409c",
         decimals: 18,
         symbol: "bCRED",
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN
@@ -348,7 +349,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "UPDOWN",
         logoURI: UpdownIcon,
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -361,7 +362,7 @@ let defaultTokens = [
         decimals: 18,
         symbol: "BSG",
         logoURI: GoldIcon,
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -373,7 +374,7 @@ let defaultTokens = [
         address: "0xa9d232cc381715ae791417b624d7c4509d2c28db",
         decimals: 18,
         symbol: "BSGS",
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,
@@ -385,7 +386,7 @@ let defaultTokens = [
         address: "0x940c7ccd1456b29a6f209b641fb0edaa96a15c2d",
         decimals: 18,
         symbol: "BSGB",
-        balance: NaN,
+        balance: new BigNumber(NaN),
         allowance: {
             ExchangeProxyAllowanceTarget : NaN,
             Erc20Proxy : NaN,

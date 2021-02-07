@@ -35,6 +35,7 @@
             OrderEventSource
         } from "../../../common/order/OrderEventSource";
         import Loader from '../../loader/index.riot'
+        import {BigNumber} from "@0x/utils";
 
         export default {
             components: {
@@ -49,19 +50,20 @@
             },
             onPriceChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
-                    document.getElementById("order-price-input").value = this.props.orderFactory.order.sellPrice.displayPrice()
+                    document.getElementById("order-price-input").value =
+                        this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
                     this.update()
                 }
             },
             updatePrice(e) {
-                let value = parseFloat(e.target.value)
-                this.props.orderFactory.order.sellPrice.set(this.config.event, value)
+                this.props.orderFactory.order.sellPrice.set(this.config.event, new BigNumber(e.target.value))
                 this.update()
             },
             changePriceDirection() {
                 this.props.orderFactory.order.sellPrice.invert()
                 document.getElementById("price-switch").classList.toggle("transition-half-rotate")
-                document.getElementById("order-price-input").value = this.props.orderFactory.order.sellPrice.displayPrice()
+                document.getElementById("order-price-input").value =
+                    this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
                 this.update()
             },
         }

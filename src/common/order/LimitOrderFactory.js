@@ -46,7 +46,6 @@ export class LimitOrderFactory extends OrderFactory {
     }
 
     async sendOrder(order) {
-        await this.stateManager.setInProgressState(OrderState.MATCHING_ORDER, {}, true)
 
         let orderAmount =
             order.makerAssetAmount
@@ -74,13 +73,13 @@ export class LimitOrderFactory extends OrderFactory {
         let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
         let order = {
             makerAssetAddress: this.order.sellToken.address,
-            makerAssetAmount: new BigNumber(orderDetails.sellAmount),
-            makerFeeAmount: new BigNumber(orderDetails.sellFeeAmount),
+            makerAssetAmount: orderDetails.sellAmount,
+            makerFeeAmount: orderDetails.sellFeeAmount,
             takerAssetAddress: this.order.buyToken.address,
-            takerAssetAmount: new BigNumber(orderDetails.buyAmount),
-            takerFeeAmount: new BigNumber(orderDetails.buyFeeAmount),
+            takerAssetAmount: orderDetails.buyAmount,
+            takerFeeAmount: orderDetails.buyFeeAmount,
             feeRecipientAddress: orderDetails.feeRecipient,
-            expirationTimeSeconds: `${moment(this.expiryTime).unix()}`,
+            expirationTimeSeconds: `${moment(this.expiryTime).unix()}`
         }
 
         if (this.recipientAddress !== null) {

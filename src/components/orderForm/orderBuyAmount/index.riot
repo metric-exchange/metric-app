@@ -26,6 +26,7 @@
             OrderEventProperties,
             OrderEventSource
         } from "../../../common/order/OrderEventSource";
+        import {BigNumber} from "@0x/utils";
 
         export default {
             config: {
@@ -37,7 +38,8 @@
             },
             onAmountChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
-                    document.getElementById("order-amount-output").value = this.props.orderFactory.order.buyAmount.value
+                    document.getElementById("order-amount-output").value =
+                        this.props.orderFactory.order.buyAmount.value.toFixed(this.props.orderFactory.order.buyToken.decimals)
                     this.update()
                 }
             },
@@ -47,8 +49,7 @@
                 this.update()
             },
             updateAmount(e) {
-                let value = parseFloat(e.target.value)
-                this.props.orderFactory.order.buyAmount.set(this.config.event, value)
+                this.props.orderFactory.order.buyAmount.set(this.config.event, new BigNumber(e.target.value))
                 this.update()
             }
         }

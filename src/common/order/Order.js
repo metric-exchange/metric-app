@@ -73,7 +73,7 @@ export class Order {
     async setMaxSellAmount() {
         let maxAmount = this.sellToken.balance
         if (this.isMarketOrder() && this.sellToken.symbol === "ETH") {
-            maxAmount = maxAmount.minus(this.sellPrice.gasCost)
+            maxAmount = maxAmount.isGreaterThan(this.sellPrice.gasCost) ? maxAmount.minus(this.sellPrice.gasCost) : new BigNumber(0)
         }
 
         await this.sellAmount.set(
@@ -175,10 +175,10 @@ export class Order {
 
     buildOrderDetails(sellAmount, buyAmount) {
         return {
-            sellAmount: this.sellPrice.feeAdjustedSellAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN).toNumber(),
-            sellFeeAmount: this.sellPrice.sellFeeAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN).toNumber(),
-            buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN).toNumber(),
-            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN).toNumber(),
+            sellAmount: this.sellPrice.feeAdjustedSellAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN),
+            sellFeeAmount: this.sellPrice.sellFeeAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN),
+            buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
+            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             feeRecipient: MetricReferralAddress
         }
     }

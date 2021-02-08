@@ -175,10 +175,10 @@ export class Order {
 
     buildOrderDetails(sellAmount, buyAmount) {
         return {
-            sellAmount: this.sellPrice.feeAdjustedSellAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)),
-            sellFeeAmount: this.sellPrice.sellFeeAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)),
-            buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals),
-            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals),
+            sellAmount: this.sellPrice.feeAdjustedSellAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN).toNumber(),
+            sellFeeAmount: this.sellPrice.sellFeeAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN).toNumber(),
+            buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN).toNumber(),
+            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN).toNumber(),
             feeRecipient: MetricReferralAddress
         }
     }

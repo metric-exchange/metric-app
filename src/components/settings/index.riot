@@ -12,9 +12,8 @@
            onclick={ this.connectWallet }>
             <span>{ this.i18next.t('wallet.connect_wallet') }</span>
         </a>
-        <div class="identicon-menu" onclick={ toggleDropDown }>
+        <div id="identicon-image" class="identicon-menu" onclick={ toggleDropDown }>
             <img
-                    id="identicon-image"
                     class="identicon-image"
                     src={ state.blocky }
                     height="25"

@@ -96,7 +96,7 @@ export class OrderPrice {
 
     async fetchDisplayMarketPrice() {
         let price = await getSwapPrice(this.baseToken, this.quoteToken)
-        if (this.inverted && price.price > 0) {
+        if (this.inverted && price.price.isGreaterThan(0)) {
             return new BigNumber(1).dividedBy(price.price)
         } else {
             return price.price

@@ -5,6 +5,7 @@ import {OrderState} from "./OrderStateManager";
 import {formatNumber} from "../helpers";
 import {BigNumber} from "@0x/utils";
 import {getSlippageConfig, setSlippageConfig} from "./SlippageConfig";
+import Rollbar from "rollbar";
 
 export class SwapOrderFactory extends OrderFactory {
 
@@ -42,6 +43,8 @@ export class SwapOrderFactory extends OrderFactory {
         )
 
         await window.web3Modal.eth.sendTransaction(quote);
+
+        Rollbar.debug("Swap succeeded")
     }
 
     buildOrderDetails(sellAmount, buyAmount) {

@@ -85,7 +85,8 @@
             "market_type" : "銷售",
             "limit_type" : "限",
             "slippage" : "滑移公差",
-            "use_hiding_game": "利用 The Hiding Game"
+            "use_hiding_game": "通過The Hiding Game賺取$ROOK",
+            "hiding_game_not_supported": "The Hiding Book不支持"
         },
         "submit" : {
             "initializing" : "初始化",

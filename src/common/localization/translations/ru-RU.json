@@ -85,7 +85,8 @@
             "market_type" : "РЫНОЧНЫЙ",
             "limit_type" : "ПРЕДЕЛЬНЫЙ",
             "slippage" : "допуск проскальзывания",
-            "use_hiding_game": "использовать The Hiding Game"
+            "use_hiding_game": "Выиграйте $ROOK в The Hiding Game",
+            "hiding_game_not_supported": "не поддерживается The Hiding Game"
         },
         "submit" : {
             "initializing" : "ИНИЦИАЛИЗАЦИЯ",

@@ -1,10 +1,14 @@
 <order-book-type-switch>
 
-    <div class="order-book-type-switch" if={ isOrderSupportedByHidingGame() }>
+    <div class="order-book-type-switch" if={ isOrderSupportedByHidingGame() && this.props.orderFactory.order.isLimitOrder() }>
         <div>{ this.i18next.t('order.use_hiding_game') }</div>
         <div>
             <check-box checked={ props.orderFactory.order.useHidingGame.value } onclick={ toggleHidingGame } />
         </div>
+    </div>
+
+    <div class="order-book-type-switch" if={ !isOrderSupportedByHidingGame() && this.props.orderFactory.order.isLimitOrder() }>
+        <div>{ unsupportedToken() } { this.i18next.t('order.hiding_game_not_supported') }</div>
     </div>
 
     <script>
@@ -29,12 +33,25 @@
                 this.update()
             },
             isOrderSupportedByHidingGame() {
-                return this.props.orderFactory.order.isLimitOrder() &&
-                    getHidingGameProxy().supportedTokens.value
+                return getHidingGameProxy().supportedTokens.value
                         .find(t => t.address.toLowerCase() === this.props.orderFactory.order.sellToken.address.toLowerCase()) &&
                     getHidingGameProxy().supportedTokens.value
                         .find(t => t.address.toLowerCase() === this.props.orderFactory.order.buyToken.address.toLowerCase())
+            },
+            unsupportedToken() {
+                let tokens = ""
+                if (!getHidingGameProxy().supportedTokens.value
+                    .find(t => t.address.toLowerCase() === this.props.orderFactory.order.sellToken.address.toLowerCase())) {
+                    tokens = this.props.orderFactory.order.sellToken.symbol
+                }
+                if (!getHidingGameProxy().supportedTokens.value
+                    .find(t => t.address.toLowerCase() === this.props.orderFactory.order.buyToken.address.toLowerCase())) {
+                    let buyToken = this.props.orderFactory.order.buyToken.symbol
+                    tokens = tokens.length > 0 ? `${tokens}, ${buyToken}` : buyToken
+                }
+                return tokens
             }
+
         }
 
     </script>

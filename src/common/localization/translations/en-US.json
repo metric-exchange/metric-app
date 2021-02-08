@@ -85,7 +85,8 @@
             "market_type" : "MARKET",
             "limit_type" : "LIMIT",
             "slippage": "Slippage tolerance",
-            "use_hiding_game": "Use The Hiding Game"
+            "use_hiding_game": "Earn $ROOK with The Hiding Game",
+            "hiding_game_not_supported": "not supported by The Hiding Game"
         },
         "submit" : {
             "initializing" : "INITIALIZING",

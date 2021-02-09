@@ -24,7 +24,7 @@ export async function synchronizeUserOrders(userAddress) {
     }
 
     if (!isWalletConnected() || (userAddress === accountAddress())) {
-        setTimeout(synchronizeUserOrders, 10000, userAddress)
+        setTimeout(synchronizeUserOrders, 30000, userAddress)
     }
 }
 

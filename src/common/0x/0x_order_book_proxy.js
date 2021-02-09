@@ -58,11 +58,17 @@ export class ZeroXOrderBook {
                 await Promise.all(
                     this.observers.map(obj => obj.onOrderBookUpdate())
                 )
-                setTimeout((that, id) => { that.runSynchronizationLoop(id) }, 10000, this, id)
+                setTimeout((that, id) => {
+                    that.runSynchronizationLoop(id)
+                }, 10000, this, id)
             }
         } catch (e) {
             console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
-            setTimeout((that, id) => { that.runSynchronizationLoop(id) }, 1000, this, id)
+            if (id === this.activeSyncroLoopId) {
+                setTimeout((that, id) => {
+                    that.runSynchronizationLoop(id)
+                }, 1000, this, id)
+            }
         }
     }
 

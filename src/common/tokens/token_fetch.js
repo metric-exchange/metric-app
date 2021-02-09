@@ -53,7 +53,7 @@ export function findTokenWithAddress(address) {
 export function tokensList() { return tokens }
 
 export async function fetchTokensInfo(address) {
-    await executeBatch(address, 0, 100, 500)
+    await executeBatch(address, 0, 100, 1000)
 }
 
 async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
@@ -90,7 +90,7 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
         } else {
             console.debug("Token Balances/allowances startup update finished")
             if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]) || isNaN(t.allowance[ExchangeProxyAllowanceTargetAddress]))) {
-                setTimeout(() => fetchTokensInfo(address), 1000)
+                setTimeout(() => fetchTokensInfo(address), 10000)
             }
         }
     }

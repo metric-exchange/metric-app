@@ -101,13 +101,14 @@
             },
             filledTakerPercentage(order) {
                 if (order.version === 3) {
-                    let remaining = parseInt(order.metaData.remainingFillableTakerAssetAmount)
+                    let remaining = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
                     return order.order.takerAssetAmount
                         .minus(remaining)
                         .multipliedBy(100)
                         .dividedBy(order.order.takerAssetAmount)
                 } else {
                     return new BigNumber(order.metaData.filledAmount_takerToken)
+                                    .multipliedBy(100)
                                     .dividedBy(order.order.takerAssetAmount)
                 }
             },

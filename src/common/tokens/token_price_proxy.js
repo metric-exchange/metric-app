@@ -13,7 +13,7 @@ export async function getTokenUsdPrice(token) {
         }
 
     } catch (e) {
-        Rollbar.warn(`Could not fetch price for token: ${token.symbol}`)
+        console.warn(`Could not fetch price for token: ${token.symbol}`)
     }
 
     return price

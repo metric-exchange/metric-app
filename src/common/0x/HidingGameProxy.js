@@ -20,7 +20,7 @@ export class HidingGameProxy {
             this.taker = info.result.orderDetails.taker
             this.verifyingContract = info.result.orderDetails.verifyingContract
         } catch (e) {
-            Rollbar.warn(`Failed to initialize hidingGame info, ${e}`)
+            Rollbar.error(`Failed to initialize hidingGame info, ${e}`)
         }
     }
 
@@ -71,7 +71,7 @@ export class HidingGameProxy {
             let orders = await fetchJson(`${this.url}/orders?maker=${address}`, { method: 'GET'})
             return orders.orders
         } catch (e) {
-            Rollbar.warn(`Failed to get order list, ${e}`)
+            console.warn(`Failed to get order list, ${e}`)
         }
         return []
     }

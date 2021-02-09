@@ -83,12 +83,12 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
                 }
                 await batch.execute();
             } catch(e) {
-                Rollbar.warn(`Unexpected error while updating tokens balance/allowance info ${e}`)
+                console.warn(`Unexpected error while updating tokens balance/allowance info ${e}`)
             }
 
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
         } else {
-            Rollbar.debug("Token Balances/allowances startup update finished")
+            console.debug("Token Balances/allowances startup update finished")
             if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]) || isNaN(t.allowance[ExchangeProxyAllowanceTargetAddress]))) {
                 setTimeout(() => fetchTokensInfo(address), 1000)
             }
@@ -101,7 +101,7 @@ async function updateBalance(token, address, balance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = new BigNumber(balance).dividedBy(10 ** token.decimals)
         if (newBalance.isGreaterThan(0)) {
-            Rollbar.debug(`update balance of ${token.symbol} to ${newBalance.toString()}`)
+            console.debug(`update balance of ${token.symbol} to ${newBalance.toString()}`)
         }
 
         token.balance = newBalance
@@ -148,7 +148,7 @@ async function fetchAllowance(token, address, target) {
                 if (error === null && isWalletConnected() && address === accountAddress()) {
                     await updateAllowance(token, target, allowance)
                 } else {
-                    Rollbar.error(`Failed to fetch allowance for: ${token.symbol}`)
+                    console.error(`Failed to fetch allowance for: ${token.symbol}`)
                 }
             }
         )
@@ -158,7 +158,7 @@ export async function updateAllowance(token, target, allowance) {
     if (isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** token.decimals)
         if (newAllowance > 0) {
-            Rollbar.debug(`update allowance to trade ${token.symbol} to ${newAllowance} for ${target}`)
+            console.debug(`update allowance to trade ${token.symbol} to ${newAllowance} for ${target}`)
         }
         token.allowance[target] = newAllowance
         await Promise.all(
@@ -201,7 +201,7 @@ export async function loadTokenList()
             register.map(item => item.onTokenListUpdate())
         )
     } catch (e) {
-        Rollbar.error(`Token list fetch failed, search by address can still be used ${e}`)
+        console.error(`Token list fetch failed, search by address can still be used ${e}`)
     }
 }
 
@@ -242,7 +242,7 @@ export async function addTokenWithAddress(address) {
         }
 
     } catch (e) {
-        Rollbar.info(`Invalid token address: ${address} ${e}`)
+        console.info(`Invalid token address: ${address} ${e}`)
     }
 }
 

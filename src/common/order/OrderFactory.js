@@ -83,11 +83,11 @@ export class OrderFactory {
                     this.order.sellToken,
                     this.allowanceAddress,
                     async () => {
-                        Rollbar.debug(`${this.order.sellToken.symbol} allowance approved`)
+                        console.debug(`${this.order.sellToken.symbol} allowance approved`)
                         await this.sendOrder(order)
                     },
                     async () => {
-                        Rollbar.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
+                        console.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
                         await this.stateManager.setInProgressState(OrderState.REJECTED, true)
                     }
                 )
@@ -96,7 +96,7 @@ export class OrderFactory {
             }
             await this.order.clearValues()
         } catch (e) {
-            Rollbar.warn(`order submit failed with error. ${e.message}`)
+            console.warn(`order submit failed with error. ${e.message}`)
             await this.stateManager.setInProgressState(OrderState.REJECTED, true)
         }
 

@@ -18,7 +18,7 @@ async function getEtherChainFasGasPriceInWei() {
             fastGasPrice = gasPrices.fast
         }
     } catch (e) {
-        Rollbar.warn("Call to price oracle has failed, fallbacking on web3 gas price")
+        console.warn("Call to price oracle has failed, fallbacking on web3 gas price")
     }
 
     return fastGasPrice * (10 ** 9)

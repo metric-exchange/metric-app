@@ -27,7 +27,7 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
             }
         }
     } catch (e) {
-        Rollbar.warn(`Failed to fetch swap price. ${e}`)
+        console.warn(`Failed to fetch swap price. ${e}`)
     }
 
     return {

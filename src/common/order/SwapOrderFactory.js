@@ -44,7 +44,7 @@ export class SwapOrderFactory extends OrderFactory {
 
         await window.web3Modal.eth.sendTransaction(quote);
 
-        Rollbar.debug("Swap succeeded")
+        Rollbar.info("Swap succeeded")
     }
 
     buildOrderDetails(sellAmount, buyAmount) {

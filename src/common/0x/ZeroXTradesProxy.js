@@ -35,7 +35,7 @@ export class ZeroXTradesProxy {
             }
 
         } catch (e) {
-            Rollbar.warn(`Failed to fetch order fills. ${e}`)
+            console.warn(`Failed to fetch order fills. ${e}`)
         }
     }
 

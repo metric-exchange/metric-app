@@ -64,10 +64,10 @@ export class LimitOrderFactory extends OrderFactory {
         if (this.order.useHidingGame.value) {
             let hiddenOrder = await getHidingGameProxy().buildSignedOrder(order)
             await getHidingGameProxy().sendOrder(hiddenOrder)
-            Rollbar.debug("Hiding Game: limit order submitted successfully")
+            Rollbar.info("Hiding Game: limit order submitted successfully")
         } else {
             await submitOrder(order)
-            Rollbar.debug("limit order submitted successfully")
+            Rollbar.info("limit order submitted successfully")
         }
 
     }

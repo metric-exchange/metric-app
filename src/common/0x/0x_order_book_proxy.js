@@ -88,6 +88,9 @@ export class ZeroXOrderBook {
             {
                 baseAssetData: baseAssetData,
                 quoteAssetData: quoteAssetData,
+            },
+            {
+                perPage: 500
             }
         )
         let filteredBids = []

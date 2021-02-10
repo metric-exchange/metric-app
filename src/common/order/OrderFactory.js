@@ -85,25 +85,27 @@ export class OrderFactory {
                     async () => {
                         console.debug(`${this.order.sellToken.symbol} allowance approved`)
                         await this.sendOrder(order)
+                        this.stateManager.unlock()
+                        await this.clearValues()
                     },
                     async () => {
                         console.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
                         await this.stateManager.setInProgressState(OrderState.REJECTED, true)
+                        this.stateManager.unlock()
                     }
                 )
             } else {
                 await this.sendOrder(order)
+                this.stateManager.unlock()
+                await this.clearValues()
             }
-            await this.order.clearValues()
         } catch (e) {
             console.warn(`order submit failed with error. ${e.message}`)
             await this.stateManager.setInProgressState(OrderState.REJECTED, true)
+            this.stateManager.unlock()
         }
 
-        setTimeout(async (obj) => {
-            obj.stateManager.unlock()
-            await obj.refreshOrderState()
-        }, 1000, this)
+        await this.refreshOrderState()
     }
 
     async sendOrder() {

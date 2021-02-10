@@ -75,7 +75,7 @@
                 if (this.props.orderFactory.order.type === Order.LimitOrderType) {
                     this.props.orderFactory.order.sellPrice.set(
                         new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Click),
-                        price
+                        new BigNumber(price)
                     )
                 }
             },

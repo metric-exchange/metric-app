@@ -129,7 +129,7 @@
             "yy" : "%d 年份"
         },
         "analytics" : {
-            "activity_period" : "最近30天的活动",
+            "activity_period" : "最近{{period}}天的活动",
             "largest_trade" : "最大的贸易",
             "most_active_trader" : "最活跃的交易者",
             "largest_metric_trade" : "最大的$METRIC交易",

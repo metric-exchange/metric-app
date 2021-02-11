@@ -6,8 +6,9 @@ import {CoinGeckoProxy} from "../tokens/CoinGeckoProxy";
 
 export class ZeroXFillsProxy {
     constructor() {
+        this.period = 1
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
-        this.startDate = new ObservableValue(moment().subtract(300, 'days'))
+        this.startDate = new ObservableValue(moment().subtract(this.period, 'days'))
         this.endDate = new ObservableValue(moment())
         this.fills = new ObservableValue([])
 
@@ -153,16 +154,18 @@ export class ZeroXFillsProxy {
             let fills =
                 await fetchJson(`https://api.0xtracker.com/fills?apps=${this.app}&page=${page}`)
 
-            await Promise.all(
-                fills.fills.map(async (f) => {
-                    detailedFills.push(await this.fetchFillDetails(f.id))
-                })
-            )
+            for (let index = 0; index < fills.fills.length; index++){
+                let fill = await this.fetchFillDetails(fills.fills[index].id)
+                 if (moment(fill.date.substring(0, 10)).isBetween(this.startDate.value, this.endDate.value)) {
+                     detailedFills.push(this.extractFillData(fill))
+                 }
+            }
 
-            await this.updateFills(source, detailedFills)
-
-            if (page < fills.pageCount) {
-                await this.fetchFills(source, page + 1)
+            if (detailedFills.length > 0) {
+                await this.updateFills(source, detailedFills)
+                if (page < fills.pageCount) {
+                    await this.fetchFills(source, page + 1)
+                }
             }
 
         } catch (e) {
@@ -176,10 +179,9 @@ export class ZeroXFillsProxy {
 
     async updateFills(source, fills) {
         let storedFills = [...this.fills.value]
-        let newFills = this.extractRelevantFills(fills)
 
-        for (let index = 0; index < newFills.length; index++) {
-            let fill = newFills[index]
+        for (let index = 0; index < fills.length; index++) {
+            let fill = fills[index]
 
             if (fill.usdValue === undefined) {
                 let usdPrice = await this.priceProxy.fetchCoinPriceAt(fill.makerTokenSymbol , moment(fill.date))
@@ -210,16 +212,6 @@ export class ZeroXFillsProxy {
                 storedFills
             )
         }
-    }
-
-    extractRelevantFills(fills) {
-        return fills
-            .filter(f => {
-                return moment(f.date.substring(0, 10)).isBetween(this.startDate.value, this.endDate.value)
-            })
-            .map(f => {
-                return this.extractFillData(f)
-            })
     }
 
     extractFillData(fill) {

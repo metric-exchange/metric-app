@@ -2,7 +2,7 @@
 
     <div class="analytics-dashboard">
         <div class="activity-period">
-            { this.i18next.t('analytics.activity_period') }
+            { this.i18next.t('analytics.activity_period', {period: state.fillsProxy.period}) }
         </div>
         <div class="largest-trades">
             <largest-trades fills-proxy={ state.fillsProxy }/>

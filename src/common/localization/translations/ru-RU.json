@@ -131,7 +131,7 @@
             "yy" : "%d лет"
         },
         "analytics" : {
-            "activity_period" : "Активность за последние 30 дней",
+            "activity_period" : "Активность за последние {{period}} дней",
             "largest_trade" : "Крупнейшая сделка",
             "most_active_trader" : "Самый активный трейдер",
             "largest_metric_trade" : "Крупнейшая сделка на $METRIC",

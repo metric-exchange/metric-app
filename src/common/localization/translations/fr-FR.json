@@ -129,7 +129,7 @@
             "yy" : "%d ans"
         },
         "analytics" : {
-            "activity_period" : "Activité sur les derniers 30 jours",
+            "activity_period" : "Activité sur les derniers {{period}} jours",
             "largest_trade" : "La plus grande transaction",
             "most_active_trader" : "Tradeur le plus actif ",
             "largest_metric_trade" : "La plus grande trade en $METRIC",

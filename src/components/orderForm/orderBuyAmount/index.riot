@@ -15,7 +15,12 @@
             </div>
         </div>
         <div class="order-input">
-            <div class="token-selector-button" onclick={ props.openTokenSelector }>{ props.orderFactory.order.buyToken.symbol }</div>
+            <div class="token-selector-button" onclick={ props.openTokenSelector }>
+                <div>{ props.orderFactory.order.buyToken.symbol }</div>
+                <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
         </div>
     </div>
 

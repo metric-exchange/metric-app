@@ -100,6 +100,15 @@ input:disabled {
     width: 100%;
 }
 
+.order-input .token-selector-button svg path {
+    stroke: var(--token-selector-table-text-color);
+    stroke-width: 50;
+}
+
+.order-input .token-selector-button:hover svg path {
+    stroke: var(--theme-switch-active-button-text-color);
+}
+
 .order-type-switch {
     display: grid;
     grid-template-columns: 45% 45%;
@@ -129,7 +138,7 @@ input:disabled {
 
 .exchange-amount {
     display: grid;
-    grid-template-columns: 66% 10% 20%;
+    grid-template-columns: 61% 10% 25%;
     align-items: center;
     justify-items: center;
     grid-gap: 2%;
@@ -144,10 +153,12 @@ input:disabled {
 }
 
 .token-selector-button {
+    display: grid;
+    grid-template-columns: 90% 10%;
     cursor: pointer;
     background-color: var(--main-background-color);
     border-radius: 3px;
-    padding: 3px;
+    padding: 5px;
     text-align: center;
     line-height: 20px;
 }

@@ -53,7 +53,7 @@ export async function submitOrder(order) {
 
 export async function cancelOrder(order) {
     let contractWrapper = await getContractWrapper()
-    if (order.version === 3) {
+    if (order.isHidingBook === false) {
         await contractWrapper
             .exchange
             .cancelOrder(order.order)
@@ -68,20 +68,20 @@ export async function cancelOrder(order) {
 }
 export async function batchCancelOrders(orders) {
     let contractWrapper = await getContractWrapper()
-    let v3Orders = orders.filter(o => o.version === 3)
-    let v4Orders = orders.filter(o => o.version === 4)
+    let v3Orders = orders.filter(o => o.isHidingBook === false)
+    let v4Orders = orders.filter(o => o.isHidingBook === true)
 
     if (v3Orders.length > 0) {
         await contractWrapper
             .exchange
-            .batchCancelOrders(orders.map(o => o.order))
+            .batchCancelOrders(v3Orders.map(o => o.order))
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     }
 
     if (v4Orders.length > 0) {
         await contractWrapper
             .exchangeProxy
-            .batchCancelRfqOrders(orders.map(o => o.order))
+            .batchCancelRfqOrders(v4Orders.map(o => o.order))
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     }
 }

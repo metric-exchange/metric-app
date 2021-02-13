@@ -6,6 +6,26 @@
          if={ state.makerToken !== undefined && state.takerToken !== undefined }
          onclick={ handleClick }
     >
+        <div class="order-book-type-icon" if={ props.order.isHidingBook === true }>
+            <svg width="15" height="15" viewBox="0 0 246 281" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M49 44H197V93H49V44Z
+                     M49 137H197V281H49V137Z
+                     M197 0H246V44H197V0Z
+                     M49 93H98V137H49V93Z
+                     M148 93H197V137H148V93Z
+                     M0 0H49V44H0V0Z
+                     M99 0H148V44H99V0Z" fill="#C4C4C4"/>
+            </svg>
+        </div>
+        <div class="order-book-type-icon" if={ props.order.isHidingBook === false }>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="20" viewBox="0 0 1028 500" fill="none">
+                <path d="M105.022 316.009L143.834 275.852L95.583 210.74L34.148 123.812C12.4439 160.852 0 203.969 0 250C0 326.256 34.148 394.529 88.0045 440.381L165.987 385.269C139.462 368.744 118.094 344.686 105.022 316.009Z" fill="#C4C4C4"/>
+                <path d="M183.991 105.022L224.148 143.834L289.26 95.583L376.188 34.148C339.148 12.4439 296.031 0 250 0C173.744 0 105.471 34.148 59.6188 88.0045L114.731 165.987C131.256 139.462 155.314 118.094 183.991 105.022Z" fill="#C4C4C4"/>
+                <path d="M356.166 224.148L404.417 289.26L465.852 376.188C487.556 339.148 500 296.031 500 250C500 173.744 465.852 105.471 411.996 59.6188L334.013 114.731C360.538 131.256 381.906 155.314 394.978 183.991L356.166 224.148Z" fill="#C4C4C4"/>
+                <path d="M440.381 411.996L385.269 334.014C368.744 360.538 344.686 381.906 316.009 394.978L275.852 356.166L210.74 404.417L123.812 465.852C160.852 487.556 203.969 500 250 500C326.256 500 394.529 465.852 440.381 411.996Z" fill="#C4C4C4"/>
+            </svg>
+        </div>
+        <div></div>
         <div class="my-order-volume">
             <div class="my-order-amount sell-amount">
                 <div>{ this.formatNumber(makerTotalAmount(props.order).toNumber()) }</div>
@@ -42,8 +62,8 @@
                 takerToken: undefined,
                 selected: false
             },
-            onBeforeMount() {
-                this.initTokens()
+            async onBeforeMount() {
+                await this.initTokens()
             },
             onBeforeUpdate() {
                 let orderElement = document.getElementById(this.props.order.metaData.orderHash)
@@ -60,7 +80,7 @@
                 let makerAddress = ""
                 let takerAddress = ""
 
-                if (this.props.order.version === 3) {
+                if (this.props.order.isHidingBook === false) {
                     let prefixLen = "0xf47261b0000000000000000000000000".length
                     makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
                     takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
@@ -73,7 +93,7 @@
                 this.state.takerToken = await findOrAddTokenWithAddress(takerAddress)
             },
             makerTotalAmount(order) {
-                if (order.version === 3) {
+                if (order.isHidingBook === false) {
                     return order.order.makerAssetAmount.plus(order.order.makerFee)
                         .dividedBy(10**this.state.makerToken.decimals)
                 } else {
@@ -82,7 +102,7 @@
                 }
             },
             makerAmount(order) {
-                if (order.version === 3) {
+                if (order.isHidingBook === false) {
                     return order.order.makerAssetAmount
                         .dividedBy(10**this.state.makerToken.decimals)
                 } else {
@@ -91,7 +111,7 @@
                 }
             },
             takerAmount(order) {
-                if (order.version === 3) {
+                if (order.isHidingBook === false) {
                     return order.order.takerAssetAmount
                         .dividedBy(10**this.state.takerToken.decimals)
                 } else {
@@ -100,7 +120,7 @@
                 }
             },
             filledTakerPercentage(order) {
-                if (order.version === 3) {
+                if (order.isHidingBook === false) {
                     let remaining = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
                     return order.order.takerAssetAmount
                         .minus(remaining)
@@ -118,7 +138,7 @@
             },
             getDateDiff(order) {
                 let timestampSeconds = 0
-                if (order.version === 3) {
+                if (order.isHidingBook === false) {
                     timestampSeconds = order.order.expirationTimeSeconds
                 } else {
                     timestampSeconds = order.order.expiry

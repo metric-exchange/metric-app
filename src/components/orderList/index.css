@@ -27,6 +27,10 @@
     grid-template-columns: 70% 30%;
 }
 
+.my-orders-line .order-book-type-icon svg {
+    padding: 5px;
+}
+
 .order-list-canvas {
     height: 425px;
     overflow-y: scroll;

@@ -37,8 +37,8 @@ async function retrieveUserOrders(address) {
         perPage: 100
     }).then(r => r.records)
 
-   zeroXOrders.forEach(o => o.version = 3)
-   hiddenOrders.forEach(o => o.version = 4)
+   zeroXOrders.forEach(o => o.isHidingBook = false)
+   hiddenOrders.forEach(o => o.isHidingBook = true)
 
    return zeroXOrders.concat(hiddenOrders)
 }

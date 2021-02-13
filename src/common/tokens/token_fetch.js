@@ -53,7 +53,8 @@ export function findTokenWithAddress(address) {
 export function tokensList() { return tokens }
 
 export async function fetchTokensInfo(address) {
-    await executeBatch(address, 0, 100, 1000)
+    console.debug("Token Balances/allowances update starting")
+    await executeBatch(address, 0, 100, 500)
 }
 
 async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
@@ -88,11 +89,15 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
 
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
         } else {
-            console.debug("Token Balances/allowances startup update finished")
+            console.debug("Token Balances/allowances update finished")
             if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]) || isNaN(t.allowance[ExchangeProxyAllowanceTargetAddress]))) {
                 setTimeout(() => fetchTokensInfo(address), 10000)
+            } else {
+                setTimeout(() => fetchTokensInfo(address), 60000)
             }
         }
+    } else {
+        console.debug("Token Balances/allowances update not started as no wallet connected")
     }
 }
 

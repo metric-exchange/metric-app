@@ -33,9 +33,17 @@ export class OrderFactory {
             await this.stateManager.setInvalidState(OrderState.ETH_NOT_ALLOWED)
         } else if (isNaN(tokensList().find(t => t.address.toLowerCase() === METRIC_TOKEN_ADDRESS.toLowerCase()).balance)) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_METRIC_BALANCE)
-        } else if (isNaN(this.order.sellPrice.price.value) && this.order.isLimitOrder()) {
+        } else if (
+            this.order.sellPrice.price.value.isNaN() &&
+            this.order.isLimitOrder()
+        ) {
             await this.fillMissingParamsStatus()
-        } else if (isNaN(this.order.sellAmount.value) || isNaN(this.order.buyAmount.value)) {
+        } else if (
+            this.order.sellAmount.value.isNaN() ||
+            this.order.sellAmount.value.isLessThanOrEqualTo(0) ||
+            this.order.buyAmount.value.isNaN(0) ||
+            this.order.buyAmount.value.isLessThanOrEqualTo(0)
+        ) {
             await this.fillMissingParamsStatus()
         } else if (isNaN(this.order.sellToken.balance)) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_BALANCE, {token: this.order.sellToken})

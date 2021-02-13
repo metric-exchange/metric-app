@@ -49,7 +49,7 @@ a {
     -webkit-justify-content: flex-end;
     -ms-flex-pack: distribute;
     justify-content: flex-end;
-    margin-right: 20px;
+    margin-right: 10px;
     width: 20%;
 }
 

@@ -1,10 +1,10 @@
 
 export function setSlippageConfig(slippage) {
-    localStorage.setItem('slippage', slippage)
+    localStorage.setItem('v2.slippage', slippage)
 }
 
 export function getSlippageConfig() {
-    let storedSlippage = localStorage.getItem('slippage')
+    let storedSlippage = localStorage.getItem('v2.slippage')
     if (storedSlippage === null) {
         return DEFAULT_SWAP_SLIPPAGE
     } else {

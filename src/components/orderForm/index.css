@@ -155,10 +155,11 @@ input:disabled {
 .token-selector-button {
     display: grid;
     grid-template-columns: 90% 10%;
+    align-items: center;
     cursor: pointer;
     background-color: var(--main-background-color);
     border-radius: 3px;
-    padding: 5px;
+    padding: 5px 8px;
     text-align: center;
     line-height: 20px;
 }

@@ -49,7 +49,7 @@ export class SwapOrderFactory extends OrderFactory {
 
         if (sellToken.symbol === "ETH" && buyToken.symbol === "WETH") {
             Rollbar.info("Wrap succeeded")
-        } else if (sellToken.symbol === "ETH" && buyToken.symbol === "WETH") {
+        } else if (sellToken.symbol === "WETH" && buyToken.symbol === "ETH") {
             Rollbar.info("UnWrap succeeded")
         } else {
             Rollbar.info("Swap succeeded")

@@ -107,9 +107,10 @@
                         .multipliedBy(100)
                         .dividedBy(order.order.takerAssetAmount)
                 } else {
-                    return new BigNumber(order.metaData.filledAmount_takerToken)
+                    return new BigNumber(order.order.takerAmount)
+                                    .minus(order.metaData.remainingFillableAmount_takerToken)
                                     .multipliedBy(100)
-                                    .dividedBy(order.order.takerAssetAmount)
+                                    .dividedBy(order.order.takerAmount)
                 }
             },
             orderPrice(order) {

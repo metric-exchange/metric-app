@@ -12,4 +12,4 @@ export function getSlippageConfig() {
     }
 }
 
-let DEFAULT_SWAP_SLIPPAGE = 0.001
+let DEFAULT_SWAP_SLIPPAGE = 0.005

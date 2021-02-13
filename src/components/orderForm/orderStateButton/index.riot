@@ -16,6 +16,7 @@
         import Loader from '../../loader/index.riot'
         import './index.css'
         import {METRIC_TOKEN_ADDRESS} from "../../../common/tokens/token_fetch";
+        import {OrderState} from "../../../common/order/OrderStateManager";
 
         const {registerForTokenBalancesUpdate} = require("../../../common/tokens/token_fetch");
 
@@ -52,9 +53,10 @@
             buttonClass() {
                 if (this.props.orderFactory.stateManager.isReady()) {
                     return "order-state-active"
-                } else {
-                    return ""
+                } else if (this.props.orderFactory.stateManager.current.code === OrderState.REJECTED) {
+                    return "order-state-invalid"
                 }
+                return ""
             },
             async buttonAction() {
                 if (!isWalletConnected()) {

@@ -98,8 +98,12 @@ export class OrderFactory {
                     },
                     async () => {
                         console.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
-                        await this.stateManager.setInProgressState(OrderState.REJECTED, true)
-                        this.stateManager.unlock()
+                        await this.stateManager.setInvalidState(OrderState.REJECTED, {}, true)
+                        setTimeout(async (obj) => {
+                            console.log("unlocking state")
+                            obj.stateManager.unlock()
+                            await obj.refreshOrderState()
+                        }, 2000, this)
                     }
                 )
             } else {
@@ -109,11 +113,12 @@ export class OrderFactory {
             }
         } catch (e) {
             console.warn(`order submit failed with error. ${e.message}`)
-            await this.stateManager.setInProgressState(OrderState.REJECTED, true)
-            this.stateManager.unlock()
+            await this.stateManager.setInvalidState(OrderState.REJECTED, {}, true)
+            setTimeout(async (obj) => {
+                obj.stateManager.unlock()
+                await obj.refreshOrderState()
+            }, 2000, this)
         }
-
-        await this.refreshOrderState()
     }
 
     async sendOrder() {

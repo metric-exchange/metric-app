@@ -22,3 +22,7 @@
     color: var(--swap-button-text-color);
     cursor: pointer;
 }
+
+.order-state-invalid {
+    background-color: var(--invalid-button-background-color);
+}

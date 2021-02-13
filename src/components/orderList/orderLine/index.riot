@@ -62,7 +62,7 @@
                 takerToken: undefined,
                 selected: false
             },
-            async onBeforeMount() {
+            async onMounted() {
                 await this.initTokens()
             },
             onBeforeUpdate() {
@@ -89,8 +89,10 @@
                     takerAddress = this.props.order.order.takerToken
                 }
 
-                this.state.makerToken = await findOrAddTokenWithAddress(makerAddress)
-                this.state.takerToken = await findOrAddTokenWithAddress(takerAddress)
+                this.update({
+                    makerToken: await findOrAddTokenWithAddress(makerAddress),
+                    takerToken: await findOrAddTokenWithAddress(takerAddress)
+                })
             },
             makerTotalAmount(order) {
                 if (order.isHidingBook === false) {

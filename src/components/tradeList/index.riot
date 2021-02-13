@@ -46,18 +46,17 @@
                 isLoadingTrades: true,
                 fillsProxy: new ZeroXTradesProxy()
             },
-            onBeforeMount() {
+            onMounted() {
                 registerForWalletChanges(this)
                 this.state.fillsProxy.fills.observe(this, 'onFillsRefresh')
-            },
-            onMounted() {
+                this.update({ isLoadingTrades: isWalletConnected() })
                 this.synchronizeTrades()
-                if (!isWalletConnected()) {
-                    this.update({ isLoadingTrades: false })
-                }
             },
-            onWalletChanges() {
-                this.update({ isLoadingTrades: true })
+            async onWalletChanges() {
+                if (isWalletConnected()) {
+                    this.update({ isLoadingTrades: true })
+                    await this.state.fillsProxy.refreshFills(undefined, accountAddress())
+                }
             },
             onFillsRefresh() {
                 this.update({ isLoadingTrades: false })

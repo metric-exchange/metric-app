@@ -7,11 +7,6 @@
            target="_blank">
             <span>{ state.obfuscatedAccount }</span>
         </a>
-        <a if={ !this.isWalletConnected() }
-           class="identicon-address"
-           onclick={ this.connectWallet }>
-            <span>{ this.i18next.t('wallet.connect_wallet') }</span>
-        </a>
         <div id="identicon-image" class="identicon-menu" onclick={ toggleDropDown }>
             <img
                     class="identicon-image"

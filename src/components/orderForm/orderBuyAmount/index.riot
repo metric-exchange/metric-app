@@ -3,7 +3,7 @@
     <div class="order-line exchange-amount">
         <div class="order-input">
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) }>{ this.i18next.t('order.you_get') }</div>
-            <input type="number" id="order-amount-output" onkeyup={ updateAmount } placeholder="{ this.i18next.t('order.you_get') }" step="any"/>
+            <input type="number" id="order-amount-output" oninput={ updateAmount } placeholder="{ this.i18next.t('order.you_get') }" step="any"/>
         </div>
         <div class="order-input">
             <div id="order-switch" class="order-line switch-button" onclick={ switchDirection }>

@@ -19,7 +19,7 @@
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellPrice.price.value) }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
             <input id="order-price-input"
                    type="number"
-                   onkeyup={ updatePrice }
+                   oninput={ updatePrice }
                    placeholder="{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }"
                    disabled={ props.orderFactory.order.isMarketOrder() }
                    step="any"

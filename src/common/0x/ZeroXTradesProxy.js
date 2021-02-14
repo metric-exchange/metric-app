@@ -58,7 +58,7 @@ export class ZeroXTradesProxy {
         let makerToken = fill.assets.find(a => a.traderType === "maker")
         let takerToken = fill.assets.find(a => a.traderType === "taker")
 
-        if (!fill.orderHash || (fill.makerAddress === address && fill.orderHash)) {
+        if (fill.makerAddress === address && fill.orderHash) {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),

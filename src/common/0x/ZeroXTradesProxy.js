@@ -19,16 +19,9 @@ export class ZeroXTradesProxy {
 
     async fetchFills(source, address, page = 1) {
         try {
-            let detailedFills = []
-            let fills = await fetchJson(`https://api.0xtracker.com/fills?trader=${address.toLowerCase()}&page=${page}`)
+            let fills = await fetchJson(`https://api.0xtracker.com/fills?trader=${address.toLowerCase()}&page=${page}&limit=50`)
 
-            await Promise.all(
-                fills.fills.map(async (f) => {
-                    detailedFills.push(await this.fetchFillDetails(f.id))
-                })
-            )
-
-            await this.updateFills(source, address.toLowerCase(), detailedFills)
+            await this.updateFills(source, address.toLowerCase(), fills.fills)
 
             if (page < fills.pageCount) {
                 await this.fetchFills(source, address.toLowerCase(),page + 1)
@@ -76,7 +69,7 @@ export class ZeroXTradesProxy {
                     takerTokenAmount: parseFloat(takerToken.amount)
                 }
             }
-        } else if (this.extractTakerAddress(fill) === address && fill.orderHash) {
+        } else {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
@@ -87,14 +80,6 @@ export class ZeroXTradesProxy {
                     makerTokenAmount: parseFloat(takerToken.amount)
                 }
             }
-        }
-    }
-
-    extractTakerAddress(fill) {
-        if (fill.taker.isContract) {
-            return fill.transactionFrom.address
-        } else {
-            return fill.takerAddress
         }
     }
 

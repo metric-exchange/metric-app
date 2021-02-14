@@ -38,9 +38,9 @@ export class SwapOrderFactory extends OrderFactory {
             OrderState.SWAPPING,
             {
                 sellAmount: formatNumber(quote.sellAmount / (10 ** sellToken.decimals)),
-                sellToken: order.sellToken,
+                sellToken: sellToken,
                 buyAmount: formatNumber(quote.buyAmount / (10 ** buyToken.decimals)),
-                buyToken: order.buyToken
+                buyToken: buyToken
             },
             true
         )

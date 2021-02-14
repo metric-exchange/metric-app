@@ -27,8 +27,8 @@ export class SwapOrderFactory extends OrderFactory {
 
     async sendOrder(order) {
 
-        let sellToken = tokensList().find(t => t.address.toLowerCase() === order.sellToken)
-        let buyToken = tokensList().find(t => t.address.toLowerCase() === order.buyToken)
+        let sellToken = tokensList().find(t => t.address.toLowerCase() === order.sellToken.toLowerCase())
+        let buyToken = tokensList().find(t => t.address.toLowerCase() === order.buyToken.toLowerCase())
 
         let quote = await callSwapApi(order)
 

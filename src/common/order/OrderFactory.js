@@ -92,9 +92,18 @@ export class OrderFactory {
                     this.allowanceAddress,
                     async () => {
                         console.debug(`${this.order.sellToken.symbol} allowance approved`)
-                        await this.sendOrder(order)
-                        this.stateManager.unlock()
-                        await this.clearValues()
+                        try {
+                            await this.sendOrder(order)
+                            this.stateManager.unlock()
+                            await this.clearValues()
+                        } catch(e) {
+                            console.warn(`order submit failed with error. ${e.message}`)
+                            await this.stateManager.setInvalidState(OrderState.REJECTED, {}, true)
+                            setTimeout(async (obj) => {
+                                obj.stateManager.unlock()
+                                await obj.refreshOrderState()
+                            }, 2000, this)
+                        }
                     },
                     async () => {
                         console.warn(`${this.order.sellToken.symbol} allowance approval rejected`)

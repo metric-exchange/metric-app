@@ -2,7 +2,7 @@
 
     <div class="order-line exchange-price">
         <div class="order-input">
-            <div id="price-switch" class="switch-button" onclick={ changePriceDirection } if={ props.orderFactory.order.isLimitOrder() || !isNaN(props.orderFactory.order.sellPrice.price.value)}>
+            <div id="price-switch" class="switch-button" onclick={ changePriceDirection } if={ props.orderFactory.order.isLimitOrder() || !props.orderFactory.order.sellPrice.price.value.isNaN() }>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="15" cy="15" r="15" fill="#262626"/>
                     <path d="M18 11L19.5 12.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -11,12 +11,12 @@
                     <path d="M10.5 17.5L17.0138 17.5C18.0138 17.5 19.5138 17.5 19.5138 15.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="max-amount-loader" if={ props.orderFactory.order.isMarketOrder() && isNaN(props.orderFactory.order.sellPrice.price.value)}>
+            <div class="max-amount-loader" if={ props.orderFactory.order.isMarketOrder() && props.orderFactory.order.sellPrice.price.value.isNaN() }>
                 <loader/>
             </div>
         </div>
         <div class="order-input">
-            <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellPrice.price.value) }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
+            <div class="input-sticky-placeholder" if={ !props.orderFactory.order.sellPrice.price.value.isNaN() }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
             <input id="order-price-input"
                    type="number"
                    oninput={ updatePrice }

@@ -37,23 +37,27 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
 }
 
 export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1) {
-    let quote = await callSwapApi({
-        sellToken: inputToken.address,
-        buyToken: outputToken.address,
-        buyAmount: `${new BigNumber(buyAmount).multipliedBy(10 ** outputToken.decimals).integerValue(BigNumber.ROUND_DOWN)}`,
-        slippagePercentage: getSlippageConfig(),
-        takerAddress: accountAddress(),
-        intentOnFilling: false,
-        skipValidation: true,
-        buyTokenPercentageFee: calculateMetricFee(),
-        feeRecipient : MetricReferralAddress
-    })
+    try {
+        let quote = await callSwapApi({
+            sellToken: inputToken.address,
+            buyToken: outputToken.address,
+            buyAmount: `${new BigNumber(buyAmount).multipliedBy(10 ** outputToken.decimals).integerValue(BigNumber.ROUND_DOWN)}`,
+            slippagePercentage: getSlippageConfig(),
+            takerAddress: accountAddress(),
+            intentOnFilling: false,
+            skipValidation: true,
+            buyTokenPercentageFee: calculateMetricFee(),
+            feeRecipient : MetricReferralAddress
+        })
 
-    if (quote.price !== null) {
-        return {
-            price: new BigNumber(1).dividedBy(new BigNumber(quote.price)),
-            gasCost: new BigNumber(quote.gas).multipliedBy(1.5).multipliedBy(quote.gasPrice).dividedBy(10 ** 18)
+        if (quote.price !== null) {
+            return {
+                price: new BigNumber(1).dividedBy(new BigNumber(quote.price)),
+                gasCost: new BigNumber(quote.gas).multipliedBy(1.5).multipliedBy(quote.gasPrice).dividedBy(10 ** 18)
+            }
         }
+    } catch (e) {
+        console.warn(`Failed to fetch swap buy price. ${e}`)
     }
 
     return {

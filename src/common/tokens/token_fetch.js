@@ -64,14 +64,14 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
                 let batch = new window.web3Modal.BatchRequest();
                 for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
                     let token = tokens[index]
-                    if (token.symbol === "ETH" && isNaN(token.balance)) {
+                    if (token.symbol === "ETH") {
                         batch.add(
                             window.web3Modal.eth
                                 .getBalance
                                 .request(address, 'latest', (err, b) => updateBalance(token, address, b))
                         );
                     }
-                    else if (isNaN(token.balance) || isNaN(token.allowance[Erc20ProxyAddress]) || isNaN(token.allowance[ExchangeProxyAllowanceTargetAddress])) {
+                    else {
                         let contract = new window.web3Modal.eth.Contract(Erc20Abi, token.address);
                         batch.add(
                             contract

@@ -44,6 +44,7 @@ export class ZeroXTradesProxy {
             .map(f => {
                 return this.extractFillData(f, address)
             })
+            .filter(f => f !== undefined)
 
         storedFills = storedFills.concat(newFills)
 
@@ -58,7 +59,7 @@ export class ZeroXTradesProxy {
         let makerToken = fill.assets.find(a => a.traderType === "maker")
         let takerToken = fill.assets.find(a => a.traderType === "taker")
 
-        if (fill.makerAddress === address && fill.orderHash) {
+        if (fill.makerAddress === address || fill.takerAddress === address) {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
@@ -70,16 +71,7 @@ export class ZeroXTradesProxy {
                 }
             }
         } else {
-            return {
-                id: fill.id,
-                date: fill.date.substring(0, 10),
-                details: {
-                    takerTokenSymbol: makerToken.tokenSymbol,
-                    takerTokenAmount: parseFloat(makerToken.amount),
-                    makerTokenSymbol: takerToken.tokenSymbol,
-                    makerTokenAmount: parseFloat(takerToken.amount)
-                }
-            }
+            return undefined
         }
     }
 

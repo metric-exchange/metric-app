@@ -105,15 +105,15 @@ async function updateBalance(token, address, balance) {
 
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = new BigNumber(balance).dividedBy(10 ** token.decimals)
-        if (newBalance.isGreaterThan(0)) {
-            console.debug(`update balance of ${token.symbol} to ${newBalance.toString()}`)
+        if (!newBalance.isEqualTo(token.balance)) {
+            if (!isNaN(token.balance) || newBalance.isGreaterThan(0)) {
+                console.debug(`update balance of ${token.symbol} to ${newBalance.toString()}`)
+            }
+            token.balance = newBalance
+            await Promise.all(
+                balancesRegister.map(item => item.onTokenBalancesUpdate(token))
+            )
         }
-
-        token.balance = newBalance
-
-        await Promise.all(
-            balancesRegister.map(item => item.onTokenBalancesUpdate(token))
-        )
 
         if (token.balance.isGreaterThan(0) && token.symbol !== "ETH") {
             await Promise.all(
@@ -124,13 +124,25 @@ async function updateBalance(token, address, balance) {
                 ]
             )
         } else {
+            let balanceChanged = false
             let allowance = token.symbol !== "ETH" ? 0 : 1e27
-            token.allowance[Erc20ProxyAddress] = allowance
-            token.allowance[ExchangeProxyAllowanceTargetAddress] = allowance
-            token.allowance[ExchangeProxyV4Address] = allowance
-            await Promise.all(
-                allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
-            )
+            if (token.allowance[Erc20ProxyAddress] !== allowance) {
+                token.allowance[Erc20ProxyAddress] = allowance
+                balanceChanged = true
+            }
+            if (token.allowance[ExchangeProxyAllowanceTargetAddress] !== allowance) {
+                token.allowance[ExchangeProxyAllowanceTargetAddress] = allowance
+                balanceChanged = true
+            }
+            if (token.allowance[ExchangeProxyV4Address] !== allowance) {
+                token.allowance[ExchangeProxyV4Address] = allowance
+                balanceChanged = true
+            }
+            if (balanceChanged) {
+                await Promise.all(
+                    allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
+                )
+            }
         }
 
     }
@@ -162,13 +174,13 @@ async function fetchAllowance(token, address, target) {
 export async function updateAllowance(token, target, allowance) {
     if (isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** token.decimals)
-        if (newAllowance > 0) {
+        if (newAllowance !== token.allowance[target]) {
             console.debug(`update allowance to trade ${token.symbol} to ${newAllowance} for ${target}`)
+            token.allowance[target] = newAllowance
+            await Promise.all(
+                allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
+            )
         }
-        token.allowance[target] = newAllowance
-        await Promise.all(
-            allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
-        )
     }
 }
 
@@ -224,7 +236,7 @@ export function addToken(token) {
 export async function addTokenWithAddress(address) {
     try {
         let token = { address: address }
-        let contract = Erc20ContractProxy.erc20FallbackContract(address)
+        let contract = Erc20ContractProxy.erc20Contract(address)
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
         token.balance = new BigNumber(NaN)

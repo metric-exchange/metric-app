@@ -1,11 +1,15 @@
 <slippage-percentage>
 
     <div class="order-line slippage-line">
-        <div class="order-input">{ this.i18next.t('order.slippage') }</div>
+        <div class="order-input">{ this.i18next.t('order.slippage') } %</div>
         <div class="order-input slippage-options">
-            <div id="slippage-0-1" class="slippage-value" onclick={ () => setSlippage(0.1) }>0.1%</div>
-            <div id="slippage-0-5" class="slippage-value" onclick={ () => setSlippage(0.5) }>0.5%</div>
-            <div id="slippage-1-0" class="slippage-value" onclick={ () => setSlippage(1) }>1.0%</div>
+            <div id="slippage-0-1" class="slippage-value" onclick={ () => setSlippage(0.1) }>0.1</div>
+            <div id="slippage-0-5" class="slippage-value" onclick={ () => setSlippage(0.5) }>0.5</div>
+            <input id="slippage-1-0" class="slippage-value"
+                   onclick={ setSlippageFromInput }
+                   oninput={ setSlippageFromInput }
+                   value={ getMaxSlippage() }
+            />
         </div>
     </div>
 
@@ -15,6 +19,14 @@
         export default {
             onMounted() {
                 this.setActiveSlippage()
+            },
+            getMaxSlippage() {
+                let max = Math.max(this.props.orderFactory.slippagePercentage, 0.01)
+                return max * 100
+            },
+            setSlippageFromInput(e) {
+                let slippage = parseFloat(e.target.value)
+                this.setSlippage(isNaN(slippage) ? 1 : slippage)
             },
             setSlippage(slippage) {
                 this.props.orderFactory.setSlippage(slippage / 100)
@@ -26,13 +38,12 @@
                     document.getElementById("slippage-0-5").classList.remove("selected-slippage")
                     document.getElementById("slippage-1-0").classList.remove("selected-slippage")
                 }
-                if (this.props.orderFactory.slippagePercentage === 0.005) {
+                else if (this.props.orderFactory.slippagePercentage === 0.005) {
                     document.getElementById("slippage-0-1").classList.remove("selected-slippage")
                     document.getElementById("slippage-0-5").classList.add("selected-slippage")
                     document.getElementById("slippage-1-0").classList.remove("selected-slippage")
                 }
-
-                if (this.props.orderFactory.slippagePercentage === 0.01) {
+                else {
                     document.getElementById("slippage-0-1").classList.remove("selected-slippage")
                     document.getElementById("slippage-0-5").classList.remove("selected-slippage")
                     document.getElementById("slippage-1-0").classList.add("selected-slippage")

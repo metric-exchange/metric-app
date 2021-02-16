@@ -36,3 +36,7 @@
     grid-template-columns: 30% 30% 30%;
     grid-gap: 5%;
 }
+
+#slippage-1-0 {
+    cursor: unset;
+}

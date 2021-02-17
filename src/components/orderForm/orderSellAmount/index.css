@@ -1,17 +1,14 @@
 
 .max-amount {
     cursor: pointer;
-    background-color: var(--main-background-color);
+    color: var(--theme-switch-active-button-text-color);
+    background-color: var(--theme-switch-active-button-background-color);
     border-radius: 3px;
     padding: 5px;
     text-align: center;
     line-height: 15px;
     font-size: x-small;
     width: 20px;
-}
-.max-amount:hover {
-    color: var(--theme-switch-active-button-text-color);
-    background-color: var(--theme-switch-active-button-background-color);
 }
 
 .max-amount-loader {

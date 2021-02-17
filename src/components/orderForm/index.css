@@ -157,15 +157,12 @@ input:disabled {
     grid-template-columns: 90% 10%;
     align-items: center;
     cursor: pointer;
-    background-color: var(--main-background-color);
+    color: var(--theme-switch-active-button-text-color);
+    background-color: var(--theme-switch-active-button-background-color);
     border-radius: 3px;
     padding: 5px 8px;
     text-align: center;
     line-height: 20px;
-}
-.token-selector-button:hover {
-    color: var(--theme-switch-active-button-text-color);
-    background-color: var(--theme-switch-active-button-background-color);
 }
 
 #token-selector-box {
@@ -193,18 +190,10 @@ input:disabled {
 }
 
 .switch-button svg circle {
-    fill: var(--main-background-color);
-}
-
-.switch-button:hover svg circle {
     fill: var(--theme-switch-active-button-background-color);
 }
 
 .switch-button svg path {
-    stroke: var(--token-selector-table-text-color);
-}
-
-.switch-button:hover svg path {
     stroke: var(--theme-switch-active-button-text-color);
 }
 

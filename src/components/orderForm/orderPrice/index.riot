@@ -15,15 +15,18 @@
                 <loader/>
             </div>
         </div>
-        <div class="order-input">
+        <div class="order-input" if={ props.orderFactory.order.isLimitOrder() }>
             <div class="input-sticky-placeholder" if={ !props.orderFactory.order.sellPrice.price.value.isNaN() }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
             <input id="order-price-input"
                    type="number"
                    oninput={ updatePrice }
                    placeholder="{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }"
-                   disabled={ props.orderFactory.order.isMarketOrder() }
                    step="any"
             />
+        </div>
+        <div class="order-input" if={ props.orderFactory.order.isMarketOrder() }>
+            <div class="input-sticky-placeholder" if={ !props.orderFactory.order.sellPrice.price.value.isNaN() }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
+            <div id="market-price">{ props.orderFactory.order.sellPrice.displayPrice().toFixed(4) } ({ state.priceImpact.toFixed(2) }%)</div>
         </div>
     </div>
 
@@ -44,15 +47,22 @@
             config: {
                 event: new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Input)
             },
+            state: {
+                priceImpact: 0
+            },
             onMounted() {
                 this.props.orderFactory.order.sellPrice.price.observe(this, 'onPriceChange')
                 this.props.orderFactory.order.sellPrice.refreshMarketPrice()
             },
             onPriceChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
-                    document.getElementById("order-price-input").value =
-                        this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
-                    this.update()
+                    if (this.props.orderFactory.order.isLimitOrder()) {
+                        document.getElementById("order-price-input").value =
+                            this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
+                        this.update()
+                    } else {
+                        this.setPriceImpact()
+                    }
                 }
             },
             updatePrice(e) {
@@ -62,10 +72,23 @@
             changePriceDirection() {
                 this.props.orderFactory.order.sellPrice.invert()
                 document.getElementById("price-switch").classList.toggle("transition-half-rotate")
-                document.getElementById("order-price-input").value =
-                    this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
+
+                if (this.props.orderFactory.order.isLimitOrder()) {
+                    document.getElementById("order-price-input").value =
+                        this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
                 this.update()
+                } else {
+                    this.setPriceImpact()
+                }
             },
+            async setPriceImpact() {
+                let marketPrice = await this.props.orderFactory.order.sellPrice.fetchDisplayMarketPrice()
+                let quotePrice = this.props.orderFactory.order.sellPrice.displayPrice()
+
+                let priceImpact = quotePrice.minus(marketPrice).multipliedBy(100).dividedBy(marketPrice)
+
+                this.update({ priceImpact: priceImpact })
+            }
         }
 
     </script>

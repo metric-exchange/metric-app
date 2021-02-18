@@ -53,7 +53,7 @@
 
   --swap-form-background-color: #FFFFFF;
   --swap-from-border-color: #F9F9F9;
-  --swap-button-background-color: #60FFD9;
+  --swap-button-background-color: #9afde6;
   --exchange-button-background-color: #F9F9F9;
   --swap-button-text-color: #000000;
   --swap-direction-title-color: #000000;
@@ -77,9 +77,9 @@
   --theme-switch-button-background-color: #EDEDED;
   --theme-switch-button-text-color: #797979;
 
-  --theme-switch-active-button-background-color: #60FFD9;
+  --theme-switch-active-button-background-color: #9afde6;
   --theme-switch-active-button-text-color: #000000;
-  --theme-switch-active-button-border-color: #60FFD9;
+  --theme-switch-active-button-border-color: #9afde6;
 
   --loader-background-color: #EDEDED;
   --loader-ticker-color: #000000;

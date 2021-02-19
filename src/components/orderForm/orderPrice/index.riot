@@ -52,7 +52,7 @@
             },
             onMounted() {
                 this.props.orderFactory.order.sellPrice.price.observe(this, 'onPriceChange')
-                this.props.orderFactory.order.sellPrice.refreshMarketPrice()
+                this.refreshMarketPrice()
             },
             onPriceChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
@@ -88,6 +88,12 @@
                 let priceImpact = quotePrice.minus(marketPrice).multipliedBy(100).dividedBy(marketPrice)
 
                 this.update({ priceImpact: priceImpact })
+            },
+            async refreshMarketPrice() {
+                if (this.props.orderFactory.order.isMarketOrder()) {
+                    await this.props.orderFactory.order.sellPrice.refreshMarketPrice()
+                }
+                setTimeout(async (obj) => { await obj.refreshMarketPrice() }, 30000, this)
             }
         }
 

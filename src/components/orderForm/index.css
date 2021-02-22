@@ -101,12 +101,8 @@ input:disabled {
 }
 
 .order-input .token-selector-button svg path {
-    stroke: var(--token-selector-table-text-color);
-    stroke-width: 50;
-}
-
-.order-input .token-selector-button:hover svg path {
     stroke: var(--theme-switch-active-button-text-color);
+    stroke-width: 50;
 }
 
 .order-type-switch {

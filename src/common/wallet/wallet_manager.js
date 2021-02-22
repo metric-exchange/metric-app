@@ -1,12 +1,23 @@
 import {MetamaskSubprovider} from "@0x/subproviders";
 import {providerUtils} from "@0x/utils";
 import {ContractWrappers} from "@0x/contract-wrappers";
-import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalPovider} from "./web3Modal";
+import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalProvider} from "./web3Modal";
 import LogRocket from "logrocket";
-import Web3 from "web3";
 import * as Rollbar from "rollbar";
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
 export let walletAddress = undefined
+
+export async function walletOwnerEnsName(address) {
+    const ens = new ENS({ provider: web3ModalProvider, ensAddress: getEnsAddress('1') })
+    let name = await ens.getName(address)
+    let reverseAddress = await ens.name(name.name).getAddress()
+
+    if(address.toLowerCase() !== reverseAddress.toLowerCase()) {
+        return null;
+    }
+    return name.name
+}
 
 export function registerForWalletChanges(item) {
     walletEventListeners.push(item)
@@ -19,9 +30,6 @@ export function isWalletConnected() {
 }
 
 export async function initWeb3() {
-
-    window.web3fallback = new Web3(new Web3.providers.WebsocketProvider(defaultWSUrl))
-
     if (hasCashedProvider()) {
         await connectWallet();
     }
@@ -36,8 +44,8 @@ async function updateAccount() {
     const accounts = await window.web3Modal.eth.getAccounts()
     updateAccountAddress(accounts)
 
-    if (web3ModalPovider !== undefined && web3ModalPovider !== null) {
-        web3ModalPovider.on("accountsChanged", (accounts) => {
+    if (web3ModalProvider !== undefined && web3ModalProvider !== null) {
+        web3ModalProvider.on("accountsChanged", (accounts) => {
             updateAccountAddress(accounts);
         });
 
@@ -74,7 +82,7 @@ export function getProvider() {
 }
 
 function initProvider() {
-    providerEngine = new MetamaskSubprovider(web3ModalPovider)
+    providerEngine = new MetamaskSubprovider(web3ModalProvider)
 }
 
 export async function getContractWrapper() {
@@ -91,4 +99,3 @@ export async function getContractWrapper() {
 let providerEngine = null
 let contractWrapper = null
 let walletEventListeners = []
-let defaultWSUrl = "wss://mainnet.infura.io/ws/v3/12522e5176814bfda74dd672929641a3"

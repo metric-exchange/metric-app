@@ -5,7 +5,7 @@
            class="identicon-address"
            href="https://etherscan.io/address/{ this.accountAddress() }"
            target="_blank">
-            <span>{ state.obfuscatedAccount }</span>
+            <span>{ state.accountDisplay }</span>
         </a>
         <div id="identicon-image" class="identicon-menu" onclick={ toggleDropDown }>
             <img
@@ -38,7 +38,7 @@
         import './index.css'
         import ThemeSwitch from '../themeSwitch/index.riot'
         import LanguageSelector from '../languageSelector/index.riot'
-        import {accountAddress, registerForWalletChanges} from "../../common/wallet/wallet_manager";
+        import {accountAddress, registerForWalletChanges, walletOwnerEnsName} from "../../common/wallet/wallet_manager";
         import makeBlockie from 'ethereum-blockies-base64';
 
         export default {
@@ -50,20 +50,14 @@
                 icon: Image,
                 dropDownClicked: false,
                 address: "0x0000000000000000000000000000000000000000",
-                obfuscatedAccount: null,
+                accountDisplay: null,
                 blocky: null
-            },
-            onBeforeUpdate() {
-                this.handleAccounts()
             },
             onWalletChanges() {
                 this.handleAccounts()
-                this.update()
-            },
-            onBeforeMount() {
-                this.handleAccounts()
             },
             onMounted() {
+                this.handleAccounts()
                 registerForWalletChanges(this)
                 document.addEventListener('click', function (e) {
                     var dropdown = document.getElementById('settings-dropdown');
@@ -81,16 +75,21 @@
                 this.state.dropDownClicked = !this.state.dropDownClicked
                 this.update()
             },
-            handleAccounts() {
-
+            async handleAccounts() {
                 if (accountAddress() !== undefined) {
                     this.state.address = accountAddress()
-                } else {
-                    this.state.address = "0x0000000000000000000000000000000000000000"
+                    this.state.accountDisplay = this.state.address.substr(0, 8) + '...' + this.state.address.substr(38, 40)
                 }
-
-                this.state.obfuscatedAccount = this.state.address.substr(0, 8) + '...' + this.state.address.substr(38, 40)
                 this.state.blocky = makeBlockie(this.state.address)
+                this.update()
+
+                if (accountAddress() !== undefined) {
+                    let ensName = await walletOwnerEnsName(this.state.address)
+                    if (ensName) {
+                        this.state.accountDisplay = ensName
+                    }
+                    this.update()
+                }
             }
         }
     </script>

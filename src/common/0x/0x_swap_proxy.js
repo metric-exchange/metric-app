@@ -6,12 +6,13 @@ import Rollbar from "rollbar";
 import {accountAddress} from "../wallet/wallet_manager";
 import {calculateMetricFee, MetricReferralAddress} from "../metric_fee";
 
-export async function getSwapPrice(inputToken, outputToken, sellAmount = 1) {
+export async function getSwapPrice(inputToken, outputToken, sellAmount = new BigNumber(1)) {
     try {
+        let correctedAmount = sellAmount.isNaN() ? new BigNumber(1) : sellAmount
         let quote = await callSwapApi({
             sellToken: inputToken.address,
             buyToken: outputToken.address,
-            sellAmount: `${new BigNumber(sellAmount).multipliedBy(10 ** inputToken.decimals).integerValue(BigNumber.ROUND_DOWN)}`,
+            sellAmount: `${new BigNumber(correctedAmount).multipliedBy(10 ** inputToken.decimals).integerValue(BigNumber.ROUND_DOWN)}`,
             slippagePercentage: getSlippageConfig(),
             takerAddress: accountAddress(),
             intentOnFilling: false,

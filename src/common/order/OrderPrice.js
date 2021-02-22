@@ -73,7 +73,7 @@ export class OrderPrice {
         await Promise.all(this.priceInversionObservers.toNotify(event))
     }
 
-    async refreshMarketPrice(amount = 1, source = null) {
+    async refreshMarketPrice(amount = new BigNumber(1), source = null) {
         let price = await getSwapPrice(this.baseToken, this.quoteToken, amount)
 
         this.gasCost = price.gasCost

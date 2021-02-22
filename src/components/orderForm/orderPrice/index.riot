@@ -91,7 +91,9 @@
             },
             async refreshMarketPrice() {
                 if (this.props.orderFactory.order.isMarketOrder()) {
-                    await this.props.orderFactory.order.sellPrice.refreshMarketPrice()
+                    await this.props.orderFactory.order.sellPrice.refreshMarketPrice(
+                        this.props.orderFactory.order.sellAmount.value
+                    )
                 }
                 setTimeout(async (obj) => { await obj.refreshMarketPrice() }, 30000, this)
             }

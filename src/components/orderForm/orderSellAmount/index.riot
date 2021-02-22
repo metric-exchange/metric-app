@@ -3,7 +3,7 @@
     <div class="order-line exchange-amount">
         <div class="order-input">
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellAmount.value) }>
-                { this.i18next.t('order.you_pay') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
+                { this.i18next.t('order.you_pay') }
             </div>
             <input type="number" id="order-amount-input" oninput={ updateAmount } placeholder="{ this.i18next.t('order.you_pay') }" step="any"/>
         </div>
@@ -65,9 +65,6 @@
             },
             isTokenInfoUpdated() {
                 return !isWalletConnected() || !isNaN(this.props.orderFactory.order.sellToken.balance)
-            },
-            formattedFeeAmount() {
-                return this.formatNumber(this.props.orderFactory.order.sellPrice.buyFeeAmountFor(this.props.orderFactory.order.sellAmount.value))
             }
         }
 

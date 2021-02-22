@@ -69,7 +69,7 @@
             "amount" : "Amount {{token.symbol}}",
             "amount_simple" : "Amount",
             "total" : "Total {{token.symbol}}",
-            "with_fee" : "(fee: {{amount}})",
+            "with_fee" : "(includes fee: {{amount}})",
             "you_get" : "You'll receive",
             "you_pay" : "You'll pay",
             "swap_fee" : "Swap fee",

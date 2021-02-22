@@ -115,25 +115,16 @@ export class OrderPrice {
         this.priceInversionObservers.register(observer, callback)
     }
 
-    feeAdjustedSellAmountFor(amount) {
-        return amount.dividedBy(1 + this.tryMetricFee())
-    }
-
-    sellFeeAmountFor(sellAmount) {
-        return this.feeAdjustedSellAmountFor(sellAmount).multipliedBy(this.tryMetricFee())
-    }
-
     buyFeeAmountFor(amount) {
         return amount.multipliedBy(this.tryMetricFee())
     }
 
     convertSellAmount(token, amount) {
-        return this.convertTokenAmount(token, this.feeAdjustedSellAmountFor(amount))
+        return this.convertTokenAmount(token, amount)
     }
 
     convertBuyAmount(token, amount) {
-        let feeAdjustedAmount = amount.multipliedBy(1 + this.tryMetricFee())
-        return this.convertTokenAmount(token, feeAdjustedAmount)
+        return this.convertTokenAmount(token, amount)
     }
 
     tryMetricFee() {
@@ -154,16 +145,9 @@ export class OrderPrice {
 
     convertTokenAmount(token, amount) {
         if (token.address === this.baseToken.address) {
-            return {
-                token: this.quoteToken,
-                amount: amount.multipliedBy(this.price.value)
-            }
+            return amount.multipliedBy(this.price.value)
         }
-
-        return {
-            token: this.baseToken,
-            amount: amount.dividedBy(this.price.value)
-        }
+        return amount.dividedBy(this.price.value)
     }
 
 }

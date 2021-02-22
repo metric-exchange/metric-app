@@ -69,7 +69,7 @@
             "amount" : "Количество {{token.symbol}}",
             "amount_simple" : "Количество",
             "total" : "Итого {{token.symbol}}",
-            "with_fee" : "(комиссия: {{amount}})",
+            "with_fee" : "(расходы включены: {{amount}})",
             "you_get" : "Вы получите",
             "you_pay" : "Ты заплатишь",
             "swap_fee" : "Комиссия за обмен",

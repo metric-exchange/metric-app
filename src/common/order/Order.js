@@ -94,7 +94,7 @@ export class Order {
                 this.buyAmount.value.isGreaterThan(0) &&
                 (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
                     this.sellPrice.calculated = true
-                    await this.sellPrice.set(source, this.buyAmount.value.dividedBy(this.sellPrice.feeAdjustedSellAmountFor(sellAmount)))
+                    await this.sellPrice.set(source, this.buyAmount.value.dividedBy(sellAmount))
             }
         }
     }
@@ -111,7 +111,7 @@ export class Order {
                 this.sellAmount.value.isGreaterThan(0) &&
                 (this.sellPrice.calculated || isNaN(this.sellPrice.price.value))) {
                 this.sellPrice.calculated = true
-                await this.sellPrice.set(source, buyAmount.dividedBy(this.sellPrice.feeAdjustedSellAmountFor(this.sellAmount.value)))
+                await this.sellPrice.set(source, buyAmount.dividedBy(this.sellAmount.value))
             }
         }
     }
@@ -123,7 +123,7 @@ export class Order {
             !this.sellPrice.calculated &&
             source.property !== OrderEventProperties.Price
         ) {
-            await this.buyAmount.set(source, this.sellPrice.convertSellAmount(this.sellToken, sellAmount).amount)
+            await this.buyAmount.set(source, this.sellPrice.convertSellAmount(this.sellToken, sellAmount))
         }
     }
 
@@ -132,7 +132,7 @@ export class Order {
             source.action !== OrderEventActions.Calculation &&
             !isNaN(price) &&
             !isNaN(this.sellAmount.value)) {
-            await this.buyAmount.set(source, this.sellPrice.convertSellAmount(this.sellToken, this.sellAmount.value).amount)
+            await this.buyAmount.set(source, this.sellPrice.convertSellAmount(this.sellToken, this.sellAmount.value))
         }
     }
 
@@ -141,7 +141,7 @@ export class Order {
             source.action !== OrderEventActions.Calculation &&
             !isNaN(price) &&
             !isNaN(this.buyAmount.value)) {
-            await this.sellAmount.set(source, this.sellPrice.convertBuyAmount(this.buyToken, this.buyAmount.value).amount)
+            await this.sellAmount.set(source, this.sellPrice.convertBuyAmount(this.buyToken, this.buyAmount.value))
         }
     }
 
@@ -152,7 +152,7 @@ export class Order {
             !this.sellPrice.calculated &&
             source.property !== OrderEventProperties.Price
         ) {
-            await this.sellAmount.set(source, this.sellPrice.convertBuyAmount(this.buyToken, buyAmount).amount)
+            await this.sellAmount.set(source, this.sellPrice.convertBuyAmount(this.buyToken, buyAmount))
         }
     }
 
@@ -175,8 +175,8 @@ export class Order {
 
     buildOrderDetails(sellAmount, buyAmount) {
         return {
-            sellAmount: this.sellPrice.feeAdjustedSellAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN),
-            sellFeeAmount: this.sellPrice.sellFeeAmountFor(sellAmount.multipliedBy(10 ** this.sellToken.decimals)).integerValue(BigNumber.ROUND_DOWN),
+            sellAmount: sellAmount.multipliedBy(10 ** this.sellToken.decimals).integerValue(BigNumber.ROUND_DOWN),
+            sellFeeAmount: new BigNumber(0),
             buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             feeRecipient: MetricReferralAddress

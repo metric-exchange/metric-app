@@ -59,18 +59,15 @@ export class SwapOrderFactory extends OrderFactory {
     buildOrderDetails(sellAmount, buyAmount) {
         let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
 
-        let sellAmountWithFee = orderDetails.sellAmount.plus(orderDetails.sellFeeAmount)
-        let buyAmountWithFee = orderDetails.buyAmount.plus(orderDetails.buyFeeAmount)
-
         let fee =
             orderDetails.buyFeeAmount
-                .dividedBy(buyAmountWithFee)
+                .dividedBy(orderDetails.buyAmount)
                 .toFixed(4, BigNumber.ROUND_UP)
 
         return {
             sellToken: this.order.sellToken.address,
             buyToken: this.order.buyToken.address,
-            sellAmount: `${sellAmountWithFee}`,
+            sellAmount: `${orderDetails.sellAmount}`,
             buyTokenPercentageFee: fee,
             feeRecipient : orderDetails.feeRecipient,
             affiliateAddress : orderDetails.feeRecipient,

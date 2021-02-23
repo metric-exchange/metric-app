@@ -1,4 +1,5 @@
-import "@babel/polyfill";
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import '@riotjs/hot-reload'
 import { component, install } from 'riot'
 import jquery from "jquery";

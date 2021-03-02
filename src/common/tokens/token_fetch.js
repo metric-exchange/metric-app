@@ -90,7 +90,7 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
             setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
         } else {
             console.debug("Token Balances/allowances update finished")
-            if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]) || isNaN(t.allowance[ExchangeProxyAllowanceTargetAddress]))) {
+            if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]))) {
                 setTimeout(() => fetchTokensInfo(address), 10000)
             } else {
                 setTimeout(() => fetchTokensInfo(address), 60000)
@@ -119,7 +119,6 @@ async function updateBalance(token, address, balance) {
             await Promise.all(
                 [
                     fetchAllowance(token, address, Erc20ProxyAddress),
-                    fetchAllowance(token, address, ExchangeProxyAllowanceTargetAddress),
                     fetchAllowance(token, address, ExchangeProxyV4Address)
                 ]
             )
@@ -128,10 +127,6 @@ async function updateBalance(token, address, balance) {
             let allowance = token.symbol !== "ETH" ? 0 : 1e27
             if (token.allowance[Erc20ProxyAddress] !== allowance) {
                 token.allowance[Erc20ProxyAddress] = allowance
-                balanceChanged = true
-            }
-            if (token.allowance[ExchangeProxyAllowanceTargetAddress] !== allowance) {
-                token.allowance[ExchangeProxyAllowanceTargetAddress] = allowance
                 balanceChanged = true
             }
             if (token.allowance[ExchangeProxyV4Address] !== allowance) {
@@ -424,6 +419,5 @@ let tokenListInitialized = false
 export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
 export let DAI_TOKEN_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
-export let ExchangeProxyAllowanceTargetAddress = "0xf740b67da229f2f10bcbd38a7979992fcc71b8eb"
 export let Erc20ProxyAddress = "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
 export let ExchangeProxyV4Address = "0xdef1c0ded9bec7f1a1670819833240f027b25eff"

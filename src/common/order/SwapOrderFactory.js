@@ -1,6 +1,6 @@
 import {OrderFactory} from "./OrderFactory";
 import {callSwapApi} from "../0x/0x_swap_proxy";
-import {ExchangeProxyAllowanceTargetAddress, tokensList} from "../tokens/token_fetch";
+import {ExchangeProxyV4Address, tokensList} from "../tokens/token_fetch";
 import {OrderState} from "./OrderStateManager";
 import {formatNumber} from "../helpers";
 import {BigNumber} from "@0x/utils";
@@ -13,7 +13,7 @@ export class SwapOrderFactory extends OrderFactory {
         super(
             order,
             stateManager,
-            ExchangeProxyAllowanceTargetAddress,
+            ExchangeProxyV4Address,
             accountAddress
         );
         this.slippagePercentage = getSlippageConfig()

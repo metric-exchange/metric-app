@@ -1,8 +1,17 @@
 @import "../themeColors/index.css";
 
+.order-book-body {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    padding: 20px;
+    height: 476px;
+    width: 310px;
+}
+
 #order-table-canvas {
-    height: 420px;
-    width: 335px;
+    height: 426px;
+    width: 310px;
     overflow-y: scroll;
 }
 
@@ -15,7 +24,7 @@
 }
 
 .order {
-    line-height: 25px;
+    line-height: 20px;
 }
 
 #orders-separator {
@@ -31,18 +40,10 @@
 }
 
 .orders-header {
+    height: 50px;
     line-height: 40px;
     font-weight: normal;
     background: var(--token-selector-background-color);
-}
-
-.order-book-body {
-    display: grid;
-    align-content: center;
-    justify-content: center;
-    height: 476px;
-    width: 335px;
-    padding: 10px;
 }
 
 .order-book-title {
@@ -53,15 +54,15 @@
     display: grid;
     grid-template-rows: 10% 90%;
     color: var(--token-selector-table-text-color);
-    place-content: center;
-    align-content: center;
 }
 
 .order-book-columns {
     display: grid;
     place-content: center;
     justify-content: center;
-    grid-template-columns: 107px 107px 107px;
+    text-align: end;
+    grid-template-columns: 32% 32% 32%;
+    grid-gap: 2%;
 }
 
 .order:hover {
@@ -76,14 +77,13 @@
 @media(min-width: 600px) {
 
     .order-book-body {
-        width: 415px;
+        width: 395px;
+        padding: 30px;
     }
 
     #order-table-canvas {
-        width: 420px;
+        height: 406px;
+        width: 395px;
     }
 
-    .order-book-columns {
-        grid-template-columns: 138px 138px 138px;
-    }
 }

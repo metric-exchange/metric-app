@@ -1,43 +1,46 @@
 <order-book>
+
     <div class="order-book-body">
-        <loader if={ state.isLoadingOrders } />
-        <div class="order-book-content" if={ !state.isLoadingOrders }>
-            <div class="order-book-columns orders-header">
-                <div>{ this.i18next.t('order.price', { token: props.orderFactory.order.sellPrice.priceTokens().base }) }</div>
-                <div>{ this.i18next.t('order.amount', { token: props.orderFactory.order.sellToken }) }</div>
-                <div>{ this.i18next.t('order.total', { token: props.orderFactory.order.buyToken }) }</div>
+        <div class="order-form-loader" if={ state.isLoadingOrders }>
+            <loader/>
+        </div>
+        <div class="order-book-columns orders-header" if={ !state.isLoadingOrders }>
+            <div>{ this.i18next.t('order.price', { token: props.orderFactory.order.sellPrice.priceTokens().base }) }</div>
+            <div>{ this.i18next.t('order.amount', { token: props.orderFactory.order.sellToken }) }</div>
+            <div>{ this.i18next.t('order.total', { token: props.orderFactory.order.buyToken }) }</div>
+        </div>
+        <div id="order-table-canvas"
+             if={ !state.isLoadingOrders }
+             onscroll={ disableScrollToView } >
+
+            <div each={bid in state.bids} class="order order-book-columns" if={ props.orderFactory.order.sellPrice.inverted }>
+                <div class="ask order-price clickable-price" onclick={ (e) => setPriceFromClick(bid.price) }>{ this.formatNumber(bid.price, config.displayedDecimalPoints, true) }</div>
+                <div>{ this.formatNumber(bid.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
             </div>
-            <div id="order-table-canvas" onscroll={ disableScrollToView } >
 
-                <div each={bid in state.bids} class="order order-book-columns" if={ props.orderFactory.order.sellPrice.inverted }>
-                    <div class="ask order-price clickable-price" onclick={ (e) => setPriceFromClick(bid.price) }>{ this.formatNumber(bid.price, config.displayedDecimalPoints, true) }</div>
-                    <div>{ this.formatNumber(bid.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                    <div class="ask">{ this.formatNumber(bid.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                </div>
+            <div each={ask in state.asks} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
+                <div class="ask order-price clickable-price" onclick={ (e) => setPriceFromClick(ask.price) }>{ this.formatNumber(ask.price, config.displayedDecimalPoints, true) }</div>
+                <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                <div>{ this.formatNumber(ask.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+            </div>
 
-                <div each={ask in state.asks} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
-                    <div class="ask order-price clickable-price" onclick={ (e) => setPriceFromClick(ask.price) }>{ this.formatNumber(ask.price, config.displayedDecimalPoints, true) }</div>
-                    <div class="ask">{ this.formatNumber(ask.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                    <div>{ this.formatNumber(ask.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                </div>
+            <div id="orders-separator" class="order-book-columns" >
+                <div class="order-price clickable-price mid-market-price" onclick={ (e) => setPriceFromClick(state.marketPrice) }>{ this.formatNumber(state.marketPrice, config.displayedDecimalPoints, true) }</div>
+                <div/>
+                <div/>
+            </div>
 
-                <div id="orders-separator" class="order-book-columns" >
-                    <div class="order-price clickable-price mid-market-price" onclick={ (e) => setPriceFromClick(state.marketPrice) }>{ this.formatNumber(state.marketPrice, config.displayedDecimalPoints, true) }</div>
-                    <div/>
-                    <div/>
-                </div>
+            <div each={bid in state.bids} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
+                <div class="bid order-price clickable-price" onclick={ (e) => setPriceFromClick(bid.price) }>{ this.formatNumber(bid.price, config.displayedDecimalPoints, true) }</div>
+                <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                <div>{ this.formatNumber(bid.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+            </div>
 
-                <div each={bid in state.bids} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
-                    <div class="bid order-price clickable-price" onclick={ (e) => setPriceFromClick(bid.price) }>{ this.formatNumber(bid.price, config.displayedDecimalPoints, true) }</div>
-                    <div class="bid">{ this.formatNumber(bid.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                    <div>{ this.formatNumber(bid.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                </div>
-
-                <div each={ask in state.asks} class="order order-book-columns" if={ props.orderFactory.order.sellPrice.inverted }>
-                    <div class="bid order-price clickable-price" onclick={ (e) => setPriceFromClick(ask.price) }>{ this.formatNumber(ask.price, config.displayedDecimalPoints, true) }</div>
-                    <div>{ this.formatNumber(ask.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                    <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
-                </div>
+            <div each={ask in state.asks} class="order order-book-columns" if={ props.orderFactory.order.sellPrice.inverted }>
+                <div class="bid order-price clickable-price" onclick={ (e) => setPriceFromClick(ask.price) }>{ this.formatNumber(ask.price, config.displayedDecimalPoints, true) }</div>
+                <div>{ this.formatNumber(ask.volumeTaker.toNumber(), config.displayedDecimalPoints, true) }</div>
+                <div class="bid">{ this.formatNumber(ask.volumeMaker.toNumber(), config.displayedDecimalPoints, true) }</div>
             </div>
         </div>
     </div>

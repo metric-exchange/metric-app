@@ -33,7 +33,8 @@
     border-radius: 5px;
     background-color: var(--item-card-color);
     margin-bottom: 5px;
-    line-height: 40px;
+    line-height: 15px;
+    padding: 10px;
 }
 
 .my-trade {
@@ -49,7 +50,7 @@
     display: grid;
     grid-template-rows: auto auto;
     place-items: center;
-    line-height: 25px;
+    line-height: 15px;
     padding: 5px;
 }
 

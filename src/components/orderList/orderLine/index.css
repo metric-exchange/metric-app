@@ -26,11 +26,12 @@
 
 .my-orders {
     width: 100%;
-    line-height: 40px;
+    line-height: 15px;
     border-radius: 5px;
     background-color: var(--item-card-color);
     margin-bottom: 5px;
     cursor: pointer;
+    padding: 10px;
 }
 
 .selected-order {
@@ -42,8 +43,7 @@
     display: grid;
     grid-template-rows: auto auto;
     place-items: center;
-    line-height: 25px;
-    padding: 5px;
+    line-height: 15px;
 }
 
 .sell-amount {

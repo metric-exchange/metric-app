@@ -25,7 +25,6 @@
 }
 
 .my-orders {
-    width: 100%;
     line-height: 15px;
     border-radius: 5px;
     background-color: var(--item-card-color);

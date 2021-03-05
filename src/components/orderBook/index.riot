@@ -4,7 +4,7 @@
         <div class="order-form-loader" if={ state.isLoadingOrders }>
             <loader/>
         </div>
-        <div class="order-book-columns orders-header" if={ !state.isLoadingOrders }>
+        <div class="orders-header" if={ !state.isLoadingOrders }>
             <div>{ this.i18next.t('order.price', { token: props.orderFactory.order.sellPrice.priceTokens().base }) }</div>
             <div>{ this.i18next.t('order.amount', { token: props.orderFactory.order.sellToken }) }</div>
             <div>{ this.i18next.t('order.total', { token: props.orderFactory.order.buyToken }) }</div>

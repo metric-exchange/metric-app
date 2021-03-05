@@ -40,10 +40,12 @@
 }
 
 .orders-header {
-    height: 50px;
-    line-height: 40px;
-    font-weight: normal;
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    grid-gap: 2%;
     background: var(--token-selector-background-color);
+    text-align: center;
+    height: 50px;
 }
 
 .order-book-title {

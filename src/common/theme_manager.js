@@ -20,11 +20,11 @@ export function setLightTheme() {
 }
 
 export function isDarkThemeSet() {
-    return getTheme() === darkTheme() || getTheme() === null
+    return getTheme() === darkTheme()
 }
 
 export function isLightThemeSet() {
-    return getTheme() === lightTheme()
+    return getTheme() === lightTheme() || getTheme() === null
 }
 
 function getTheme() {

@@ -28,7 +28,7 @@
 }
 
 #orders-separator {
-    line-height: 70px;
+    line-height: 35px;
 }
 
 .order-price {
@@ -65,6 +65,7 @@
     text-align: end;
     grid-template-columns: 32% 32% 32%;
     grid-gap: 2%;
+    margin-right: 5%;
 }
 
 .order:hover {

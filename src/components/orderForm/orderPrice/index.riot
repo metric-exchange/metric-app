@@ -57,9 +57,11 @@
             onPriceChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
                     if (this.props.orderFactory.order.isLimitOrder()) {
-                        document.getElementById("order-price-input").value =
-                            this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
-                        this.update()
+                        let input = document.getElementById("order-price-input")
+                        if (input !== null) {
+                            input.value = this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
+                            this.update()
+                        }
                     } else {
                         this.setPriceImpact()
                     }

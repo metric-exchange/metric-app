@@ -41,7 +41,7 @@ Rollbar.configure({
     verbose: process.env.NODE_ENV !== 'production'
 });
 
-Rollbar.info(`Environment: ${process.env.NODE_ENV}`)
+console.info(`Environment: ${process.env.NODE_ENV}`)
 
 install(c => {
 

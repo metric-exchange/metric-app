@@ -3,6 +3,7 @@ import moment from "moment/moment";
 import {fetchJson} from "../json_api_fetch";
 import {METRIC_TOKEN_ADDRESS} from "../tokens/token_fetch";
 import {CoinGeckoProxy} from "../tokens/CoinGeckoProxy";
+import {tryFormatWalletName} from "../wallet/wallet_manager";
 
 export class ZeroXFillsProxy {
     constructor() {
@@ -23,6 +24,7 @@ export class ZeroXFillsProxy {
         if (trades.length > 0) {
             return {
                 address: trades[0].address,
+                name: trades[0].name,
                 usdVolume: trades[0].usdTotalValue
             }
         }
@@ -40,6 +42,7 @@ export class ZeroXFillsProxy {
                 traders.push(
                     {
                         address: fill.address,
+                        name: fill.name,
                         tradesCount: 1
                     }
                 )
@@ -63,6 +66,7 @@ export class ZeroXFillsProxy {
                 traders.push(
                     {
                         address: fill.address,
+                        name: fill.name,
                         usdVolume: fill.usdMetricValue
                     }
                 )
@@ -88,6 +92,7 @@ export class ZeroXFillsProxy {
                     date.traders.push(
                         {
                             address: fill.address,
+                            name: fill.name,
                             usdVolume: fill.usdMetricValue
                         }
                     )
@@ -98,6 +103,7 @@ export class ZeroXFillsProxy {
                     traders: [
                         {
                             address: fill.address,
+                            name: fill.name,
                             usdVolume: fill.usdMetricValue
                         }
                     ]
@@ -111,6 +117,7 @@ export class ZeroXFillsProxy {
                 return {
                     date: t.date,
                     address: topTrader.address,
+                    name: topTrader.name,
                     usdVolume: topTrader.usdVolume
                 }
             })
@@ -129,6 +136,7 @@ export class ZeroXFillsProxy {
                 traders.push(
                     {
                         address: fill.address,
+                        name: fill.name,
                         usdVolume: fill.usdTotalValue
                     }
                 )
@@ -166,7 +174,7 @@ export class ZeroXFillsProxy {
         let storedFills = [...this.fills.value]
 
         for (let index = 0; index < fills.length; index++) {
-            let fill = this.extractFillData(fills[index])
+            let fill = await this.extractFillData(fills[index])
 
             if (fill.usdValue === undefined) {
                 let usdPrice = await this.priceProxy.fetchCoinPriceAt(fill.makerTokenSymbol , moment(fill.date))
@@ -181,6 +189,7 @@ export class ZeroXFillsProxy {
             storedFills.push({
                 id: fill.id,
                 address: fill.address,
+                name: fill.name,
                 date: fill.date,
                 details: {
                     makerTokenSymbol: fill.makerTokenSymbol,
@@ -199,13 +208,14 @@ export class ZeroXFillsProxy {
         }
     }
 
-    extractFillData(fill) {
+    async extractFillData(fill) {
         let metric = fill.apps.find(r => r.id === this.app)
         if (metric.type === "relayer") {
             return {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
                 address: fill.makerAddress,
+                name: await tryFormatWalletName(fill.makerAddress),
                 usdValue: fill.value.USD,
                 isMetricTrade: fill.assets.find(a => { return a.tokenAddress.toUpperCase() === METRIC_TOKEN_ADDRESS.toUpperCase() }) !== undefined,
                 makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,
@@ -221,6 +231,7 @@ export class ZeroXFillsProxy {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
                 address: this.extractTakerAddress(fill),
+                name: await tryFormatWalletName(this.extractTakerAddress(fill)),
                 usdValue: fill.value.USD,
                 isMetricTrade: fill.assets.find(a => { return a.tokenAddress.toUpperCase() === METRIC_TOKEN_ADDRESS.toUpperCase() }) !== undefined,
                 makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,

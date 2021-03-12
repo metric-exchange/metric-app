@@ -19,6 +19,24 @@ export async function walletOwnerEnsName(address) {
     return name.name
 }
 
+export async function tryFormatWalletName(address) {
+    let name = null
+
+    if (isWalletConnected()) {
+        name = await walletOwnerEnsName(address)
+    }
+
+    if (name === null) {
+        name = obfuscateAddress(address)
+    }
+
+    return name
+}
+
+export function obfuscateAddress(address) {
+    return address.substr(0, 4) + '...' + address.substr(38, 40)
+}
+
 export function registerForWalletChanges(item) {
     walletEventListeners.push(item)
 }

@@ -6,7 +6,7 @@
             <div class="largest-trade-volume">${ this.formatNumber(state.largestTrade.usdVolume)  }</div>
             <div class="largest-trader-info">
                 <img class="largest-trader-logo" src={ TraderLogo(state.largestTrade.address) } height="20" width="20"/>
-                <div class="largest-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{state.largestTrade.address}">{ state.largestTrade.address.substr(0, 4) + '...' + state.largestTrade.address.substr(38, 40) }</a></div>
+                <div class="largest-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{state.largestTrade.address}">{ state.largestTrade.name }</a></div>
             </div>
         </div>
 
@@ -15,7 +15,7 @@
             <div class="largest-trade-volume">{ this.formatNumber(state.mostActiveTrader.tradesCount) } Trades</div>
             <div class="largest-trader-info">
                 <img class="largest-trader-logo" src={ TraderLogo(state.mostActiveTrader.address) } height="20" width="20"/>
-                <div class="largest-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{state.mostActiveTrader.address}">{ state.mostActiveTrader.address.substr(0, 4) + '...' + state.mostActiveTrader.address.substr(38, 40) }</a></div>
+                <div class="largest-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{state.mostActiveTrader.address}">{ state.mostActiveTrader.name }</a></div>
             </div>
         </div>
 
@@ -24,7 +24,7 @@
             <div class="largest-trade-volume">${ this.formatNumber(state.largestMetricTrade.usdVolume)  }</div>
             <div class="largest-trader-info">
                 <img class="largest-trader-logo" src={ TraderLogo(state.largestMetricTrade.address) } height="20" width="20"/>
-                <div class="largest-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{state.largestMetricTrade.address}">{ state.largestMetricTrade.address.substr(0, 4) + '...' + state.largestMetricTrade.address.substr(38, 40) }</a></div>
+                <div class="largest-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{state.largestMetricTrade.address}">{ state.largestMetricTrade.name }</a></div>
             </div>
         </div>
     </div>

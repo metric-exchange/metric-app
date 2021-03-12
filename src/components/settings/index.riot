@@ -38,7 +38,11 @@
         import './index.css'
         import ThemeSwitch from '../themeSwitch/index.riot'
         import LanguageSelector from '../languageSelector/index.riot'
-        import {accountAddress, registerForWalletChanges, walletOwnerEnsName} from "../../common/wallet/wallet_manager";
+        import {
+            accountAddress,
+            obfuscateAddress,
+            registerForWalletChanges, tryFormatWalletName
+        } from "../../common/wallet/wallet_manager";
         import makeBlockie from 'ethereum-blockies-base64';
 
         export default {
@@ -78,16 +82,13 @@
             async handleAccounts() {
                 if (accountAddress() !== undefined) {
                     this.state.address = accountAddress()
-                    this.state.accountDisplay = this.state.address.substr(0, 8) + '...' + this.state.address.substr(38, 40)
+                    this.state.accountDisplay = obfuscateAddress(this.state.address)
                 }
                 this.state.blocky = makeBlockie(this.state.address)
                 this.update()
 
                 if (accountAddress() !== undefined) {
-                    let ensName = await walletOwnerEnsName(this.state.address)
-                    if (ensName) {
-                        this.state.accountDisplay = ensName
-                    }
+                    this.state.accountDisplay = await tryFormatWalletName(this.state.address)
                     this.update()
                 }
             }

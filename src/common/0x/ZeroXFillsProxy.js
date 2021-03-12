@@ -151,6 +151,8 @@ export class ZeroXFillsProxy {
             await this.priceProxy.init()
         }
         await this.fetchFills(source)
+
+        setTimeout((obj) => obj.refreshFills(), 60000, this)
     }
 
     async fetchFills(source, page = 1) {
@@ -186,25 +188,27 @@ export class ZeroXFillsProxy {
                 }
             }
 
-            storedFills.push({
-                id: fill.id,
-                address: fill.address,
-                name: fill.name,
-                date: fill.date,
-                details: {
-                    makerTokenSymbol: fill.makerTokenSymbol,
-                    makerAmount: fill.makerTokenAmount,
-                    takerTokenSymbol: fill.takerTokenSymbol,
-                    takerAmount: fill.takerTokenAmount
-                },
-                usdTotalValue: fill.usdValue,
-                usdMetricValue: fill.isMetricTrade ? fill.usdValue: 0
-            })
+            if (!storedFills.find(f => f.id === fill.id)) {
+                storedFills.push({
+                    id: fill.id,
+                    address: fill.address,
+                    name: fill.name,
+                    date: fill.date,
+                    details: {
+                        makerTokenSymbol: fill.makerTokenSymbol,
+                        makerAmount: fill.makerTokenAmount,
+                        takerTokenSymbol: fill.takerTokenSymbol,
+                        takerAmount: fill.takerTokenAmount
+                    },
+                    usdTotalValue: fill.usdValue,
+                    usdMetricValue: fill.isMetricTrade ? fill.usdValue: 0
+                })
 
-            await this.fills.set(
-                source,
-                storedFills
-            )
+                await this.fills.set(
+                    source,
+                    storedFills
+                )
+            }
         }
     }
 

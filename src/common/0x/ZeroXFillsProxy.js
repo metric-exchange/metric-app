@@ -148,7 +148,7 @@ export class ZeroXFillsProxy {
     async fetchFills(source, page = 1) {
         try {
             let fills =
-                await fetchJson(`http://209.250.240.179:3001/fills?page=${page}&dateFrom=${this.startDate.value.format('YYYY-MM-DD')}`)
+                await fetchJson(`https://api.metric.exchange/fills?page=${page}&dateFrom=${this.startDate.value.format('YYYY-MM-DD')}`)
 
             if (fills.fills.length > 0) {
                 await this.updateFills(source, fills.fills)

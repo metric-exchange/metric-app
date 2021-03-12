@@ -6,10 +6,10 @@ import {CoinGeckoProxy} from "../tokens/CoinGeckoProxy";
 
 export class ZeroXFillsProxy {
     constructor() {
-        this.period = 1
+        this.period = 7
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
         this.startDate = new ObservableValue(moment().subtract(this.period, 'days'))
-        this.endDate = new ObservableValue(moment())
+        this.endDate = new ObservableValue(moment().add(1, 'days'))
         this.fills = new ObservableValue([])
 
         this.startDate.observe(this, 'refreshFills')
@@ -142,27 +142,16 @@ export class ZeroXFillsProxy {
         if (this.priceProxy.coins.length === 0) {
             await this.priceProxy.init()
         }
-        if (this.fills.value.length > 0) {
-            await this.fills.set(source, [])
-        }
         await this.fetchFills(source)
     }
 
     async fetchFills(source, page = 1) {
         try {
-            let detailedFills = []
             let fills =
-                await fetchJson(`https://api.0xtracker.com/fills?apps=${this.app}&page=${page}`)
+                await fetchJson(`http://209.250.240.179:3001/fills?page=${page}&dateFrom=${this.startDate.value.format('YYYY-MM-DD')}`)
 
-            for (let index = 0; index < fills.fills.length; index++){
-                let fill = await this.fetchFillDetails(fills.fills[index].id)
-                 if (moment(fill.date.substring(0, 10)).isBetween(this.startDate.value, this.endDate.value)) {
-                     detailedFills.push(this.extractFillData(fill))
-                 }
-            }
-
-            if (detailedFills.length > 0) {
-                await this.updateFills(source, detailedFills)
+            if (fills.fills.length > 0) {
+                await this.updateFills(source, fills.fills)
                 if (page < fills.pageCount) {
                     await this.fetchFills(source, page + 1)
                 }
@@ -173,15 +162,11 @@ export class ZeroXFillsProxy {
         }
     }
 
-    async fetchFillDetails(id) {
-        return await fetchJson(`https://api.0xtracker.com/fills/${id}`)
-    }
-
     async updateFills(source, fills) {
         let storedFills = [...this.fills.value]
 
         for (let index = 0; index < fills.length; index++) {
-            let fill = fills[index]
+            let fill = this.extractFillData(fills[index])
 
             if (fill.usdValue === undefined) {
                 let usdPrice = await this.priceProxy.fetchCoinPriceAt(fill.makerTokenSymbol , moment(fill.date))
@@ -204,7 +189,7 @@ export class ZeroXFillsProxy {
                     takerAmount: fill.takerTokenAmount
                 },
                 usdTotalValue: fill.usdValue,
-                usdMetricValue: fill.isMetricTrade ? fill.usdValue : 0
+                usdMetricValue: fill.isMetricTrade ? fill.usdValue: 0
             })
 
             await this.fills.set(
@@ -251,7 +236,7 @@ export class ZeroXFillsProxy {
         if (fill.taker.isContract) {
             return fill.transactionFrom.address
         } else {
-            return fill.takerAddress
+            return fill.taker.address
         }
     }
 

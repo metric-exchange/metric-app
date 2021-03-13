@@ -4,6 +4,11 @@
         <div class="activity-period">
             { this.i18next.t('analytics.activity_period', {period: state.fillsProxy.period}) }
         </div>
+
+        <div class="total-volumes">
+            <total-volumes fills-proxy={ state.fillsProxy }/>
+        </div>
+
         <div class="largest-trades">
             <largest-trades fills-proxy={ state.fillsProxy }/>
         </div>
@@ -21,6 +26,7 @@
 
         import './index.css'
         import TradeVolumes from '../tradeVolumes/index.riot'
+        import TotalVolumes from '../totalVolumes/index.riot'
         import TopDailyTraders from '../topDailyTraders/index.riot'
         import LargestTrades from '../largestTrades/index.riot'
         import {ZeroXFillsProxy} from "../../common/0x/ZeroXFillsProxy";
@@ -30,6 +36,7 @@
                 TradeVolumes,
                 TopDailyTraders,
                 LargestTrades,
+                TotalVolumes
             },
             state: {
                 fillsProxy: new ZeroXFillsProxy()

@@ -144,6 +144,30 @@ export class ZeroXFillsProxy {
         return traders.sort((a, b) => b.usdVolume - a.usdVolume)
     }
 
+    totalVolume() {
+
+        let volumes = {
+            swaps: { usd: 0, count: 0 },
+            limits: { usd: 0, count: 0 },
+            total: { usd: 0, count: 0 }
+        }
+
+        for (let index = 0; index < this.fills.value.length; index++) {
+            let fill = this.fills.value[index]
+            if (fill.isSwap) {
+                volumes.swaps.usd += fill.usdTotalValue
+                volumes.swaps.count += 1
+            } else {
+                volumes.limits.usd += fill.usdTotalValue
+                volumes.limits.count += 1
+            }
+            volumes.total.usd += fill.usdTotalValue
+            volumes.total.count += 1
+        }
+
+        return volumes
+    }
+
     async refreshFills(source) {
         await this.fetchFills(source)
 
@@ -196,7 +220,8 @@ export class ZeroXFillsProxy {
                         takerAmount: fill.takerTokenAmount
                     },
                     usdTotalValue: fill.usdValue,
-                    usdMetricValue: fill.isMetricTrade ? fill.usdValue: 0
+                    usdMetricValue: fill.isMetricTrade ? fill.usdValue: 0,
+                    isSwap: fill.isSwap
                 })
 
                 await this.fills.set(

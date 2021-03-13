@@ -34,6 +34,11 @@
     font-weight: normal;
 }
 
+.total-volumes{
+    font-style: normal;
+    font-weight: normal;
+}
+
 .activity-period {
     color: var(--token-selector-table-text-color);
 }
@@ -43,6 +48,7 @@
         grid-template-columns: 50% 50%;
         grid-template-areas:
             "activity-period activity-period"
+            "total-volumes total-volumes"
             "top-trades top-trades"
             "top-daily-traders top-traders";
         margin-left: 15%;
@@ -63,5 +69,9 @@
 
     .largest-trades{
         grid-area: top-trades;
+    }
+
+    .total-volumes{
+        grid-area: total-volumes;
     }
 }

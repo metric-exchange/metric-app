@@ -134,7 +134,12 @@
             "most_active_trader" : "最活躍的交易者",
             "largest_metric_trade" : "最大的$METRIC交易",
             "top_daily_metric_traders" : "每日最佳$METRIC交易員",
-            "top_traders" : "頂級交易員"
+            "top_traders" : "頂級交易員",
+            "trades" : "交易",
+            "total_volume" : "總容積",
+            "total_trades" : "總交易",
+            "market_orders" : "市場訂單",
+            "limit_orders" : "限價單"
         }
     }
 }

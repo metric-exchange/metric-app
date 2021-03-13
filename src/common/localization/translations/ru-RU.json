@@ -136,7 +136,12 @@
             "most_active_trader" : "Самый активный трейдер",
             "largest_metric_trade" : "Крупнейшая сделка на $METRIC",
             "top_daily_metric_traders" : "Лучшие ежедневные трейдеры по $METRIC",
-            "top_traders" : "Лучшие трейдеры"
+            "top_traders" : "Лучшие трейдеры",
+            "trades" : "Сделки",
+            "total_volume" : "Полный объем",
+            "total_trades" : "Всего сделок",
+            "market_orders" : "Рыночные заказы",
+            "limit_orders" : "Лимитные приказы"
         }
     }
 }

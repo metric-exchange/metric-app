@@ -1,0 +1,40 @@
+<total-tradess>
+
+    <div class="total-trades-list">
+        <div class="total-trades-stat-line total-trades-stat-body" if={state.volume}>
+            <div class="total-trades-title">{ this.i18next.t('analytics.total_volume') }</div>
+            <div class="total-trades-volume">${ this.formatNumber(state.volume.total.usd)  }</div>
+            <div class="total-trades-info">
+                <div>{ this.i18next.t('analytics.limit_orders') } <br/>${this.formatNumber(state.volume.limits.usd)}</div>
+                <div>{ this.i18next.t('analytics.market_orders') } <br/>${this.formatNumber(state.volume.swaps.usd)}</div>
+            </div>
+        </div>
+
+        <div class="total-trades-stat-line total-trades-stat-body" if={state.volume}>
+            <div class="total-trades-title">{ this.i18next.t('analytics.total_trades') }</div>
+            <div class="total-trades-volume">{ this.formatNumber(state.volume.total.count) }</div>
+            <div class="total-trades-info">
+                <div>{ this.i18next.t('analytics.limit_orders') } <br/>{ this.formatNumber(state.volume.limits.count) }</div>
+                <div>{ this.i18next.t('analytics.market_orders') } <br/>{ this.formatNumber(state.volume.swaps.count) }</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        import './index.css'
+
+        export default {
+            onBeforeMount() {
+                this.props.fillsProxy.fills.observe(this, 'onFillsRefresh')
+            },
+            onFillsRefresh() {
+                this.update({
+                    volume: this.props.fillsProxy.totalVolume()
+                })
+            }
+        }
+
+    </script>
+
+</total-tradess>

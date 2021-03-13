@@ -21,7 +21,9 @@ export class CoinGeckoProxy {
             let coinInfo =
                 await fetchJson(`https://api.coingecko.com/api/v3/coins/${coinId.id}/history?date=${formattedDate}&localization=false`)
 
-            return coinInfo.market_data.current_price.usd
+            if (coinInfo.market_data && coinInfo.market_data.current_price) {
+                return coinInfo.market_data.current_price.usd
+            }
         }
 
         return undefined

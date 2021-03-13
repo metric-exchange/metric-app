@@ -26,7 +26,9 @@
         </div>
         <div class="order-input" if={ props.orderFactory.order.isMarketOrder() }>
             <div class="input-sticky-placeholder" if={ !props.orderFactory.order.sellPrice.price.value.isNaN() }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
-            <div id="market-price">{ props.orderFactory.order.sellPrice.displayPrice().toFixed(4) } ({ state.priceImpact.toFixed(2) }%)</div>
+            <div id="market-price">
+                { props.orderFactory.order.sellPrice.displayPrice().toFixed(4) } ({ this.displayPriceImpact() ? state.priceImpact.toFixed(2) : '0'}%)
+            </div>
         </div>
     </div>
 
@@ -70,6 +72,10 @@
             updatePrice(e) {
                 this.props.orderFactory.order.sellPrice.set(this.config.event, new BigNumber(e.target.value))
                 this.update()
+            },
+            displayPriceImpact() {
+                return !this.props.orderFactory.order.buyAmount.value.isNaN() &&
+                !this.props.orderFactory.order.sellAmount.value.isNaN()
             },
             changePriceDirection() {
                 this.props.orderFactory.order.sellPrice.invert()

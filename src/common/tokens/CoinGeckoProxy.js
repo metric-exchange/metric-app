@@ -11,6 +11,10 @@ export class CoinGeckoProxy {
     }
 
     async fetchCoinPriceAt(symbol, date) {
+        if (this.coins.length === 0) {
+            await this.init()
+        }
+
         let formattedDate = date.format("DD-MM-YYYY")
         let coinId = this.coins.find(c => c.symbol.toLowerCase() === symbol.toLowerCase())
         if (coinId) {
@@ -24,3 +28,5 @@ export class CoinGeckoProxy {
     }
 
 }
+
+export let CoinPriceProxy = new CoinGeckoProxy()

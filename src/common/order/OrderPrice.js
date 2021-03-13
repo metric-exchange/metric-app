@@ -4,6 +4,8 @@ import {getSwapPrice, getSwapPriceForBuy} from "../0x/0x_swap_proxy";
 import {ObservationRegister} from "./ObservationRegister";
 import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./OrderEventSource";
 import {BigNumber} from "@0x/utils";
+import moment from "moment";
+import {CoinPriceProxy} from "../tokens/CoinGeckoProxy";
 
 export class OrderPrice {
 
@@ -94,13 +96,33 @@ export class OrderPrice {
         )
     }
 
+    async fetchPrice() {
+        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.symbol, moment())
+        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.symbol, moment())
+
+        return  BigNumber(quoteTokenUsdPrice / basTokenUsdPrice)
+    }
+
     async fetchDisplayMarketPrice() {
-        let price = await getSwapPrice(this.baseToken, this.quoteToken)
-        if (this.inverted && price.price.isGreaterThan(0)) {
-            return new BigNumber(1).dividedBy(price.price)
+        let price = await this.fetchPrice()
+        if (this.inverted && price.isGreaterThan(0)) {
+            return new BigNumber(1).dividedBy(price)
         } else {
-            return price.price
+            return price
         }
+    }
+
+    async fetchPrice() {
+        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.symbol, moment())
+        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.symbol, moment())
+
+        let price = BigNumber(basTokenUsdPrice / quoteTokenUsdPrice )
+        if (price.isNaN() || price.isEqualTo(0)) {
+            let quote = await getSwapPrice(this.baseToken, this.quoteToken)
+            price = quote.price
+        }
+
+        return price
     }
 
     displayPrice() {

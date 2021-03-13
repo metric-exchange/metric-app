@@ -2,7 +2,7 @@ import {ObservableValue} from "../order/ObservableValue";
 import moment from "moment/moment";
 import {fetchJson} from "../json_api_fetch";
 import {METRIC_TOKEN_ADDRESS} from "../tokens/token_fetch";
-import {CoinGeckoProxy} from "../tokens/CoinGeckoProxy";
+import {CoinPriceProxy} from "../tokens/CoinGeckoProxy";
 import {tryFormatWalletName} from "../wallet/wallet_manager";
 
 export class ZeroXFillsProxy {
@@ -15,8 +15,6 @@ export class ZeroXFillsProxy {
 
         this.startDate.observe(this, 'refreshFills')
         this.endDate.observe(this, 'refreshFills')
-
-        this.priceProxy = new CoinGeckoProxy()
     }
 
     traderWithLargestTrade() {
@@ -147,9 +145,6 @@ export class ZeroXFillsProxy {
     }
 
     async refreshFills(source) {
-        if (this.priceProxy.coins.length === 0) {
-            await this.priceProxy.init()
-        }
         await this.fetchFills(source)
 
         setTimeout((obj) => obj.refreshFills(), 60000, this)
@@ -179,9 +174,9 @@ export class ZeroXFillsProxy {
             let fill = await this.extractFillData(fills[index])
 
             if (fill.usdValue === undefined) {
-                let usdPrice = await this.priceProxy.fetchCoinPriceAt(fill.makerTokenSymbol , moment(fill.date))
+                let usdPrice = await CoinPriceProxy.fetchCoinPriceAt(fill.makerTokenSymbol , moment(fill.date))
                 if (usdPrice === undefined) {
-                    usdPrice = await this.priceProxy.fetchCoinPriceAt(fill.takerTokenSymbol , moment(fill.date))
+                    usdPrice = await CoinPriceProxy.fetchCoinPriceAt(fill.takerTokenSymbol , moment(fill.date))
                     fill.usdValue = usdPrice * fill.takerTokenAmount
                 } else {
                     fill.usdValue = usdPrice * fill.makerTokenAmount

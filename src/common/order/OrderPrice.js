@@ -97,8 +97,8 @@ export class OrderPrice {
     }
 
     async fetchPrice() {
-        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.symbol, moment())
-        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.symbol, moment())
+        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.address, moment())
+        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.address, moment())
 
         return  BigNumber(quoteTokenUsdPrice / basTokenUsdPrice)
     }
@@ -113,8 +113,8 @@ export class OrderPrice {
     }
 
     async fetchPrice() {
-        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.symbol, moment())
-        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.symbol, moment())
+        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.address, moment())
+        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.address, moment())
 
         let price = BigNumber(basTokenUsdPrice / quoteTokenUsdPrice )
         if (price.isNaN() || price.isEqualTo(0)) {

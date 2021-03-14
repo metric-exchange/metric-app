@@ -2,29 +2,20 @@ import {fetchJson} from "../json_api_fetch";
 
 export class CoinGeckoProxy {
 
-    constructor() {
-        this.coins = []
-    }
+    constructor() {}
 
-    async init() {
-        this.coins = await fetchJson("https://api.coingecko.com/api/v3/coins/list")
-    }
-
-    async fetchCoinPriceAt(symbol, date) {
-        if (this.coins.length === 0) {
-            await this.init()
-        }
-
-        let formattedDate = date.format("DD-MM-YYYY")
-        let coinId = this.coins.find(c => c.symbol.toLowerCase() === symbol.toLowerCase())
-        if (coinId) {
+    async fetchCoinPriceAt(tokenAddress, date) {
+        let coin = await fetchJson(`https://api.coingecko.com/api/v3/coins/ethereum/contract/${tokenAddress.toLowerCase()}`)
+        if (coin && coin.id) {
+            let formattedDate = date.format("DD-MM-YYYY")
             let coinInfo =
-                await fetchJson(`https://api.coingecko.com/api/v3/coins/${coinId.id}/history?date=${formattedDate}&localization=false`)
+                await fetchJson(`https://api.coingecko.com/api/v3/coins/${coin.id}/history?date=${formattedDate}&localization=false`)
 
             if (coinInfo.market_data && coinInfo.market_data.current_price) {
                 return coinInfo.market_data.current_price.usd
             }
         }
+
 
         return undefined
     }

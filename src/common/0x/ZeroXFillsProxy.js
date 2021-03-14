@@ -198,9 +198,9 @@ export class ZeroXFillsProxy {
             let fill = await this.extractFillData(fills[index])
 
             if (fill.usdValue === undefined) {
-                let usdPrice = await CoinPriceProxy.fetchCoinPriceAt(fill.makerTokenSymbol , moment(fill.date))
+                let usdPrice = await CoinPriceProxy.fetchCoinPriceAt(fill.makerTokenAddress , moment(fill.date))
                 if (usdPrice === undefined) {
-                    usdPrice = await CoinPriceProxy.fetchCoinPriceAt(fill.takerTokenSymbol , moment(fill.date))
+                    usdPrice = await CoinPriceProxy.fetchCoinPriceAt(fill.takerTokenAddress , moment(fill.date))
                     fill.usdValue = usdPrice * fill.takerTokenAmount
                 } else {
                     fill.usdValue = usdPrice * fill.makerTokenAmount
@@ -215,8 +215,10 @@ export class ZeroXFillsProxy {
                     date: fill.date,
                     details: {
                         makerTokenSymbol: fill.makerTokenSymbol,
+                        makerTokenAddress: fill.makerTokenAddress,
                         makerAmount: fill.makerTokenAmount,
                         takerTokenSymbol: fill.takerTokenSymbol,
+                        takerTokenAddress: fill.takerTokenAddress,
                         takerAmount: fill.takerTokenAmount
                     },
                     usdTotalValue: fill.usdValue,
@@ -243,8 +245,10 @@ export class ZeroXFillsProxy {
                 usdValue: fill.value.USD,
                 isMetricTrade: fill.assets.find(a => { return a.tokenAddress.toUpperCase() === METRIC_TOKEN_ADDRESS.toUpperCase() }) !== undefined,
                 makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,
+                makerTokenAddress: fill.assets.find(a => a.traderType === "maker").tokenAddress,
                 makerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "maker").amount),
                 takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
+                takerTokenAddress: fill.assets.find(a => a.traderType === "taker").tokenAddress,
                 takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount),
                 isSwap: false
             }
@@ -259,7 +263,9 @@ export class ZeroXFillsProxy {
                 usdValue: fill.value.USD,
                 isMetricTrade: fill.assets.find(a => { return a.tokenAddress.toUpperCase() === METRIC_TOKEN_ADDRESS.toUpperCase() }) !== undefined,
                 makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,
+                makerTokenAddress: fill.assets.find(a => a.traderType === "maker").tokenAddress,
                 makerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "maker").amount),
+                takerTokenAddress: fill.assets.find(a => a.traderType === "taker").tokenAddress,
                 takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
                 takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount),
                 isSwap: true

@@ -15,8 +15,8 @@
         import {OrderStateDisplays} from "./OrderStateDisplays";
         import Loader from '../../loader/index.riot'
         import './index.css'
-        import {METRIC_TOKEN_ADDRESS} from "../../../common/tokens/token_fetch";
         import {OrderState} from "../../../common/order/OrderStateManager";
+        import {UrlManager} from "../../../common/url/UrlManager";
 
         const {registerForTokenBalancesUpdate} = require("../../../common/tokens/token_fetch");
 
@@ -39,7 +39,7 @@
                 if (token.address === this.props.orderFactory.order.sellToken.address) {
                     this.updateOnParamsChanges()
                 }
-                if (token.address === METRIC_TOKEN_ADDRESS) {
+                if (token.address === UrlManager.metricToken().address) {
                     this.updateOnParamsChanges()
                 }
             },

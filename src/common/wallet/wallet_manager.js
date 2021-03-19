@@ -5,6 +5,7 @@ import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet
 import LogRocket from "logrocket";
 import * as Rollbar from "rollbar";
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+import {EthereumNetworkId, SupportedNetworks} from "../constants";
 
 export let walletAddress = undefined
 
@@ -41,6 +42,10 @@ export function registerForWalletChanges(item) {
     walletEventListeners.push(item)
 }
 
+export function registerForNetworkChanges(item) {
+    networkEventListeners.push(item)
+}
+
 export function accountAddress() { return walletAddress }
 
 export function isWalletConnected() {
@@ -60,13 +65,20 @@ export async function connectWallet() {
 
 async function updateAccount() {
     const accounts = await window.web3Modal.eth.getAccounts()
+    ConnectedNetworkId = await window.web3Modal.eth.getChainId()
+
     updateAccountAddress(accounts)
 
     if (web3ModalProvider !== undefined && web3ModalProvider !== null) {
+
         web3ModalProvider.on("accountsChanged", (accounts) => {
             updateAccountAddress(accounts);
         });
 
+        web3ModalProvider.on("chainChanged", (networkId) => {
+            ConnectedNetworkId = parseInt(networkId)
+            networkEventListeners.forEach(item => item.onNetworkChanges())
+        });
     }
 }
 
@@ -117,3 +129,6 @@ export async function getContractWrapper() {
 let providerEngine = null
 let contractWrapper = null
 let walletEventListeners = []
+let networkEventListeners = []
+export let ConnectedNetworkId = NaN
+

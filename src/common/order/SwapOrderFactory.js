@@ -6,6 +6,7 @@ import {formatNumber} from "../helpers";
 import {BigNumber} from "@0x/utils";
 import {getSlippageConfig, setSlippageConfig} from "./SlippageConfig";
 import Rollbar from "rollbar";
+import {chainToken, isUnwrapping, isWrapping, wrappedChainToken} from "../ChainHelpers";
 
 export class SwapOrderFactory extends OrderFactory {
 
@@ -47,9 +48,9 @@ export class SwapOrderFactory extends OrderFactory {
 
         await window.web3Modal.eth.sendTransaction(quote);
 
-        if (sellToken.symbol === "ETH" && buyToken.symbol === "WETH") {
+        if (isWrapping(sellToken, buyToken)) {
             Rollbar.info("Wrap succeeded")
-        } else if (sellToken.symbol === "WETH" && buyToken.symbol === "ETH") {
+        } else if (isUnwrapping(sellToken, buyToken)) {
             Rollbar.info("UnWrap succeeded")
         } else {
             Rollbar.info("Swap succeeded")

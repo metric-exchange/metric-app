@@ -1,14 +1,12 @@
-import {DAI_TOKEN_ADDRESS, findOrAddTokenWithAddress, METRIC_TOKEN_ADDRESS, tokensList} from "../tokens/token_fetch";
+import {findOrAddTokenWithAddress} from "../tokens/token_fetch";
+import {chainToken, getConnectedNetworkConfig, isConnectedToEthereumMainNet} from "../ChainHelpers";
 
 export class UrlManager {
 
-    constructor() {
-        this.defaultSellTokenAdress = METRIC_TOKEN_ADDRESS
-        this.defaultBuyTokenAdress = DAI_TOKEN_ADDRESS
-    }
+    constructor() {}
 
     async urlSellToken() {
-        let token = tokensList().find(t => t.address === this.defaultSellTokenAdress)
+        let token = UrlManager.defaultSellToken()
         let url = window.location.href.split('/#/')
         if (url.length === 2) {
             let addresses = url[1].split('/')
@@ -23,7 +21,7 @@ export class UrlManager {
     }
 
     async urlBuyToken() {
-        let token = tokensList().find(t => t.address === this.defaultBuyTokenAdress)
+        let token = UrlManager.defaultBuyToken()
         let url = window.location.href.split('/#/')
         if (url.length === 2) {
             let addresses = url[1].split('/')
@@ -35,6 +33,28 @@ export class UrlManager {
             }
         }
         return token
+    }
+
+    static defaultSellToken() {
+        return chainToken()
+    }
+
+    static defaultBuyToken() {
+        let config = getConnectedNetworkConfig()
+        if (isConnectedToEthereumMainNet()) {
+            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
+        }
+
+        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "busd")
+    }
+
+    static metricToken() {
+        let config = getConnectedNetworkConfig()
+        if (isConnectedToEthereumMainNet()) {
+            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
+        }
+
+        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "bmetric")
     }
 
     updateUrl(sellToken, buyToken) {

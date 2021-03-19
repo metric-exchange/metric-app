@@ -4,7 +4,13 @@ import '@riotjs/hot-reload'
 import { component, install } from 'riot'
 import jquery from "jquery";
 import { addToken } from "./common/tokens/token_fetch";
-import { accountAddress, connectWallet, switchWallet, updateAccountAddress, isWalletConnected } from './common/wallet/wallet_manager'
+import {
+    accountAddress,
+    connectWallet,
+    switchWallet,
+    updateAccountAddress,
+    isWalletConnected
+} from './common/wallet/wallet_manager'
 import { isDarkThemeSet, isLightThemeSet, initTheme } from './common/theme_manager'
 
 export default (window.$ = window.jQuery = jquery);
@@ -24,6 +30,7 @@ if (process.env.NODE_ENV === 'production') {
 */
 
 import * as Rollbar from "rollbar";
+import {isConnectedToBscMainNet, isConnectedToEthereumMainNet, isSupportedNetwork} from "./common/ChainHelpers";
 Rollbar.init(
     {
         accessToken: "b317442394e7414b92fabd9608992313",
@@ -64,6 +71,10 @@ install(c => {
     c.i18next = i18next
     c.formatNumber = formatNumber
     c.supportedLanguages = supportedLanguages
+
+    c.isConnectedToEthereumMainNet = isConnectedToEthereumMainNet
+    c.isConnectedToBscMainNet = isConnectedToBscMainNet
+    c.isSupportedNetwork = isSupportedNetwork
 
 })
 

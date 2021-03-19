@@ -4,6 +4,7 @@ import {BigNumber} from "@0x/utils";
 import {ObservableValue} from "./ObservableValue";
 import {ObservationRegister} from "./ObservationRegister";
 import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./OrderEventSource";
+import {chainToken} from "../ChainHelpers";
 
 export class Order {
 
@@ -72,7 +73,7 @@ export class Order {
 
     async setMaxSellAmount() {
         let maxAmount = this.sellToken.balance
-        if (this.isMarketOrder() && this.sellToken.symbol === "ETH") {
+        if (this.isMarketOrder() && this.sellToken.address === chainToken().address) {
             maxAmount = maxAmount.isGreaterThan(this.sellPrice.gasCost) ? maxAmount.minus(this.sellPrice.gasCost) : new BigNumber(0)
         }
 

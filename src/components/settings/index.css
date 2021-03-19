@@ -16,6 +16,16 @@
     height: 29px;
 }
 
+.network-icon {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 26px;
+    right: 50px;
+}
+
 .identicon-address {
     cursor: pointer;
     color: var(--main-text-color);

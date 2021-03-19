@@ -6,6 +6,7 @@ import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./Order
 import {BigNumber} from "@0x/utils";
 import moment from "moment";
 import {CoinPriceProxy} from "../tokens/CoinGeckoProxy";
+import {isUnwrapping, isWrapping} from "../ChainHelpers";
 
 export class OrderPrice {
 
@@ -150,15 +151,16 @@ export class OrderPrice {
     }
 
     tryMetricFee() {
+
         if (this.disableFee) {
             return 0
         }
 
-        if (this.baseToken.symbol === "ETH" && this.quoteToken.symbol === "WETH") {
+        if (isWrapping(this.baseToken, this.quoteToken)) {
             return 0
         }
 
-        if (this.baseToken.symbol === "WETH" && this.quoteToken.symbol === "ETH") {
+        if (isUnwrapping(this.baseToken, this.quoteToken)) {
             return 0
         }
 

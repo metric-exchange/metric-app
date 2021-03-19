@@ -1,19 +1,31 @@
 // @flow
 
 import {Token} from "./token";
+import {EthereumNetworkId} from "../constants";
+import {ConnectedNetworkId} from "../wallet/wallet_manager";
 
 export class CustomTokenManager {
 
     constructor() {
         this.customtokens = {
-            version: 1,
-            tokens: []
+            version: 2,
+            chains: []
         }
     }
 
     addToken(token: Token) {
-        if (this.customtokens.tokens.find(t => t.address === token.address) === undefined) {
-            this.customtokens.tokens.push(token)
+
+        let chainInfo = this.customtokens.chains.find(ch => ch.id === ConnectedNetworkId);
+        if (chainInfo === undefined) {
+            let index = this.customtokens.chains.push({
+                id: EthereumNetworkId,
+                tokens: []
+            })
+            chainInfo = this.customtokens.chains[index];
+        }
+
+        if (chainInfo.tokens.find(t => t.address === token.address) === undefined) {
+            chainInfo.tokens.push(token)
             this.persist()
         }
     }
@@ -31,6 +43,16 @@ export class CustomTokenManager {
 
     merge(persistedTokens) {
         if (persistedTokens.version === 1) {
+            this.customtokens = {
+                version: 2,
+                chains: [
+                    {
+                        id: EthereumNetworkId,
+                        tokens: persistedTokens.tokens
+                    }
+                ]
+            }
+        } else {
             this.customtokens = persistedTokens
         }
     }

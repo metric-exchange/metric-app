@@ -5,6 +5,7 @@ import {getSlippageConfig} from "../order/SlippageConfig";
 import Rollbar from "rollbar";
 import {accountAddress} from "../wallet/wallet_manager";
 import {calculateMetricFee, MetricReferralAddress} from "../metric_fee";
+import {getConnectedNetworkConfig} from "../ChainHelpers";
 
 export async function getSwapPrice(inputToken, outputToken, sellAmount = new BigNumber(1)) {
     try {
@@ -68,5 +69,6 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
 }
 
 export async function callSwapApi(params) {
-    return await fetchJson(`https://api.0x.org/swap/v1/quote?${stringify(params)}`)
+    let networkConfig = getConnectedNetworkConfig()
+    return await fetchJson(`${networkConfig.uris.zeroX}/swap/v1/quote?${stringify(params)}`)
 }

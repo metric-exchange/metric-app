@@ -199,3 +199,11 @@ a {
 .active-dashboard svg path {
     fill: #60FFD9;
 }
+
+.unsupported-network {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+}

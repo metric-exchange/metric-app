@@ -5,10 +5,12 @@
 
     <div id="order-form" if={ props.orderFactory !== null }>
 
-        <div class="order-line order-type-switch">
+        <div class="order-line order-type-switch" if={ this.isConnectedToEthereumMainNet() }>
             <div id="market-button" class="market-button active-order-type" onclick={ () => toggleOrderType(0) }>{ this.i18next.t('order.market_type') }</div>
             <div id="limit-button" class="limit-button" onclick={ () => toggleOrderType(1) }>{ this.i18next.t('order.limit_type') }</div>
         </div>
+
+        <div class="order-line order-type-switch" if={ !this.isConnectedToEthereumMainNet() }></div>
 
         <order-sell-amount
                 order-factory={ props.orderFactory }

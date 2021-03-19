@@ -1,7 +1,9 @@
-import {METRIC_TOKEN_ADDRESS, tokensList} from "../tokens/token_fetch";
+import {tokensList} from "../tokens/token_fetch";
 import {OrderState} from "./OrderStateManager";
 import {approveZeroXAllowance} from "../0x/0x_orders_proxy";
 import Rollbar from "rollbar";
+import {UrlManager} from "../url/UrlManager";
+import {chainToken, isUnwrapping, isWrapping} from "../ChainHelpers";
 
 export class OrderFactory {
 
@@ -27,11 +29,14 @@ export class OrderFactory {
     }
 
     async refreshOrderState() {
+        let metric = UrlManager.metricToken()
+        let metricWithBalance = tokensList().find(t => t.address.toLowerCase() === metric.address.toLowerCase())
+
         if (this.account === null || this.account === undefined) {
             await this.stateManager.setReadyState(OrderState.NO_WALLET_CONNECTION)
-        } else if(this.order.isLimitOrder() && (this.order.sellToken.symbol === "ETH" || this.order.buyToken.symbol === "ETH")) {
+        } else if(this.order.isLimitOrder() && (this.order.sellToken.address === chainToken().address || this.order.buyToken.address === chainToken().address)) {
             await this.stateManager.setInvalidState(OrderState.ETH_NOT_ALLOWED)
-        } else if (isNaN(tokensList().find(t => t.address.toLowerCase() === METRIC_TOKEN_ADDRESS.toLowerCase()).balance)) {
+        } else if (metricWithBalance && isNaN(metricWithBalance.balance)) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_METRIC_BALANCE)
         } else if (
             this.order.sellPrice.price.value.isNaN() &&
@@ -49,15 +54,15 @@ export class OrderFactory {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_BALANCE, {token: this.order.sellToken})
         } else if (this.order.sellToken.balance.isLessThan(this.order.sellAmount.value)) {
             await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: this.order.sellToken})
-        } else if (this.order.isMarketOrder() && this.ethOrderValue().isGreaterThan(tokensList().find(t => t.symbol === "ETH").balance)) {
-            await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: tokensList().find(t => t.symbol === "ETH")})
+        } else if (this.order.isMarketOrder() && this.ethOrderValue().isGreaterThan(tokensList().find(t => t.address === chainToken().address).balance)) {
+            await this.stateManager.setInvalidState(OrderState.INSUFFICIENT_TOKEN_BALANCE, {token: tokensList().find(t => t.address === chainToken().address)})
         } else if (isNaN(this.order.sellToken.allowance[this.allowanceAddress])) {
             await this.stateManager.setInProgressState(OrderState.UNKNOWN_TOKEN_ALLOWANCE, {token: this.order.sellToken})
         } else if (this.order.sellAmount.value.isGreaterThan(this.order.sellToken.allowance[this.allowanceAddress])) {
             await this.stateManager.setReadyState(OrderState.INSUFFICIENT_TOKEN_ALLOWANCE, {token: this.order.sellToken})
-        } else if (this.order.sellToken.symbol === "ETH" && this.order.buyToken.symbol === "WETH") {
+        } else if (isWrapping(this.order.sellToken, this.order.buyToken)) {
             await this.stateManager.setReadyState(OrderState.VALID_WRAP)
-        } else if (this.order.sellToken.symbol === "WETH" && this.order.buyToken.symbol === "ETH") {
+        } else if (isUnwrapping(this.order.sellToken, this.order.buyToken)) {
             await this.stateManager.setReadyState(OrderState.VALID_UNWRAP)
         } else {
             await this.stateManager.setReadyState(OrderState.VALID_ORDER)
@@ -65,7 +70,7 @@ export class OrderFactory {
     }
 
     ethOrderValue() {
-        if (this.order.sellToken.symbol === "ETH") {
+        if (this.order.sellToken.address === chainToken().address) {
             return this.order.sellPrice.gasCost.plus(this.order.sellAmount.value)
         } else {
             return this.order.sellPrice.gasCost
@@ -109,7 +114,6 @@ export class OrderFactory {
                         console.warn(`${this.order.sellToken.symbol} allowance approval rejected`)
                         await this.stateManager.setInvalidState(OrderState.REJECTED, {}, true)
                         setTimeout(async (obj) => {
-                            console.log("unlocking state")
                             obj.stateManager.unlock()
                             await obj.refreshOrderState()
                         }, 2000, this)

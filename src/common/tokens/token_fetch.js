@@ -1,14 +1,15 @@
-import EthIcon from './eth.png'
-import HypeIcon from './hype.png'
-import UpdownIcon from './updown.jpg'
-import GoldIcon from './gold.png'
-import {accountAddress, isWalletConnected} from "../wallet/wallet_manager";
+import {
+    accountAddress,
+    ConnectedNetworkId,
+    isWalletConnected
+} from "../wallet/wallet_manager";
 import {Erc20Abi, Erc20ContractProxy} from "../erc20_contract_proxy";
 import {fetchJson} from "../json_api_fetch";
 import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
 import Rollbar from "rollbar";
 import {BigNumber} from "@0x/utils";
+import {chainToken, getConnectedNetworkConfig} from "../ChainHelpers";
 
 export function resetTokensInfo() {
     tokens.forEach(t => {
@@ -64,7 +65,7 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
                 let batch = new window.web3Modal.BatchRequest();
                 for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
                     let token = tokens[index]
-                    if (token.symbol === "ETH") {
+                    if (token.address === chainToken().address) {
                         batch.add(
                             window.web3Modal.eth
                                 .getBalance
@@ -115,7 +116,7 @@ async function updateBalance(token, address, balance) {
             )
         }
 
-        if (token.balance.isGreaterThan(0) && token.symbol !== "ETH") {
+        if (token.balance.isGreaterThan(0) && token.address !== chainToken().address) {
             await Promise.all(
                 [
                     fetchAllowance(token, address, Erc20ProxyAddress),
@@ -124,7 +125,7 @@ async function updateBalance(token, address, balance) {
             )
         } else {
             let balanceChanged = false
-            let allowance = token.symbol !== "ETH" ? 0 : 1e27
+            let allowance = token.address !== chainToken().address ? 0 : 1e27
             if (token.allowance[Erc20ProxyAddress] !== allowance) {
                 token.allowance[Erc20ProxyAddress] = allowance
                 balanceChanged = true
@@ -179,10 +180,22 @@ export async function updateAllowance(token, target, allowance) {
     }
 }
 
+export async function resetTokenList() {
+    tokens = initTokenList()
+    await loadTokenList()
+}
+
 export async function loadTokenList()
 {
     try {
-        await fetchJson("https://tokens.coingecko.com/uniswap/all.json")
+        let url = "https://tokens.coingecko.com/uniswap/all.json"
+
+        let connectedNetworkConfig = getConnectedNetworkConfig()
+        if (connectedNetworkConfig !== undefined) {
+            url = connectedNetworkConfig.uris.tokens
+        }
+
+        await fetchJson(url)
             .then(json => {
                 if (json.tokens !== undefined) {
                     return Array.from(json.tokens)
@@ -222,8 +235,7 @@ export function isTokenListInitialized() {
 }
 
 export function addToken(token) {
-    if (token.symbol.toUpperCase() !== "ETH" &&
-        tokens.find(t => t.address.toLowerCase() === token.address.toLowerCase()) === undefined) {
+    if (tokens.find(t => t.address.toLowerCase() === token.address.toLowerCase()) === undefined) {
         tokens.push(token)
     }
 }
@@ -259,165 +271,43 @@ export async function addTokenWithAddress(address) {
 }
 
 function initTokenList() {
-    let tokens = defaultTokens
+    let tokens = []
+    let defaults = getConnectedNetworkConfig()
+    if (defaults !== undefined) {
+        tokens = defaults.defaultTokens
+    }
     customTokensManager.init()
-    customTokensManager.customtokens.tokens.forEach(t => {
-        tokens.push({
-            balance: new BigNumber(NaN),
-            allowance: {
-                Erc20Proxy: NaN,
-                ExchangeProxyAllowanceTarget: NaN,
-                ExchangeProxyV4Address: NaN
-            },
-            address: t.address,
-            symbol: t.symbol,
-            decimals: t.decimals,
-            logoURI: t.logoURI
+
+    let chainInfo = customTokensManager.customtokens.chains.find(n => n.id === ConnectedNetworkId)
+    if (chainInfo !== undefined) {
+        chainInfo.tokens.forEach(t => {
+            tokens.push({
+                balance: new BigNumber(NaN),
+                allowance: {
+                    Erc20Proxy: NaN,
+                    ExchangeProxyAllowanceTarget: NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                address: t.address,
+                symbol: t.symbol,
+                decimals: t.decimals,
+                logoURI: t.logoURI
+            })
         })
-    })
+    }
 
     return tokens
 }
 
-let defaultTokens = [
-    {
-        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        decimals: 18,
-        symbol: "ETH",
-        logoURI: EthIcon,
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0x6e36556b3ee5aa28def2a8ec3dae30ec2b208739",
-        decimals: 18,
-        symbol: "BUILD",
-        logoURI: "https://etherscan.io/token/images/build_32.png",
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC",
-        decimals: 18,
-        symbol: "METRIC",
-        logoURI: "https://etherscan.io/token/images/metric_32.png",
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        decimals: 18,
-        symbol: "DAI",
-        logoURI: "https://etherscan.io/token/images/MCDDai_32.png",
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0xe1212f852c0ca3491ca6b96081ac3cf40e989094",
-        decimals: 18,
-        symbol: "HYPE",
-        logoURI: HypeIcon,
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0xb7412e57767ec30a76a4461d408d78b36688409c",
-        decimals: 18,
-        symbol: "bCRED",
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0xfbfaf8d8e5d82e87b80578fd348f60fb664e9390",
-        decimals: 18,
-        symbol: "UPDOWN",
-        logoURI: UpdownIcon,
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0xb34ab2f65c6e4f764ffe740ab83f982021faed6d",
-        decimals: 18,
-        symbol: "BSG",
-        logoURI: GoldIcon,
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0xa9d232cc381715ae791417b624d7c4509d2c28db",
-        decimals: 18,
-        symbol: "BSGS",
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    },
-    {
-        address: "0x940c7ccd1456b29a6f209b641fb0edaa96a15c2d",
-        decimals: 18,
-        symbol: "BSGB",
-        balance: new BigNumber(NaN),
-        allowance: {
-            ExchangeProxyAllowanceTarget : NaN,
-            Erc20Proxy : NaN,
-            ExchangeProxyV4Address: NaN
-        },
-        disabled: false
-    }
-
-]
 let customTokensManager = new CustomTokenManager()
 
-let tokens = initTokenList()
+let tokens = []
 let register = []
 let balancesRegister = []
 let allowancesRegister = []
 let tokenListInitialized = false
 
 export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
-export let DAI_TOKEN_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
 export let Erc20ProxyAddress = "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
 export let ExchangeProxyV4Address = "0xdef1c0ded9bec7f1a1670819833240f027b25eff"

@@ -18,7 +18,9 @@
             <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+            <img class="network-icon" src={ this.networkIcon() } height="15" width="15"/>
         </div>
+
     </div>
 
     <div style={ isClicked() ? "display:block" : 'display:none'} >
@@ -38,12 +40,15 @@
         import './index.css'
         import ThemeSwitch from '../themeSwitch/index.riot'
         import LanguageSelector from '../languageSelector/index.riot'
+        import EthIcon from '../../common/tokens/eth.png'
+        import BscIcon from '../../common/tokens/bnb.png'
         import {
             accountAddress,
-            obfuscateAddress,
+            obfuscateAddress, registerForNetworkChanges,
             registerForWalletChanges, tryFormatWalletName
         } from "../../common/wallet/wallet_manager";
         import makeBlockie from 'ethereum-blockies-base64';
+        import {isConnectedToBscMainNet, isConnectedToEthereumMainNet} from "../../common/ChainHelpers";
 
         export default {
             components: {
@@ -52,6 +57,8 @@
             },
             state: {
                 icon: Image,
+                ethIcon: EthIcon,
+                bscIcon: BscIcon,
                 dropDownClicked: false,
                 address: "0x0000000000000000000000000000000000000000",
                 accountDisplay: null,
@@ -61,6 +68,7 @@
                 this.handleAccounts()
             },
             onMounted() {
+                registerForNetworkChanges(this)
                 this.handleAccounts()
                 registerForWalletChanges(this)
                 document.addEventListener('click', function (e) {
@@ -71,6 +79,9 @@
                         this.toggleDropDown();
                     }
                 }.bind(this));
+            },
+            onNetworkChanges() {
+              this.update()
             },
             isClicked() {
                 return this.state.dropDownClicked
@@ -87,10 +98,21 @@
                 this.state.blocky = makeBlockie(this.state.address)
                 this.update()
 
-                if (accountAddress() !== undefined) {
+                if (accountAddress() !== undefined && this.isConnectedToEthereumMainNet()) {
                     this.state.accountDisplay = await tryFormatWalletName(this.state.address)
                     this.update()
                 }
+            },
+            networkIcon() {
+                if (isConnectedToEthereumMainNet()) {
+                    return this.state.ethIcon
+                }
+
+                if (isConnectedToBscMainNet()) {
+                    return this.state.bscIcon
+                }
+
+                return null
             }
         }
     </script>

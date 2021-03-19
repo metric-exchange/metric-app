@@ -7,7 +7,7 @@ import {tryFormatWalletName} from "../wallet/wallet_manager";
 
 export class ZeroXFillsProxy {
     constructor() {
-        this.period = 7
+        this.period = 15
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
         this.startDate = new ObservableValue(moment().subtract(this.period, 'days'))
         this.endDate = new ObservableValue(moment().add(1, 'days'))

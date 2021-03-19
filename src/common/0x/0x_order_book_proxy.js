@@ -15,9 +15,7 @@ export class ZeroXOrderBook {
         this.asks = []
 
         this.observers = []
-        this.activeSyncroLoopId = 0
-
-        this.runSynchronizationLoop(this.activeSyncroLoopId)
+        this.activeSyncroLoopId = setInterval((obj) => obj.runSynchronizationLoop(), 10000, this)
     }
 
     setTokens(baseToken, quoteToken) {
@@ -26,11 +24,15 @@ export class ZeroXOrderBook {
         this.reset()
     }
 
+    clear() {
+        clearInterval(this.activeSyncroLoopId)
+    }
+
     reset() {
         this.asks = []
         this.bids = []
-        this.activeSyncroLoopId = this.activeSyncroLoopId + 1
-        this.runSynchronizationLoop(this.activeSyncroLoopId)
+        this.clear()
+        this.activeSyncroLoopId = setInterval((obj) => obj.runSynchronizationLoop(), 10000, this)
     }
 
     observe(observer) {
@@ -38,10 +40,6 @@ export class ZeroXOrderBook {
     }
 
     async runSynchronizationLoop(id) {
-
-        if (id !== this.activeSyncroLoopId) {
-            return
-        }
 
         try {
             let orderBookUpdate =
@@ -51,24 +49,15 @@ export class ZeroXOrderBook {
                     false
                 )
 
-            if (id === this.activeSyncroLoopId) {
-                this.bids = orderBookUpdate.bids
-                this.asks = orderBookUpdate.asks
+            this.bids = orderBookUpdate.bids
+            this.asks = orderBookUpdate.asks
 
-                await Promise.all(
-                    this.observers.map(obj => obj.onOrderBookUpdate())
-                )
-                setTimeout((that, id) => {
-                    that.runSynchronizationLoop(id)
-                }, 10000, this, id)
-            }
+            await Promise.all(
+                this.observers.map(obj => obj.onOrderBookUpdate())
+            )
+
         } catch (e) {
             console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
-            if (id === this.activeSyncroLoopId) {
-                setTimeout((that, id) => {
-                    that.runSynchronizationLoop(id)
-                }, 1000, this, id)
-            }
         }
     }
 

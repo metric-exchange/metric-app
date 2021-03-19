@@ -97,13 +97,6 @@ export class OrderPrice {
         )
     }
 
-    async fetchPrice() {
-        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.address, moment())
-        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.address, moment())
-
-        return  BigNumber(quoteTokenUsdPrice / basTokenUsdPrice)
-    }
-
     async fetchDisplayMarketPrice() {
         let price = await this.fetchPrice()
         if (this.inverted && price.isGreaterThan(0)) {

@@ -72,7 +72,6 @@
         import {resetTokenList} from "../../common/tokens/token_fetch";
         import {
             initWeb3,
-            registerForNetworkChanges,
             registerForWalletChanges
         } from "../../common/wallet/wallet_manager";
         import {initLocalizations} from "../../common/localization/localize";
@@ -93,7 +92,6 @@
             },
             onBeforeMount() {
                 initLocalizations()
-                registerForNetworkChanges(this)
                 registerForWalletChanges(this)
                 document.title = "Metric Exchange"
             },
@@ -103,9 +101,6 @@
                 this.i18next.on("languageChanged", (lng, ns) => {
                     this.update()
                 })
-            },
-            onNetworkChanges() {
-                this.update()
             },
             onWalletChanges() {
                 this.update()

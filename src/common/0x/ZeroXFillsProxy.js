@@ -15,6 +15,12 @@ export class ZeroXFillsProxy {
 
         this.startDate.observe(this, 'refreshFills')
         this.endDate.observe(this, 'refreshFills')
+
+        this.synchoHandle = 0
+    }
+
+    clear() {
+        clearInterval(this.synchoHandle)
     }
 
     traderWithLargestTrade() {
@@ -168,10 +174,8 @@ export class ZeroXFillsProxy {
         return volumes
     }
 
-    async refreshFills(source) {
-        await this.fetchFills(source)
-
-        setTimeout((obj) => obj.refreshFills(), 60000, this)
+    refreshFills(source) {
+        this.synchoHandle = setInterval((obj) => obj.fetchFills(source), 60000, this)
     }
 
     async fetchFills(source, page = 1) {

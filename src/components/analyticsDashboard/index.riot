@@ -42,7 +42,11 @@
                 fillsProxy: new ZeroXFillsProxy()
             },
             onMounted() {
+                this.state.fillsProxy.fetchFills()
                 this.state.fillsProxy.refreshFills()
+            },
+            onBeforeUnmount() {
+                this.state.fillsProxy.clear()
             }
         }
 

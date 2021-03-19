@@ -116,6 +116,9 @@
                     }
                 }
             },
+            onBeforeUnmount() {
+              this.state.orderBook.clear()
+            },
             onTokenChanges() {
                 if (
                     this.state.orderBook.baseToken.address !== this.props.orderFactory.order.sellToken ||

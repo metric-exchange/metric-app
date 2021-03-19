@@ -44,7 +44,7 @@
         import BscIcon from '../../common/tokens/bnb.png'
         import {
             accountAddress,
-            obfuscateAddress, registerForNetworkChanges,
+            obfuscateAddress,
             registerForWalletChanges, tryFormatWalletName
         } from "../../common/wallet/wallet_manager";
         import makeBlockie from 'ethereum-blockies-base64';
@@ -68,7 +68,6 @@
                 this.handleAccounts()
             },
             onMounted() {
-                registerForNetworkChanges(this)
                 this.handleAccounts()
                 registerForWalletChanges(this)
                 document.addEventListener('click', function (e) {
@@ -79,9 +78,6 @@
                         this.toggleDropDown();
                     }
                 }.bind(this));
-            },
-            onNetworkChanges() {
-              this.update()
             },
             isClicked() {
                 return this.state.dropDownClicked

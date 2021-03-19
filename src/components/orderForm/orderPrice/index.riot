@@ -55,9 +55,10 @@
             onMounted() {
                 this.props.orderFactory.order.sellPrice.price.observe(this, 'onPriceChange')
                 this.refreshMarketPrice()
+                this.state.synchroHandle = setInterval(async (obj) => { await obj.refreshMarketPrice() }, 30000, this)
             },
             onBeforeUnmount() {
-              clearTimeout(this.state.synchroHandle)
+              clearInterval(this.state.synchroHandle)
             },
             onPriceChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
@@ -106,7 +107,6 @@
                         this.props.orderFactory.order.sellAmount.value
                     )
                 }
-                this.state.synchroHandle = setTimeout(async (obj) => { await obj.refreshMarketPrice() }, 30000, this)
             }
         }
 

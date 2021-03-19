@@ -2,15 +2,7 @@
 
     <div class="dashboard">
 
-        <div id="bsc-swap-form" class="order-form" if={ this.isConnectedToBscMainNet() }>
-            <order-form
-                    order-factory={ state.orderFactory }
-                    set-market-order-type={ setMarketOrderType }
-                    set-limit-order-type={ setLimitOrderType }
-            />
-        </div>
-
-        <div id="ethereum-order-form" class="order-form" if={ this.isConnectedToEthereumMainNet() }>
+        <div class="order-form">
             <order-form
                     order-factory={ state.orderFactory }
                     set-market-order-type={ setMarketOrderType }
@@ -72,8 +64,6 @@
                 let sellToken = await this.state.urlManager.urlSellToken()
                 let buyToken = await this.state.urlManager.urlBuyToken()
 
-                console.log('url tokens',sellToken, buyToken)
-
                 this.state.orderFactory =
                     new SwapOrderFactory(
                         new Order(
@@ -106,7 +96,7 @@
                 let buyToken = UrlManager.defaultBuyToken()
                 this.state.urlManager.updateUrl(sellToken, buyToken)
 
-                console.log('default tokens',sellToken, buyToken)
+                location.reload()
 
                 await resetTokenList()
             },

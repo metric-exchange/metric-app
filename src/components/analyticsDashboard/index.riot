@@ -46,7 +46,9 @@
                 this.state.fillsProxy.refreshFills()
             },
             onBeforeUnmount() {
-                this.state.fillsProxy.clear()
+                if (this.state.fillsProxy) {
+                    this.state.fillsProxy.clear()
+                }
             }
         }
 

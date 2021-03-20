@@ -18,7 +18,7 @@
             <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <img class="network-icon" src={ this.networkIcon() } height="15" width="15"/>
+            <img class="network-icon" src={ this.networkIcon() } height="15" width="15" if={ this.isWalletConnected() }/>
         </div>
 
     </div>
@@ -50,6 +50,8 @@
         import makeBlockie from 'ethereum-blockies-base64';
         import {isConnectedToBscMainNet, isConnectedToEthereumMainNet} from "../../common/ChainHelpers";
 
+        let DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000"
+
         export default {
             components: {
                 ThemeSwitch,
@@ -60,7 +62,7 @@
                 ethIcon: EthIcon,
                 bscIcon: BscIcon,
                 dropDownClicked: false,
-                address: "0x0000000000000000000000000000000000000000",
+                address: DEFAULT_ADDRESS,
                 accountDisplay: null,
                 blocky: null
             },
@@ -89,8 +91,11 @@
             async handleAccounts() {
                 if (accountAddress() !== undefined) {
                     this.state.address = accountAddress()
-                    this.state.accountDisplay = obfuscateAddress(this.state.address)
+                } else {
+                    this.state.address = DEFAULT_ADDRESS
                 }
+
+                this.state.accountDisplay = obfuscateAddress(this.state.address)
                 this.state.blocky = makeBlockie(this.state.address)
                 this.update()
 

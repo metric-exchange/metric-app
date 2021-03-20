@@ -130,5 +130,5 @@ let providerEngine = null
 let contractWrapper = null
 let walletEventListeners = []
 let networkEventListeners = []
-export let ConnectedNetworkId = NaN
+export let ConnectedNetworkId = EthereumNetworkId
 

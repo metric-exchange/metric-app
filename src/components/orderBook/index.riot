@@ -117,7 +117,9 @@
                 }
             },
             onBeforeUnmount() {
-              this.state.orderBook.clear()
+                if (this.state.orderBook) {
+                    this.state.orderBook.clear()
+                }
             },
             onTokenChanges() {
                 if (

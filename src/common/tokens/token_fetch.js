@@ -41,7 +41,7 @@ export function disableToken(symbol) {
 }
 
 export async function findOrAddTokenWithAddress(address) {
-    if (findTokenWithAddress(address) === undefined && address !== chainToken().address) {
+    if (findTokenWithAddress(address) === undefined) {
         await addTokenWithAddress(address)
     }
     return findTokenWithAddress(address)

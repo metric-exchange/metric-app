@@ -43,6 +43,7 @@
         import {UrlManager} from "../../common/url/UrlManager";
         import {Order} from "../../common/order/Order";
         import {OrderStateManager} from "../../common/order/OrderStateManager";
+        import {isSupportedNetwork} from "../../common/ChainHelpers";
 
         export default {
             components: {
@@ -91,14 +92,15 @@
                 }
             },
             async onNetworkChanges() {
+                if (isSupportedNetwork()) {
+                    let sellToken = UrlManager.defaultSellToken()
+                    let buyToken = UrlManager.defaultBuyToken()
+                    this.state.urlManager.updateUrl(sellToken, buyToken)
 
-                let sellToken = UrlManager.defaultSellToken()
-                let buyToken = UrlManager.defaultBuyToken()
-                this.state.urlManager.updateUrl(sellToken, buyToken)
+                    location.reload()
 
-                location.reload()
-
-                await resetTokenList()
+                    await resetTokenList()
+                }
             },
             refreshUrl() {
                 this.state.urlManager.updateUrl(

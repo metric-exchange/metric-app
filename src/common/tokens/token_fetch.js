@@ -59,46 +59,37 @@ export async function fetchTokensInfo(address) {
 }
 
 async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
-    if (isWalletConnected() && address === accountAddress()) {
-        if (batchIndex*batchSize < tokens.length) {
-            try {
-                let batch = new window.web3Modal.BatchRequest();
-                for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
-                    let token = tokens[index]
-                    if (token.address === chainToken().address) {
-                        batch.add(
-                            window.web3Modal.eth
-                                .getBalance
-                                .request(address, 'latest', (err, b) => updateBalance(token, address, b))
-                        );
-                    }
-                    else {
-                        let contract = new window.web3Modal.eth.Contract(Erc20Abi, token.address);
-                        batch.add(
-                            contract
-                                .methods
-                                .balanceOf(address)
-                                .call
-                                .request({from: address}, (err, b) => updateBalance(token, address, b))
-                        );
-                    }
+    if (batchIndex*batchSize < tokens.length) {
+        try {
+            let batch = new window.web3Modal.BatchRequest();
+            for (let index = batchIndex*batchSize; index < Math.min((batchIndex+1)*batchSize, tokens.length); index++) {
+                let token = tokens[index]
+                if (token.address === chainToken().address) {
+                    batch.add(
+                        window.web3Modal.eth
+                            .getBalance
+                            .request(address, 'latest', (err, b) => updateBalance(token, address, b))
+                    );
                 }
-                await batch.execute();
-            } catch(e) {
-                console.warn(`Unexpected error while updating tokens balance/allowance info ${e}`)
+                else {
+                    let contract = new window.web3Modal.eth.Contract(Erc20Abi, token.address);
+                    batch.add(
+                        contract
+                            .methods
+                            .balanceOf(address)
+                            .call
+                            .request({from: address}, (err, b) => updateBalance(token, address, b))
+                    );
+                }
             }
-
-            setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
-        } else {
-            console.debug("Token Balances/allowances update finished")
-            if (tokensList().find(t => isNaN(t.balance) || isNaN(t.allowance[Erc20ProxyAddress]))) {
-                setTimeout(() => fetchTokensInfo(address), 10000)
-            } else {
-                setTimeout(() => fetchTokensInfo(address), 60000)
-            }
+            await batch.execute();
+        } catch(e) {
+            console.warn(`Unexpected error while updating tokens balance/allowance info ${e}`)
         }
+
+        setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
     } else {
-        console.debug("Token Balances/allowances update not started as no wallet connected")
+        console.debug("Token Balances/allowances update finished")
     }
 }
 

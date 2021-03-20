@@ -1,4 +1,3 @@
-import {accountAddress, isWalletConnected} from "../wallet/wallet_manager";
 import { HttpClient } from "@0x/connect"
 import Rollbar from "rollbar";
 import {HidingGameProxy} from "./HidingGameProxy";
@@ -12,19 +11,11 @@ export function registerForUserOrderUpdates(item) {
 }
 
 export async function synchronizeUserOrders(userAddress) {
-    if (isWalletConnected()) {
-        if (userAddress === accountAddress()) {
-            try {
-                orders = await retrieveUserOrders(accountAddress())
-                await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
-            } catch (e) {
-                console.warn(`user order fetch failed, will keep retrying ${e}`)
-            }
-        }
-    }
-
-    if (!isWalletConnected() || (userAddress === accountAddress())) {
-        setTimeout(synchronizeUserOrders, 30000, userAddress)
+    try {
+        orders = await retrieveUserOrders(userAddress)
+        await Promise.all(register.map(async (item) => await item.onUserOrderUpdates()))
+    } catch (e) {
+        console.warn(`user order fetch failed, will keep retrying ${e}`)
     }
 }
 

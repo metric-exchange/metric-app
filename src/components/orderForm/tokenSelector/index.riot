@@ -51,7 +51,8 @@
             state: {
                 sortedTokens: [],
                 showLoader: false,
-                addressRegEx: new RegExp("0x[0-9a-zA-Z]{40}")
+                addressRegEx: new RegExp("0x[0-9a-zA-Z]{40}"),
+                tokenListSynchroHandle: 0
             },
             async onBeforeMount() {
                 await this.buildSortedTokenList(null, false)
@@ -64,18 +65,26 @@
 
                 if (isTokenListInitialized() && isWalletConnected()) {
                     fetchTokensInfo(accountAddress())
+                    this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
+            },
+            onBeforeUnmount() {
+                clearInterval(this.state.tokenListSynchroHandle)
             },
             onWalletChanges() {
                 resetTokensInfo()
                 if (isWalletConnected() && isTokenListInitialized()) {
+                    clearInterval(this.state.tokenListSynchroHandle)
                     fetchTokensInfo(accountAddress())
+                    this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
                 this.update()
             },
             async onTokenListUpdate() {
                 if (isWalletConnected()) {
-                    fetchTokensInfo(accountAddress())
+                    clearInterval(this.state.tokenListSynchroHandle)
+                    await fetchTokensInfo(accountAddress())
+                    this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
                 await this.filterTokenSearch()
             },

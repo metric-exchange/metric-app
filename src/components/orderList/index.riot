@@ -53,7 +53,8 @@
                 selectedOrders: [],
                 isLoadingOrders: false,
                 allOrdersSelected: false,
-                someOrdersAreSelected: false
+                someOrdersAreSelected: false,
+                orderSynchroHandle: 0
             },
             onMounted() {
                 registerForTokenListUpdate(this)
@@ -62,9 +63,13 @@
                 if (isWalletConnected()) {
                     this.update({ isLoadingOrders: true })
                     synchronizeUserOrders(accountAddress())
+                    this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress()), 30000)
                 } else {
                     getHidingGameProxy().init()
                 }
+            },
+            onBeforeUnmount() {
+                clearInterval(this.state.orderSynchroHandle)
             },
             onTokenListUpdate() {
                 this.update()
@@ -73,7 +78,9 @@
                 this.update({orders: []})
                 if (isWalletConnected()) {
                     this.update({isLoadingOrders: true})
+                    clearInterval(this.state.orderSynchroHandle)
                     synchronizeUserOrders(accountAddress())
+                    this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress()), 30000)
                 }
             },
             async onUserOrderUpdates() {

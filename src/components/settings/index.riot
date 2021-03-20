@@ -91,11 +91,12 @@
             async handleAccounts() {
                 if (accountAddress() !== undefined) {
                     this.state.address = accountAddress()
+                    this.state.accountDisplay = obfuscateAddress(this.state.address)
                 } else {
                     this.state.address = DEFAULT_ADDRESS
+                    this.state.accountDisplay = null
                 }
 
-                this.state.accountDisplay = obfuscateAddress(this.state.address)
                 this.state.blocky = makeBlockie(this.state.address)
                 this.update()
 

@@ -54,13 +54,18 @@ export function isWalletConnected() {
 
 export async function initWeb3() {
     if (hasCashedProvider()) {
-        await connectWallet();
+        await connectWallet(false);
     }
 }
 
-export async function connectWallet() {
+export async function connectWallet(detectNetworkChange = true) {
+    let oldConnectedNetwork = ConnectedNetworkId
     await connectToWallet()
     await updateAccount()
+
+    if (detectNetworkChange && oldConnectedNetwork !== ConnectedNetworkId) {
+        networkEventListeners.forEach(item => item.onNetworkChanges())
+    }
 }
 
 async function updateAccount() {

@@ -1,6 +1,6 @@
 import {fetchJson} from "../json_api_fetch";
 import {tokensList} from "./token_fetch";
-import {isConnectedToEthereumMainNet} from "../ChainHelpers";
+import {chainToken, isConnectedToEthereumMainNet} from "../ChainHelpers";
 
 export class CoinGeckoProxy {
 
@@ -10,7 +10,7 @@ export class CoinGeckoProxy {
         if (isConnectedToEthereumMainNet()) {
             try {
                 let coin = undefined
-                if (tokenAddress === tokensList().find(t => t.symbol.toLowerCase() === "eth").address) {
+                if (tokenAddress === chainToken().address) {
                     coin = await fetchJson(`https://api.coingecko.com/api/v3/coins/ethereum`)
                 } else {
                     coin = await fetchJson(`https://api.coingecko.com/api/v3/coins/ethereum/contract/${tokenAddress.toLowerCase()}`)
@@ -25,7 +25,7 @@ export class CoinGeckoProxy {
                     }
                 }
             } catch (e) {
-                console.warn("Could not fetch token price")
+                console.warn("Could not fetch token price", e)
             }
         }
 

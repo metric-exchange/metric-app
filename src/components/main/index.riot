@@ -16,10 +16,20 @@
 
     </header>
 
-    <div class="main-content unsupported-network" if={ !this.isSupportedNetwork() }>
+    <div class="main-content unsupported-network" if={ this.isWalletConnected() && !this.isSupportedNetwork() }>
         <div></div>
         <div>NETWORK NOT SUPPORTED, PLEASE SWITCH TO ETHER ETHEREUM OR BINANCE CHAIN</div>
+        <div>
+        </div>
+    </div>
+
+    <div class="main-content unsupported-network" if={ !this.isWalletConnected() && !this.isSupportedNetwork() }>
         <div></div>
+        <div class="order-state-button order-state-active" onclick={ connectAccount }>
+            { this.i18next.t("wallet.connect_wallet", {}).toUpperCase() }
+        </div>
+        <div>
+        </div>
     </div>
 
     <div class="main-content" if={ this.isSupportedNetwork() }>
@@ -124,6 +134,9 @@
                 document.getElementById("analysis-icon").classList.add("active-dashboard")
                 document.getElementById("analysis-icon").onclick = null
                 this.update()
+            },
+            async connectAccount() {
+                await this.connectWallet()
             }
         }
     </script>

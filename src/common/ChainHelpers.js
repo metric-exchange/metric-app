@@ -1,5 +1,5 @@
 import {BinanceChainNetworkId, EthereumNetworkId, SupportedNetworks} from "./constants";
-import {ConnectedNetworkId} from "./wallet/wallet_manager";
+import {ConnectedNetworkId} from "./wallet/WalletManager";
 
 
 export function getConnectedNetworkConfig() {

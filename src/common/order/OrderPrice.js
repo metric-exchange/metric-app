@@ -1,6 +1,6 @@
-import {calculateMetricFee} from "../metric_fee";
+import {calculateMetricFee} from "../MetricFee";
 import {ObservableValue} from "./ObservableValue";
-import {getSwapPrice, getSwapPriceForBuy} from "../0x/0x_swap_proxy";
+import {getSwapPrice, getSwapPriceForBuy} from "../0x/ZeroXSwapProxy";
 import {ObservationRegister} from "./ObservationRegister";
 import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./OrderEventSource";
 import {BigNumber} from "@0x/utils";

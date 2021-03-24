@@ -32,15 +32,15 @@
             accountAddress,
             isWalletConnected,
             registerForWalletChanges
-        } from "../../common/wallet/wallet_manager";
+        } from "../../common/wallet/WalletManager";
         import {
             getHidingGameProxy,
             registerForUserOrderUpdates,
             synchronizeUserOrders,
             userOrders
-        } from "../../common/0x/0x_user_orders";
+        } from "../../common/0x/ZeroXV3UserPendingOrdersProxy";
         import {registerForTokenListUpdate} from "../../common/tokens/token_fetch";
-        import {batchCancelOrders, cancelOrder} from "../../common/0x/0x_orders_proxy";
+        import {batchCancelOrders, cancelOrder} from "../../common/0x/ZeroXOrderManagerProxy";
 
         export default {
             components: {

@@ -1,5 +1,5 @@
 import {BigNumber} from "@0x/utils";
-import {accountAddress} from "./wallet/wallet_manager";
+import {accountAddress} from "./wallet/WalletManager";
 
 let maxAllowance = new BigNumber(10 ** 28)
 

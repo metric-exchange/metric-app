@@ -1,8 +1,8 @@
 import {ObservableValue} from "../order/ObservableValue";
-import {fetchJson} from "../json_api_fetch";
+import {fetchJson} from "../JsonApiFetch";
 import Rollbar from "rollbar";
 
-export class ZeroXTradesProxy {
+export class ZeroXTrackerTradesProxy {
     constructor() {
         this.fills = new ObservableValue([])
     }

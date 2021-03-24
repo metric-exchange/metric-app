@@ -10,8 +10,8 @@ import {
     switchWallet,
     updateAccountAddress,
     isWalletConnected
-} from './common/wallet/wallet_manager'
-import { isDarkThemeSet, isLightThemeSet, initTheme } from './common/theme_manager'
+} from './common/wallet/WalletManager'
+import { isDarkThemeSet, isLightThemeSet, initTheme } from './common/ThemeManager'
 
 export default (window.$ = window.jQuery = jquery);
 

@@ -48,7 +48,7 @@
     <script>
         import './index.css'
         import Loader from '../loader/index.riot'
-        import {ZeroXOrderBook} from "../../common/0x/0x_order_book_proxy";
+        import {ZeroXV3OrderBook} from "../../common/0x/ZeroXV3OrderBook";
         import {BigNumber} from '@0x/utils';
         import {Order} from "../../common/order/Order";
         import {OrderEventActions, OrderEventProperties, OrderEventSource} from "../../common/order/OrderEventSource";
@@ -86,7 +86,7 @@
                 if (this.props.orderFactory !== null) {
 
                     if (this.state.orderBook === null) {
-                        this.state.orderBook = new ZeroXOrderBook(
+                        this.state.orderBook = new ZeroXV3OrderBook(
                             this.props.orderFactory.order.sellToken,
                             this.props.orderFactory.order.buyToken
                         )

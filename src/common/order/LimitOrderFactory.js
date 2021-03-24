@@ -2,10 +2,10 @@ import {OrderFactory} from "./OrderFactory";
 import {BigNumber} from "@0x/utils";
 import moment from "moment";
 import {OrderState} from "./OrderStateManager";
-import {submitOrder} from "../0x/0x_orders_proxy";
+import {submitOrder} from "../0x/ZeroXOrderManagerProxy";
 import {Erc20ProxyAddress, ExchangeProxyV4Address} from "../tokens/token_fetch";
 import {formatNumber} from "../helpers";
-import {getHidingGameProxy} from "../0x/0x_user_orders";
+import {getHidingGameProxy} from "../0x/ZeroXV3UserPendingOrdersProxy";
 import Rollbar from "rollbar";
 
 export class LimitOrderFactory extends OrderFactory {

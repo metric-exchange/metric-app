@@ -1,11 +1,11 @@
 import {ObservableValue} from "../order/ObservableValue";
 import moment from "moment/moment";
-import {fetchJson} from "../json_api_fetch";
+import {fetchJson} from "../JsonApiFetch";
 import {METRIC_TOKEN_ADDRESS} from "../tokens/token_fetch";
 import {CoinPriceProxy} from "../tokens/CoinGeckoProxy";
-import {tryFormatWalletName} from "../wallet/wallet_manager";
+import {tryFormatWalletName} from "../wallet/WalletManager";
 
-export class ZeroXFillsProxy {
+export class MetricTrackerFillsProxy {
     constructor() {
         this.period = 15
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'

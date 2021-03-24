@@ -1,11 +1,11 @@
 import {HttpClient} from "@0x/connect";
-import {getProvider} from "../wallet/wallet_manager";
+import {getProvider} from "../wallet/WalletManager";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
 import {tokensList} from "../tokens/token_fetch";
 import {providerUtils} from "@0x/utils";
 import Rollbar from "rollbar";
 
-export class ZeroXOrderBook {
+export class ZeroXV3OrderBook {
 
     constructor(baseToken, quoteToken) {
         this.baseToken = baseToken
@@ -43,7 +43,7 @@ export class ZeroXOrderBook {
 
         try {
             let orderBookUpdate =
-                await ZeroXOrderBook.getOrdersMatching(
+                await ZeroXV3OrderBook.getOrdersMatching(
                     this.baseToken,
                     this.quoteToken,
                     false

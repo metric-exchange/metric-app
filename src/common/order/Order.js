@@ -1,5 +1,5 @@
 import {OrderPrice} from "./OrderPrice";
-import {MetricReferralAddress} from "../metric_fee";
+import {MetricReferralAddress} from "../MetricFee";
 import {BigNumber} from "@0x/utils";
 import {ObservableValue} from "./ObservableValue";
 import {ObservationRegister} from "./ObservationRegister";

@@ -1,8 +1,8 @@
-import {fetchJson, postJson} from "../json_api_fetch";
+import {fetchJson, postJson} from "../JsonApiFetch";
 import Rollbar from "rollbar";
 import {RfqOrder, eip712SignTypedDataWithProviderAsync} from "@0x/protocol-utils";
 import {ObservableValue} from "../order/ObservableValue";
-import {accountAddress, getProvider} from "../wallet/wallet_manager";
+import {accountAddress, getProvider} from "../wallet/WalletManager";
 
 export class HidingGameProxy {
 

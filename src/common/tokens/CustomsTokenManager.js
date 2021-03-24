@@ -2,7 +2,7 @@
 
 import {Token} from "./token";
 import {EthereumNetworkId} from "../constants";
-import {ConnectedNetworkId} from "../wallet/wallet_manager";
+import {ConnectedNetworkId} from "../wallet/WalletManager";
 
 export class CustomTokenManager {
 

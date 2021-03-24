@@ -1,4 +1,4 @@
-import {fetchJson} from "../json_api_fetch";
+import {fetchJson} from "../JsonApiFetch";
 import {tokensList} from "./token_fetch";
 import {isConnectedToEthereumMainNet} from "../ChainHelpers";
 

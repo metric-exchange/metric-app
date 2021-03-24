@@ -1,4 +1,4 @@
-import {fetchJson} from "./json_api_fetch";
+import {fetchJson} from "./JsonApiFetch";
 import Rollbar from "rollbar";
 
 export async function getFastGasPriceInWei() {

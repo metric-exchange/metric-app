@@ -2,9 +2,9 @@ import {
     accountAddress,
     ConnectedNetworkId,
     isWalletConnected
-} from "../wallet/wallet_manager";
-import {Erc20Abi, Erc20ContractProxy} from "../erc20_contract_proxy";
-import {fetchJson} from "../json_api_fetch";
+} from "../wallet/WalletManager";
+import {Erc20Abi, Erc20ContractProxy} from "../Erc20ContractProxy";
+import {fetchJson} from "../JsonApiFetch";
 import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
 import Rollbar from "rollbar";

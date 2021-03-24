@@ -1,7 +1,7 @@
 import {MetamaskSubprovider} from "@0x/subproviders";
 import {providerUtils} from "@0x/utils";
 import {ContractWrappers} from "@0x/contract-wrappers";
-import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalProvider} from "./web3Modal";
+import {clearWalletProvider, connectToWallet, hasCashedProvider, trySwitchWallet, web3ModalProvider} from "./Web3Modal";
 import LogRocket from "logrocket";
 import * as Rollbar from "rollbar";
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'

@@ -34,9 +34,9 @@
     <script>
 
         import Loader from '../loader/index.riot'
-        import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../common/wallet/wallet_manager";
+        import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../common/wallet/WalletManager";
         import './index.css'
-        import {ZeroXTradesProxy} from "../../common/0x/ZeroXTradesProxy";
+        import {ZeroXTrackerTradesProxy} from "../../common/0x/ZeroXTrackerTradesProxy";
 
         export default {
             components: {
@@ -44,7 +44,7 @@
             },
             state: {
                 isLoadingTrades: true,
-                fillsProxy: new ZeroXTradesProxy(),
+                fillsProxy: new ZeroXTrackerTradesProxy(),
                 tradeSynchroHandle: 0
             },
             onMounted() {

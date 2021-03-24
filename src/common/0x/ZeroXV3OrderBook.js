@@ -39,7 +39,7 @@ export class ZeroXV3OrderBook {
 
     async runSynchronizationLoop() {
 
-        // try {
+        try {
             let orderBookUpdate =
                 await ZeroXV3OrderBook.getOrdersMatching(
                     this.baseToken,
@@ -54,9 +54,9 @@ export class ZeroXV3OrderBook {
                 this.observers.map(obj => obj.onOrderBookUpdate())
             )
 
-        // } catch (e) {
-        //     console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
-        // }
+        } catch (e) {
+            console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
+        }
     }
 
     static async getOrdersMatching(baseToken, quoteToken, keepOtcOrders) {

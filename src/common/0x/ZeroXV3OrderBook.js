@@ -1,9 +1,7 @@
 import {HttpClient} from "@0x/connect";
 import {getProvider} from "../wallet/WalletManager";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
-import {tokensList} from "../tokens/token_fetch";
-import {providerUtils} from "@0x/utils";
-import Rollbar from "rollbar";
+import {BigNumber, providerUtils} from "@0x/utils";
 
 export class ZeroXV3OrderBook {
 
@@ -39,9 +37,9 @@ export class ZeroXV3OrderBook {
         this.observers.push(observer)
     }
 
-    async runSynchronizationLoop(id) {
+    async runSynchronizationLoop() {
 
-        try {
+        // try {
             let orderBookUpdate =
                 await ZeroXV3OrderBook.getOrdersMatching(
                     this.baseToken,
@@ -56,16 +54,9 @@ export class ZeroXV3OrderBook {
                 this.observers.map(obj => obj.onOrderBookUpdate())
             )
 
-        } catch (e) {
-            console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
-        }
-    }
-
-    static async getBidsMatching(baseTokenAddress, quoteTokenAddress) {
-        let baseToken = tokensList().find(t => t.address === baseTokenAddress)
-        let quoteToken = tokensList().find(t => t.address === quoteTokenAddress)
-        let orders = await this.getOrdersMatching(baseToken, quoteToken, true)
-        return orders.bids
+        // } catch (e) {
+        //     console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
+        // }
     }
 
     static async getOrdersMatching(baseToken, quoteToken, keepOtcOrders) {
@@ -86,20 +77,14 @@ export class ZeroXV3OrderBook {
         let filteredAsks = []
 
         for(let bid of orders.bids.records) {
-            let isValidOrder =
-                (keepOtcOrders || bid.order.takerAddress === "0x0000000000000000000000000000000000000000")
-
-            if (isValidOrder) {
-                filteredBids.push(bid)
+            if (ZeroXV3OrderBook.isValidOrder(bid, keepOtcOrders)) {
+                filteredBids.push(ZeroXV3OrderBook.buildOrder(bid, quoteToken, baseToken))
             }
         }
 
         for(let ask of orders.asks.records) {
-            let isValidOrder =
-                (keepOtcOrders || ask.order.takerAddress === "0x0000000000000000000000000000000000000000")
-
-            if (isValidOrder) {
-                filteredAsks.push(ask)
+            if (ZeroXV3OrderBook.isValidOrder(ask, keepOtcOrders)) {
+                filteredAsks.push(ZeroXV3OrderBook.buildOrder(ask, baseToken, quoteToken))
             }
         }
 
@@ -108,6 +93,32 @@ export class ZeroXV3OrderBook {
             asks: filteredAsks
         }
 
+    }
+
+    static isValidOrder(order, keepOtcOrders) {
+        let remainingPercentage =
+            new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
+                .multipliedBy(100)
+                .dividedBy(order.order.takerAssetAmount)
+
+        return remainingPercentage.isGreaterThan(1) &&
+            (keepOtcOrders || order.order.takerAddress === "0x0000000000000000000000000000000000000000")
+    }
+
+    static buildOrder(order, baseToken, quoteToken) {
+        let remainingTakerAmount = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
+        return {
+            makerAmount: order.order.makerAssetAmount
+                .dividedBy(10 ** baseToken.decimals)
+                .multipliedBy(remainingTakerAmount)
+                .dividedBy(order.order.takerAssetAmount),
+            takerAmount: remainingTakerAmount
+                .dividedBy(10 ** quoteToken.decimals),
+            price: order.order.makerAssetAmount
+                        .dividedBy(10 ** baseToken.decimals)
+                        .dividedBy(order.order.takerAssetAmount)
+                        .multipliedBy(10 ** quoteToken.decimals)
+        }
     }
 
     static relayClient = new HttpClient("https://api.0x.org/sra/v3")

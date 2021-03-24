@@ -69,10 +69,7 @@
                 isLoadingOrders: true
             },
             async onOrderBookUpdate() {
-                await this.fetchOrderBook(
-                    this.props.orderFactory.order.sellPrice.baseToken,
-                    this.props.orderFactory.order.sellPrice.quoteToken
-                )
+                await this.fetchOrderBook()
             },
             setPriceFromClick(price) {
                 if (this.props.orderFactory.order.type === Order.LimitOrderType) {
@@ -137,42 +134,27 @@
             },
             async onPriceInversion() {
                 this.update({ isLoadingOrders: true })
-                await this.fetchOrderBook(
-                    this.props.orderFactory.order.sellPrice.baseToken,
-                    this.props.orderFactory.order.sellPrice.quoteToken
-                )
+                await this.fetchOrderBook()
             },
             disableScrollToView() {
                 this.state.triggerScrollToView = false
             },
-            async fetchOrderBook(inputToken, outputToken) {
+            async fetchOrderBook() {
                     let asks =
                         this.state.orderBook.asks.map(b => {
-
-                            let makerAmount = b.order.makerAssetAmount.dividedBy(10 ** inputToken.decimals)
-                            let takerAmount = b.order.takerAssetAmount.dividedBy(10 ** outputToken.decimals)
-                            let remainingTakerAmount = new BigNumber(parseInt(b.metaData.remainingFillableTakerAssetAmount)).dividedBy(10 ** outputToken.decimals)
-                            let remainingMakerAmount = makerAmount.multipliedBy(remainingTakerAmount).dividedBy(takerAmount)
-
                             return {
-                                price: this.calculatePrice(takerAmount, makerAmount, BigNumber.ROUND_UP),
-                                volumeMaker: remainingTakerAmount,
-                                volumeTaker: remainingMakerAmount
+                                price: this.calculatePrice(new BigNumber(1).dividedBy(b.price), BigNumber.ROUND_UP),
+                                volumeMaker: b.takerAmount,
+                                volumeTaker: b.makerAmount
                             }
                         })
 
                     let bids =
                         this.state.orderBook.bids.map(b => {
-
-                            let makerAmount = b.order.makerAssetAmount.dividedBy(10 ** outputToken.decimals)
-                            let takerAmount = b.order.takerAssetAmount.dividedBy(10 ** inputToken.decimals)
-                            let remainingTakerAmount = new BigNumber(parseInt(b.metaData.remainingFillableTakerAssetAmount)).dividedBy(10 ** inputToken.decimals)
-                            let remainingMakerAmount = makerAmount.multipliedBy(remainingTakerAmount).dividedBy(takerAmount)
-
                             return {
-                                price: this.calculatePrice(makerAmount, takerAmount, BigNumber.ROUND_DOWN),
-                                volumeMaker: remainingMakerAmount,
-                                volumeTaker: remainingTakerAmount
+                                price: this.calculatePrice(b.price, BigNumber.ROUND_DOWN),
+                                volumeMaker: b.makerAmount,
+                                volumeTaker: b.takerAmount
                             }
                         })
 
@@ -205,11 +187,11 @@
                     triggerScrollToView: true
                 })
             },
-            calculatePrice(quote, base, rounding) {
+            calculatePrice(price, rounding) {
                 if (this.props.orderFactory.order.sellPrice.inverted) {
-                    return base.dividedBy(quote).toFixed(this.config.displayedDecimalPoints, 1 - rounding)
+                    return new BigNumber(1).dividedBy(price).toFixed(this.config.displayedDecimalPoints, 1 - rounding)
                 } else {
-                    return quote.dividedBy(base).toFixed(this.config.displayedDecimalPoints, rounding)
+                    return price.toFixed(this.config.displayedDecimalPoints, rounding)
                 }
             },
             scrollOrderBookIntoView() {

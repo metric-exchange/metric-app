@@ -1,6 +1,5 @@
 import { HttpClient } from "@0x/connect"
-import Rollbar from "rollbar";
-import {HidingGameProxy} from "./HidingGameProxy";
+import {HidingGameProxy} from "../hidingGame/HidingGameProxy";
 
 export function userOrders() {
     return orders

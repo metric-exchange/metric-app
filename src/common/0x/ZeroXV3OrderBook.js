@@ -5,60 +5,6 @@ import {BigNumber, providerUtils} from "@0x/utils";
 
 export class ZeroXV3OrderBook {
 
-    constructor(baseToken, quoteToken) {
-        this.baseToken = baseToken
-        this.quoteToken = quoteToken
-
-        this.bids = []
-        this.asks = []
-
-        this.observers = []
-        this.activeSyncroLoopId = setInterval((obj) => obj.runSynchronizationLoop(), 10000, this)
-    }
-
-    setTokens(baseToken, quoteToken) {
-        this.baseToken = baseToken
-        this.quoteToken = quoteToken
-        this.reset()
-    }
-
-    clear() {
-        clearInterval(this.activeSyncroLoopId)
-    }
-
-    reset() {
-        this.asks = []
-        this.bids = []
-        this.clear()
-        this.activeSyncroLoopId = setInterval((obj) => obj.runSynchronizationLoop(), 10000, this)
-    }
-
-    observe(observer) {
-        this.observers.push(observer)
-    }
-
-    async runSynchronizationLoop() {
-
-        try {
-            let orderBookUpdate =
-                await ZeroXV3OrderBook.getOrdersMatching(
-                    this.baseToken,
-                    this.quoteToken,
-                    false
-                )
-
-            this.bids = orderBookUpdate.bids
-            this.asks = orderBookUpdate.asks
-
-            await Promise.all(
-                this.observers.map(obj => obj.onOrderBookUpdate())
-            )
-
-        } catch (e) {
-            console.warn(`Unexpected error while synchronizing the order book, will keep retrying. ${e}`)
-        }
-    }
-
     static async getOrdersMatching(baseToken, quoteToken, keepOtcOrders) {
 
         const baseAssetData = `0xf47261b0000000000000000000000000${baseToken.address.substr(2).toLowerCase()}`

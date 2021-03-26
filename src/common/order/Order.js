@@ -38,6 +38,10 @@ export class Order {
         return this.type === Order.MarketOrderType
     }
 
+    isHidingGameOrder() {
+        return this.useHidingGame.value
+    }
+
     observeTokenChanges(observer, callback) {
         this.tokensChangesObservers.register(observer, callback)
     }

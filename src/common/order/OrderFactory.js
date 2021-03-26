@@ -1,6 +1,6 @@
 import {tokensList} from "../tokens/token_fetch";
 import {OrderState} from "./OrderStateManager";
-import {approveZeroXAllowance} from "../0x/ZeroXOrderManagerProxy";
+import {approveZeroXAllowance} from "../0x/order/ZeroXOrderManagerProxy";
 import Rollbar from "rollbar";
 import {UrlManager} from "../url/UrlManager";
 import {chainToken, isUnwrapping, isWrapping} from "../ChainHelpers";

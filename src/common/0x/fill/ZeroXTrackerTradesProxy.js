@@ -1,5 +1,5 @@
-import {ObservableValue} from "../order/ObservableValue";
-import {fetchJson} from "../JsonApiFetch";
+import {ObservableValue} from "../../order/ObservableValue";
+import {fetchJson} from "../../JsonApiFetch";
 import Rollbar from "rollbar";
 
 export class ZeroXTrackerTradesProxy {

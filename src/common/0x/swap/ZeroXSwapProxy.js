@@ -1,11 +1,11 @@
-import {fetchJson} from "../JsonApiFetch";
+import {fetchJson} from "../../JsonApiFetch";
 import {stringify} from "query-string";
 import {BigNumber} from "@0x/utils";
-import {getSlippageConfig} from "../order/SlippageConfig";
+import {getSlippageConfig} from "../../order/SlippageConfig";
 import Rollbar from "rollbar";
-import {accountAddress} from "../wallet/WalletManager";
-import {calculateMetricFee, MetricReferralAddress} from "../MetricFee";
-import {getConnectedNetworkConfig} from "../ChainHelpers";
+import {accountAddress} from "../../wallet/WalletManager";
+import {calculateMetricFee, MetricReferralAddress} from "../../MetricFee";
+import {getConnectedNetworkConfig} from "../../ChainHelpers";
 
 export async function getSwapPrice(inputToken, outputToken, sellAmount = new BigNumber(1)) {
     try {

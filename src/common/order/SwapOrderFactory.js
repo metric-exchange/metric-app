@@ -1,5 +1,5 @@
 import {OrderFactory} from "./OrderFactory";
-import {callSwapApi} from "../0x/ZeroXSwapProxy";
+import {callSwapApi} from "../0x/swap/ZeroXSwapProxy";
 import {ExchangeProxyV4Address, tokensList} from "../tokens/token_fetch";
 import {OrderState} from "./OrderStateManager";
 import {formatNumber} from "../helpers";

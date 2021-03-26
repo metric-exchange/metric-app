@@ -1,5 +1,5 @@
 import { HttpClient } from "@0x/connect"
-import {HidingGameProxy} from "../hidingGame/HidingGameProxy";
+import {HidingGameProxy} from "./HidingGameProxy";
 
 export function userOrders() {
     return orders

@@ -1,7 +1,7 @@
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
-import {accountAddress, getContractWrapper, getProvider} from '../wallet/WalletManager'
-import {Erc20ContractProxy} from "../Erc20ContractProxy";
-import {updateAllowance} from "../tokens/token_fetch";
+import {accountAddress, getContractWrapper, getProvider} from '../../wallet/WalletManager'
+import {Erc20ContractProxy} from "../../Erc20ContractProxy";
+import {updateAllowance} from "../../tokens/token_fetch";
 import {providerUtils} from "@0x/utils";
 import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
 import {HttpClient} from "@0x/connect";

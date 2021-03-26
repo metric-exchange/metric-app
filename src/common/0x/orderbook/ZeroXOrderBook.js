@@ -7,6 +7,9 @@ export class ZeroXOrderBook {
         this.baseToken = baseToken
         this.quoteToken = quoteToken
 
+        this.orderBookV3 = new ZeroXV3OrderBook()
+        this.orderBookV4 = new ZeroXV4OrderBook()
+
         this.bids = []
         this.asks = []
 
@@ -41,10 +44,10 @@ export class ZeroXOrderBook {
 
         try {
             let orderBookUpdate =
-                await ZeroXV3OrderBook.getOrdersMatching(this.baseToken, this.quoteToken, false)
+                await this.orderBookV3.getOrdersMatching(this.baseToken, this.quoteToken, false)
 
             let orderBookV4Update =
-                await ZeroXV4OrderBook.getOrdersMatching(this.baseToken, this.quoteToken, false)
+                await this.orderBookV4.getOrdersMatching(this.baseToken, this.quoteToken, false)
 
             this.bids = orderBookUpdate.bids.concat(orderBookV4Update.bids)
             this.asks = orderBookUpdate.asks.concat(orderBookV4Update.asks)

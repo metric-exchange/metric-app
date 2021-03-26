@@ -1,7 +1,7 @@
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
 import {accountAddress, getContractWrapper, getProvider} from '../wallet/WalletManager'
 import {Erc20ContractProxy} from "../Erc20ContractProxy";
-import {zeroXContractAddresses, ZeroXV3OrderBook} from "./ZeroXV3OrderBook";
+import {zeroXContractAddresses, ZeroXV3OrderBook} from "./orderbook/ZeroXV3OrderBook";
 import {updateAllowance} from "../tokens/token_fetch";
 
 export async function approveZeroXAllowance(token, target, confirmationCallback, errorCallback) {

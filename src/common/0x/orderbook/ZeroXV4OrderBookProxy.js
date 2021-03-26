@@ -2,7 +2,7 @@ import {BigNumber} from "@0x/utils";
 import {fetchJson} from "../../JsonApiFetch";
 import {OrderBookProxy} from "./OrderBookProxy";
 
-export class ZeroXV4OrderBook extends OrderBookProxy {
+export class ZeroXV4OrderBookProxy extends OrderBookProxy {
 
     constructor() {
         super();

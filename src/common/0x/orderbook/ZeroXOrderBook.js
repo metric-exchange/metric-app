@@ -1,5 +1,5 @@
-import {ZeroXV4OrderBook} from "./ZeroXV4OrderBook";
-import {ZeroXV3OrderBook} from "./ZeroXV3OrderBook";
+import {ZeroXV4OrderBookProxy} from "./ZeroXV4OrderBookProxy";
+import {ZeroXV3OrderBookProxy} from "./ZeroXV3OrderBookProxy";
 
 export class ZeroXOrderBook {
 
@@ -7,8 +7,8 @@ export class ZeroXOrderBook {
         this.baseToken = baseToken
         this.quoteToken = quoteToken
 
-        this.orderBookV3 = new ZeroXV3OrderBook()
-        this.orderBookV4 = new ZeroXV4OrderBook()
+        this.orderBookV3Proxy = new ZeroXV3OrderBookProxy()
+        this.orderBookV4Proxy = new ZeroXV4OrderBookProxy()
 
         this.bids = []
         this.asks = []
@@ -44,10 +44,10 @@ export class ZeroXOrderBook {
 
         try {
             let orderBookUpdate =
-                await this.orderBookV3.getOrdersMatching(this.baseToken, this.quoteToken, false)
+                await this.orderBookV3Proxy.getOrdersMatching(this.baseToken, this.quoteToken, false)
 
             let orderBookV4Update =
-                await this.orderBookV4.getOrdersMatching(this.baseToken, this.quoteToken, false)
+                await this.orderBookV4Proxy.getOrdersMatching(this.baseToken, this.quoteToken, false)
 
             this.bids = orderBookUpdate.bids.concat(orderBookV4Update.bids)
             this.asks = orderBookUpdate.asks.concat(orderBookV4Update.asks)

@@ -8,7 +8,7 @@ export class OrderBookProxy {
         let orders = await this.getOrdersAsync(baseToken, quoteToken)
 
         return {
-            bids: this.extractValidOrders(orders.bids.records, keepOtcOrders, baseToken, quoteToken),
+            bids: this.extractValidOrders(orders.bids.records, keepOtcOrders, quoteToken, baseToken),
             asks: this.extractValidOrders(orders.asks.records, keepOtcOrders, baseToken, quoteToken)
         }
 

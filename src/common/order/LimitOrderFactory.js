@@ -1,12 +1,11 @@
 import {OrderFactory} from "./OrderFactory";
-import {BigNumber} from "@0x/utils";
 import moment from "moment";
 import {OrderState} from "./OrderStateManager";
-import {submitOrder} from "../0x/order/ZeroXOrderManagerProxy";
-import {Erc20ProxyAddress, ExchangeProxyV4Address} from "../tokens/token_fetch";
+import {ExchangeProxyV4Address} from "../tokens/token_fetch";
 import {formatNumber} from "../helpers";
 import {getHidingGameProxy} from "../0x/order/ZeroXV3UserPendingOrdersProxy";
 import Rollbar from "rollbar";
+import {ZeroXV4OrderProxy} from "../0x/order/ZeroXV4OrderProxy";
 
 export class LimitOrderFactory extends OrderFactory {
 
@@ -14,12 +13,13 @@ export class LimitOrderFactory extends OrderFactory {
         super(
             order,
             stateManager,
-            Erc20ProxyAddress,
+            ExchangeProxyV4Address,
             accountAddress
         );
         this.expiryTime = moment().add(7, 'days').format("yyyy-MM-DDTHH:mm")
         this.recipientAddress = null
         this.order.sellPrice.calculated = true
+        this.zeroxProxy = new ZeroXV4OrderProxy()
     }
 
     async clearValues() {
@@ -30,11 +30,6 @@ export class LimitOrderFactory extends OrderFactory {
 
     async toggleHidingGameSupport() {
         this.order.sellPrice.disableFee = !this.order.useHidingGame.value
-        if (!this.order.useHidingGame.value) {
-            this.allowanceAddress = ExchangeProxyV4Address
-        } else {
-            this.allowanceAddress = Erc20ProxyAddress
-        }
         await this.order.useHidingGame.set(undefined, this.order.sellPrice.disableFee)
     }
 
@@ -49,7 +44,7 @@ export class LimitOrderFactory extends OrderFactory {
     async sendOrder(order) {
 
         let orderAmount =
-            order.makerAssetAmount
+            order.makerAmount
                 .dividedBy(10 ** this.order.sellToken.decimals)
                 .toNumber()
 
@@ -66,7 +61,7 @@ export class LimitOrderFactory extends OrderFactory {
             await getHidingGameProxy().sendOrder(hiddenOrder)
             Rollbar.info("Hiding Game: limit order submitted successfully")
         } else {
-            await submitOrder(order)
+            await this.zeroxProxy.sendOrder(order)
             Rollbar.info("limit order submitted successfully")
         }
 
@@ -75,18 +70,17 @@ export class LimitOrderFactory extends OrderFactory {
     buildOrderDetails(sellAmount, buyAmount) {
         let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
         let order = {
-            makerAssetAddress: this.order.sellToken.address,
-            makerAssetAmount: orderDetails.sellAmount,
-            makerFeeAmount: orderDetails.sellFeeAmount,
-            takerAssetAddress: this.order.buyToken.address,
-            takerAssetAmount: orderDetails.buyAmount,
+            makerToken: this.order.sellToken.address,
+            makerAmount: orderDetails.sellAmount,
+            takerToken: this.order.buyToken.address,
+            takerAmount: orderDetails.buyAmount,
             takerFeeAmount: orderDetails.buyFeeAmount,
-            feeRecipientAddress: orderDetails.feeRecipient,
-            expirationTimeSeconds: `${moment(this.expiryTime).unix()}`
+            feeRecipient: orderDetails.feeRecipient,
+            expiry: `${moment(this.expiryTime).unix()}`
         }
 
         if (this.recipientAddress !== null) {
-            order.takerAddress = this.recipientAddress
+            order.taker = this.recipientAddress
         }
 
         return order

@@ -1,5 +1,6 @@
 import { HttpClient } from "@0x/connect"
 import {HidingGameProxy} from "./HidingGameProxy";
+import {ZeroXV4OrderProxy} from "./ZeroXV4OrderProxy";
 
 export function userOrders() {
     return orders
@@ -19,18 +20,35 @@ export async function synchronizeUserOrders(userAddress) {
 }
 
 async function retrieveUserOrders(address) {
+
+    let zeroXV4Proxy = new ZeroXV4OrderProxy()
     await getHidingGameProxy().init()
+
     let hiddenOrders = await getHidingGameProxy().getOrders(address)
 
-    let zeroXOrders = await relay.getOrdersAsync({
+    let zeroXV3Orders = await relay.getOrdersAsync({
         makerAddress: address,
         perPage: 100
     }).then(r => r.records)
 
-   zeroXOrders.forEach(o => o.isHidingBook = false)
-   hiddenOrders.forEach(o => o.isHidingBook = true)
+    let zeroXV4Orders = await zeroXV4Proxy.getOrders(address)
 
-   return zeroXOrders.concat(hiddenOrders)
+    zeroXV3Orders.forEach(o => {
+       o.isHidingBook = false
+       o.version = 3
+    })
+
+    zeroXV4Orders.forEach(o => {
+        o.isHidingBook = false
+        o.version = 4
+    })
+
+    hiddenOrders.forEach(o => {
+       o.isHidingBook = true
+       o.version = 4
+    })
+
+   return zeroXV3Orders.concat(zeroXV4Orders).concat(hiddenOrders)
 }
 
 export function getHidingGameProxy() {

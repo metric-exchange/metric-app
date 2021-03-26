@@ -78,7 +78,7 @@
                 let makerAddress = ""
                 let takerAddress = ""
 
-                if (this.props.order.isHidingBook === false) {
+                if (this.props.order.version === 3) {
                     let prefixLen = "0xf47261b0000000000000000000000000".length
                     makerAddress = `0x${this.props.order.order.makerAssetData.substr(prefixLen)}`.toLowerCase()
                     takerAddress = `0x${this.props.order.order.takerAssetData.substr(prefixLen)}`.toLowerCase()
@@ -93,7 +93,7 @@
                 })
             },
             makerTotalAmount(order) {
-                if (order.isHidingBook === false) {
+                if (order.version === 3) {
                     return order.order.makerAssetAmount.plus(order.order.makerFee)
                         .dividedBy(10**this.state.makerToken.decimals)
                 } else {
@@ -102,7 +102,7 @@
                 }
             },
             makerAmount(order) {
-                if (order.isHidingBook === false) {
+                if (order.version === 3) {
                     return order.order.makerAssetAmount
                         .dividedBy(10**this.state.makerToken.decimals)
                 } else {
@@ -111,7 +111,7 @@
                 }
             },
             takerAmount(order) {
-                if (order.isHidingBook === false) {
+                if (order.version === 3) {
                     return order.order.takerAssetAmount
                         .dividedBy(10**this.state.takerToken.decimals)
                 } else {
@@ -120,7 +120,7 @@
                 }
             },
             filledTakerPercentage(order) {
-                if (order.isHidingBook === false) {
+                if (order.version === 3) {
                     let remaining = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
                     return order.order.takerAssetAmount
                         .minus(remaining)
@@ -138,7 +138,7 @@
             },
             getDateDiff(order) {
                 let timestampSeconds = 0
-                if (order.isHidingBook === false) {
+                if (order.version === 3) {
                     timestampSeconds = order.order.expirationTimeSeconds
                 } else {
                     timestampSeconds = order.order.expiry

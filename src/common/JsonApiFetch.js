@@ -14,12 +14,17 @@ export async function fetchJson(url) {
 }
 
 export async function postJson(url, content) {
+
+    let headers = new Headers();
+
+    headers.set("Content-Type", "application/json")
+
     return await fetch(url, {
             method: 'POST',
+            headers: headers,
             body: JSON.stringify(content)
         })
         .then(handleErrors)
-        .then(r => r.json())
 }
 
 function handleErrors(response) {

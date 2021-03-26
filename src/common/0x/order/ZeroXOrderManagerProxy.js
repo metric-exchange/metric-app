@@ -1,10 +1,6 @@
-import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
-import {accountAddress, getContractWrapper, getProvider} from '../../wallet/WalletManager'
+import {accountAddress, getContractWrapper} from '../../wallet/WalletManager'
 import {Erc20ContractProxy} from "../../Erc20ContractProxy";
 import {updateAllowance} from "../../tokens/token_fetch";
-import {providerUtils} from "@0x/utils";
-import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
-import {HttpClient} from "@0x/connect";
 
 export async function approveZeroXAllowance(token, target, confirmationCallback, errorCallback) {
     await Erc20ContractProxy.approveTokenForTargetAddress(
@@ -18,44 +14,15 @@ export async function approveZeroXAllowance(token, target, confirmationCallback,
     )
 }
 
-export async function submitOrder(order) {
-
-    let contractWrapper = await getContractWrapper()
-
-    const makerAssetData =
-        await contractWrapper.devUtils.encodeERC20AssetData(order.makerAssetAddress).callAsync();
-
-    const takerAssetData =
-        await contractWrapper.devUtils.encodeERC20AssetData(order.takerAssetAddress).callAsync();
-
-    let orderParams = {
-        makerFee: order.makerFeeAmount,
-        takerFee: order.takerFeeAmount,
-        feeRecipientAddress: order.feeRecipientAddress,
-        expirationTimeSeconds: order.expirationTimeSeconds
-    }
-
-    if (isValidAddress(order.takerAddress)) {
-        orderParams.takerAddress = order.takerAddress
-    }
-
-    let signedOrder = await orderFactory.createSignedOrderAsync(
-        getProvider(),
-        accountAddress(),
-        order.makerAssetAmount,
-        makerAssetData,
-        order.takerAssetAmount,
-        takerAssetData,
-        await zeroXContractAddresses().then(a => a.exchange),
-        orderParams
-    )
-
-    await relayClient.submitOrderAsync(signedOrder)
-}
-
 export async function cancelOrder(order) {
     let contractWrapper = await getContractWrapper()
-    if (order.isHidingBook === false) {
+
+    if (order.isHidingBook) {
+        await contractWrapper
+            .exchangeProxy
+            .cancelRfqOrder(order.order)
+            .awaitTransactionSuccessAsync({ from: accountAddress() })
+    } else if (order.version === 3) {
         await contractWrapper
             .exchange
             .cancelOrder(order.order)
@@ -63,15 +30,17 @@ export async function cancelOrder(order) {
     } else {
         await contractWrapper
             .exchangeProxy
-            .cancelRfqOrder(order.order)
+            .cancelLimitOrder(order.order)
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     }
 
 }
+
 export async function batchCancelOrders(orders) {
     let contractWrapper = await getContractWrapper()
-    let v3Orders = orders.filter(o => o.isHidingBook === false)
-    let v4Orders = orders.filter(o => o.isHidingBook === true)
+    let v3Orders = orders.filter(o => o.version === 3)
+    let v4Orders = orders.filter(o => o.version === 4 && o.isHidingBook === false)
+    let hidingGameOrders = orders.filter(o => o.isHidingBook === true)
 
     if (v3Orders.length > 0) {
         await contractWrapper
@@ -80,21 +49,17 @@ export async function batchCancelOrders(orders) {
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     }
 
-    if (v4Orders.length > 0) {
+    if (hidingGameOrders.length > 0) {
         await contractWrapper
             .exchangeProxy
             .batchCancelRfqOrders(v4Orders.map(o => o.order))
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     }
-}
 
-function isValidAddress(address) {
-    return address !== null && address !== undefined && address.match("0x[0-9a-zA-Z]{40}") !== null
+    if (v4Orders.length > 0) {
+        await contractWrapper
+            .exchangeProxy
+            .batchCancelLimitOrders(v4Orders.map(o => o.order))
+            .awaitTransactionSuccessAsync({ from: accountAddress() })
+    }
 }
-
-export async function zeroXContractAddresses() {
-    let chainId = await providerUtils.getChainIdAsync(getProvider())
-    return getContractAddressesForChainOrThrow(chainId)
-}
-
-let relayClient = new HttpClient("https://api.0x.org/sra/v3")

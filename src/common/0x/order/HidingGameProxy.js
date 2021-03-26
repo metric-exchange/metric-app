@@ -12,15 +12,17 @@ export class HidingGameProxy {
     }
 
     async init() {
-        try {
-            let info = await fetchJson(`${this.url}/info`)
-            this.trxOrigin = info.result.orderDetails.txOrigin
-            await this.supportedTokens.set(undefined, info.result.tokenList.tokens)
-            this.pool = info.result.orderDetails.pool
-            this.taker = info.result.orderDetails.taker
-            this.verifyingContract = info.result.orderDetails.verifyingContract
-        } catch (e) {
-            Rollbar.error(`Failed to initialize hidingGame info, ${e}`)
+        if (this.trxOrigin === undefined) {
+            try {
+                let info = await fetchJson(`${this.url}/info`)
+                this.trxOrigin = info.result.orderDetails.txOrigin
+                await this.supportedTokens.set(undefined, info.result.tokenList.tokens)
+                this.pool = info.result.orderDetails.pool
+                this.taker = info.result.orderDetails.taker
+                this.verifyingContract = info.result.orderDetails.verifyingContract
+            } catch (e) {
+                Rollbar.error(`Failed to initialize hidingGame info, ${e}`)
+            }
         }
     }
 
@@ -28,15 +30,15 @@ export class HidingGameProxy {
 
         const order = new RfqOrder({
             maker: accountAddress().toLowerCase(),
-            makerToken: orderParams.makerAssetAddress.toLowerCase(),
-            takerToken: orderParams.takerAssetAddress.toLowerCase(),
-            makerAmount: orderParams.makerAssetAmount,
-            takerAmount: orderParams.takerAssetAmount,
+            makerToken: orderParams.makerToken.toLowerCase(),
+            takerToken: orderParams.takerToken.toLowerCase(),
+            makerAmount: orderParams.makerAmount,
+            takerAmount: orderParams.takerAmount,
             txOrigin: this.trxOrigin,
             pool: this.pool,
             verifyingContract: this.verifyingContract,
             taker: this.taker,
-            expiry: orderParams.expirationTimeSeconds
+            expiry: orderParams.expiry
         });
 
         let signature = await eip712SignTypedDataWithProviderAsync(

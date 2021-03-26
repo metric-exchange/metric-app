@@ -1,8 +1,10 @@
 import {orderFactory} from '@0x/order-utils/lib/src/order_factory';
 import {accountAddress, getContractWrapper, getProvider} from '../wallet/WalletManager'
 import {Erc20ContractProxy} from "../Erc20ContractProxy";
-import {zeroXContractAddresses, ZeroXV3OrderBook} from "./orderbook/ZeroXV3OrderBook";
 import {updateAllowance} from "../tokens/token_fetch";
+import {providerUtils} from "@0x/utils";
+import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
+import {HttpClient} from "@0x/connect";
 
 export async function approveZeroXAllowance(token, target, confirmationCallback, errorCallback) {
     await Erc20ContractProxy.approveTokenForTargetAddress(
@@ -48,7 +50,7 @@ export async function submitOrder(order) {
         orderParams
     )
 
-    await ZeroXV3OrderBook.relayClient.submitOrderAsync(signedOrder)
+    await relayClient.submitOrderAsync(signedOrder)
 }
 
 export async function cancelOrder(order) {
@@ -89,3 +91,10 @@ export async function batchCancelOrders(orders) {
 function isValidAddress(address) {
     return address !== null && address !== undefined && address.match("0x[0-9a-zA-Z]{40}") !== null
 }
+
+export async function zeroXContractAddresses() {
+    let chainId = await providerUtils.getChainIdAsync(getProvider())
+    return getContractAddressesForChainOrThrow(chainId)
+}
+
+let relayClient = new HttpClient("https://api.0x.org/sra/v3")

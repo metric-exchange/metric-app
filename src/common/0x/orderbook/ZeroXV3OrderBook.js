@@ -1,7 +1,5 @@
 import {HttpClient} from "@0x/connect";
-import {getProvider} from "../../wallet/WalletManager";
-import {getContractAddressesForChainOrThrow} from "@0x/contract-addresses";
-import {BigNumber, providerUtils} from "@0x/utils";
+import {BigNumber} from "@0x/utils";
 import {OrderBookProxy} from "./OrderBookProxy";
 
 export class ZeroXV3OrderBook extends OrderBookProxy {
@@ -35,9 +33,4 @@ export class ZeroXV3OrderBook extends OrderBookProxy {
         }
     }
 
-}
-
-export async function zeroXContractAddresses() {
-    let chainId = await providerUtils.getChainIdAsync(getProvider())
-    return getContractAddressesForChainOrThrow(chainId)
 }

@@ -1,0 +1,83 @@
+<zrx-stake>
+
+    <input type="text" oninput={ fillPoolId } placeholder="Input pool id, eg: 0x0000000000000000000000000000000000000000000000000000000000000001"/>
+    <button onclick={ unstake } if={ correctUnstakePoolId() }>Unstake</button>
+    <button onclick={ createPoolAndStake }>CreatePool</button>
+
+    <script>
+        import {StakingContract} from "@0x/contract-wrappers";
+        import {accountAddress, getProvider} from "../../common/wallet/WalletManager";
+        import {BigNumber} from "@0x/utils";
+        import {Web3Wrapper} from "@0x/web3-wrapper";
+
+        export default {
+            config: {
+                zrxStakingContract: '0xa26e80e7dea86279c6d778d702cc413e6cffa777',
+                nilPool: '0x0000000000000000000000000000000000000000000000000000000000000000'
+            },
+            state: {
+                unstakePoolId: undefined
+            },
+            correctUnstakePoolId() {
+                let reg = new RegExp("0x[0-9a-zA-Z]{64}")
+                return this.state.unstakePoolId !== undefined && this.state.unstakePoolId.match(reg)
+            },
+            fillPoolId(e) {
+                this.update( { unstakePoolId : e.target.value } )
+            },
+            async unstake() {
+                const stakingContract =
+                    new StakingContract(this.config.zrxStakingContract, getProvider(), { from: accountAddress() });
+
+                const stakeAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(100), 18);
+
+                const moveStakeReceipt = await stakingContract.moveStake(
+                    { status: 1, poolId: this.state.unstakePoolId },
+                    { status: 0, poolId: this.config.nilPool },
+                    stakeAmount,
+                ).awaitTransactionSuccessAsync(
+                    { from: accountAddress() }
+                );
+
+                await stakingContract.unstake(stakeAmount).awaitTransactionSuccessAsync(
+                    { from: accountAddress() }
+                )
+
+            },
+
+            async createPoolAndStake() {
+                const stakingContract =
+                    new StakingContract(this.config.zrxStakingContract, getProvider(), { from: accountAddress() });
+
+                const stakingPoolReceipt = await stakingContract.createStakingPool(
+                    new BigNumber(1000000),
+                    true
+                ).awaitTransactionSuccessAsync(
+                    {
+                        from: accountAddress()
+                    }
+                )
+
+                const createStakingPoolLog = stakingPoolReceipt.logs[0];
+                const poolId = createStakingPoolLog.args.poolId;
+
+                const stakeAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(100), 18);
+
+                const stakeReceipt = await stakingContract.stake(stakeAmount)
+                    .awaitTransactionSuccessAsync({ from: accountAddress() });
+
+                const moveStakeReceipt = await stakingContract.moveStake(
+                    { status: 0, poolId: this.config.nilPool },
+                    { status: 1, poolId: poolId },
+                    stakeAmount
+                ).awaitTransactionSuccessAsync(
+                    { from: accountAddress() }
+                );
+
+                console.log('create pool', poolId)
+            }
+
+        }
+    </script>
+
+</zrx-stake>

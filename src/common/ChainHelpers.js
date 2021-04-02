@@ -1,5 +1,6 @@
 import {BinanceChainNetworkId, EthereumNetworkId, SupportedNetworks} from "./constants";
 import {ConnectedNetworkId} from "./wallet/WalletManager";
+import {web3ModalProvider} from "./wallet/Web3Modal";
 
 
 export function getConnectedNetworkConfig() {
@@ -34,4 +35,8 @@ export function isWrapping(sellToken, buToken) {
 
 export function isUnwrapping(sellToken, buToken) {
     return sellToken.address === wrappedChainToken().address && buToken.address === chainToken().address
+}
+
+export async function addChain(config) {
+    await web3ModalProvider.request({method: 'wallet_addEthereumChain', params:[config]})
 }

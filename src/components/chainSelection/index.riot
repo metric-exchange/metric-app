@@ -1,0 +1,25 @@
+<chain-selection>
+
+    <!-- enable when https://github.com/ethereum/EIPs/pull/3326 is implemented -->
+    <div onclick={ switchToEthereumMainnet } >Ethereum Mainnet</div>
+    <div onclick={ switchToBscMainnet }>Binance Smart Chain</div>
+
+    <script>
+        import {BinanceChainNetworkId, EthereumNetworkId, SupportedNetworks} from "../../common/constants";
+        import {addChain} from "../../common/ChainHelpers";
+
+        export default {
+            async switchToEthereumMainnet() {
+                await this.switchToNetwork(EthereumNetworkId)
+            },
+            async switchToBscMainnet() {
+                await this.switchToNetwork(BinanceChainNetworkId)
+            },
+            async switchToNetwork(id) {
+                let network = SupportedNetworks.find(n => n.id === id)
+                await addChain(network.config)
+            },
+        }
+    </script>
+
+</chain-selection>

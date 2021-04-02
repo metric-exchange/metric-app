@@ -12,6 +12,17 @@ export let SupportedNetworks = [
     {
         id: EthereumNetworkId,
         name: "ethereum",
+        config: {
+            chainId: '0x1',
+            chainName: 'Ethereum',
+            nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18,
+            },
+            rpcUrls: ['https://mainnet.infura.io/v3/undefined'],
+            blockExplorerUrls: ['https://etherscan.io'],
+        },
         uris: {
             zeroX: "https://api.0x.org",
             tokens: "https://tokens.coingecko.com/uniswap/all.json"
@@ -164,6 +175,18 @@ export let SupportedNetworks = [
     {
         id: BinanceChainNetworkId,
         name: "binance smart chain",
+        config: {
+            chainId: '0x38',
+            chainName: 'Binance Smart Chain',
+            nativeCurrency:
+                {
+                    name: 'BNB',
+                    symbol: 'BNB',
+                    decimals: 18
+                },
+            rpcUrls: ['https://bsc-dataseed.binance.org/'],
+            blockExplorerUrls: ['https://bscscan.com/'],
+        },
         uris: {
             zeroX: "https://bsc.api.0x.org",
             tokens: "https://raw.githubusercontent.com/pancakeswap/pancake-swap-interface/master/src/constants/token/pancakeswap.json"

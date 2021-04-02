@@ -1,6 +1,7 @@
 import {fetchJson, postJson} from "../../JsonApiFetch";
 import Rollbar from "rollbar";
 import {RfqOrder, eip712SignTypedDataWithProviderAsync} from "@0x/protocol-utils";
+import {generatePseudoRandom256BitNumber} from '@0x/utils'
 import {ObservableValue} from "../../order/ObservableValue";
 import {accountAddress, getProvider} from "../../wallet/WalletManager";
 
@@ -36,6 +37,7 @@ export class HidingGameProxy {
             takerAmount: orderParams.takerAmount,
             txOrigin: this.trxOrigin,
             pool: this.pool,
+            salt: generatePseudoRandom256BitNumber(),
             verifyingContract: this.verifyingContract,
             taker: this.taker,
             expiry: orderParams.expiry

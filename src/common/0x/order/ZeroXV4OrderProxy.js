@@ -1,5 +1,6 @@
 import {fetchJson, postJson} from "../../JsonApiFetch";
 import {eip712SignTypedDataWithProviderAsync, LimitOrder} from "@0x/protocol-utils";
+import {generatePseudoRandom256BitNumber} from '@0x/utils'
 import {accountAddress, getProvider} from "../../wallet/WalletManager";
 import {MetricReferralAddress} from "../../MetricFee";
 import {getConnectedNetworkConfig} from "../../ChainHelpers";
@@ -26,6 +27,7 @@ export class ZeroXV4OrderProxy {
             makerAmount: orderParams.makerAmount,
             takerAmount: orderParams.takerAmount,
             pool: "0x0000000000000000000000000000000000000000000000000000000000000037",
+            salt: generatePseudoRandom256BitNumber(),
             verifyingContract: ExchangeProxyV4Address.toLowerCase(),
             expiry: orderParams.expiry,
             takerTokenFeeAmount: orderParams.takerFeeAmount,

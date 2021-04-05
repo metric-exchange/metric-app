@@ -83,7 +83,7 @@ export class MetricTrackerFillsProxy {
         return undefined
     }
 
-    topDailyTradersByMetricVolume() {
+    topDailyTradersByVolume() {
         let topDailyTraders = []
         for (let index = 0; index < this.fills.value.length; index++) {
             let fill = this.fills.value[index]
@@ -91,13 +91,13 @@ export class MetricTrackerFillsProxy {
             if (date) {
                 let trader = date.traders.find(t => t.address === fill.address)
                 if (trader) {
-                    trader.usdVolume += fill.usdMetricValue
+                    trader.usdVolume += fill.usdTotalValue
                 } else {
                     date.traders.push(
                         {
                             address: fill.address,
                             name: fill.name,
-                            usdVolume: fill.usdMetricValue
+                            usdVolume: fill.usdTotalValue
                         }
                     )
                 }
@@ -108,7 +108,7 @@ export class MetricTrackerFillsProxy {
                         {
                             address: fill.address,
                             name: fill.name,
-                            usdVolume: fill.usdMetricValue
+                            usdVolume: fill.usdTotalValue
                         }
                     ]
                 })

@@ -133,7 +133,7 @@
             "largest_trade" : "Largest Trade",
             "most_active_trader" : "Most Active Trader",
             "largest_metric_trade" : "Largest $METRIC Trade",
-            "top_daily_metric_traders" : "Top Daily $METRIC Traders",
+            "top_daily_metric_traders" : "Top Daily Traders",
             "top_traders" : "Top Traders",
             "trades" : "Trades",
             "total_volume" : "Total Volume",

@@ -26,12 +26,11 @@ a {
    position: fixed;
    top: 0;
    z-index: 1;
-   background-color: var(--swap-form-background-color);
-   box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
    display: -webkit-box;
    display: -webkit-flex;
    display: -ms-flexbox;
    display: flex;
+   background: var(--main-background-color);
 }
 
 .header-logo {
@@ -62,36 +61,6 @@ a {
     color: var(--token-selector-table-text-color);
 }
 
-.header-links a, .header-links a:hover, .header-links a:visited {
-    color: var(--token-selector-table-text-color);
-    font-size: 12px;
-    margin: 0 5px;
-}
-
-.header-links a:hover {
-    color: var(--main-text-color);
-}
-
-#footer {
-    display: none;
-}
-
-.social-media-links {
-    position: fixed;
-    right: 20px;
-    display: grid;
-    grid-template-columns: auto;
-    grid-gap: 30px;
-}
-
-.social-media-links a svg path {
-    fill: var(--token-selector-table-text-color);
-}
-
-.social-media-links a:hover svg path {
-    fill: #60FFD9;
-}
-
 .dashboard-links {
     position: fixed;
     left: 20px;
@@ -101,9 +70,6 @@ a {
 }
 
 @media (max-width: 1000px) {
-    .header-links{
-        display: none;
-    }
     .header-settings{
         width: 50%;
     }
@@ -113,14 +79,6 @@ a {
 }
 
 @media (max-width: 1050px) {
-
-    #footer {
-        display: block;
-    }
-
-    .social-media-links {
-        display: none;
-    }
     .dashboard-links {
         position: unset;
         place-items: center;
@@ -130,43 +88,9 @@ a {
     }
 }
 
-#footer .footer-content{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-}
-
-#footer .footer-content li a{
-    line-height: 25px;
-}
-
-#footer a, #footer a:hover, #footer a:visited {
-    color: var(--footer-text-color);
-    font-size: 12px;
-    margin: 0 5px;
-}
-
 @media(min-width: 410px){
     body{
         padding-bottom: 50px;
-    }
-
-    #footer{
-        height: 50px;
-    }
-
-    #footer .footer-content{
-        text-align: right;
-        padding-right: 20px;
-    }
-
-    #footer .footer-content li{
-        display: inline-block;
-    }
-
-    #footer .footer-content li a{
-        line-height: 50px;
     }
 }
 

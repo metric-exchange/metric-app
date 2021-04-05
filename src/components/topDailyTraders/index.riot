@@ -4,9 +4,12 @@
         { this.i18next.t('analytics.top_daily_metric_traders') }
     </div>
     <div class="daily-traders-list">
-        <div class="daily-trade-stat-line trade-stat-body" each={ (trader, index) in props.fillsProxy.topDailyTradersByMetricVolume()} key={trader.address}>
+        <div class="daily-trade-stat-line trade-stat-body"
+             each={ (trader, index) in props.fillsProxy.topDailyTradersByVolume()}
+             key={trader.address}
+             onclick={ () => openTraderPage(trader) }
+        >
             <img class="daily-trader-logo" src={ TraderLogo(trader.address) } height="20" width="20"/>
-            <div class="daily-trader-address"><a target="_blank" href="https://0xtracker.com/traders/{trader.address}">{ trader.name }</a></div>
             <div>{ trader.date }</div>
             <div>${ this.formatNumber(trader.usdVolume)  }</div>
         </div>
@@ -25,6 +28,9 @@
             },
             TraderLogo(address) {
                 return makeBlockie(address)
+            },
+            openTraderPage(trader) {
+                window.open(`https://0xtracker.com/traders/${trader.address}`)
             }
         }
     </script>

@@ -39,9 +39,11 @@
             </div>
         </div>
 
-        <div class="order-line">
+        <div class="order-line" if={ props.enableHidingGame }>
             <order-book-type-switch order-factory={ props.orderFactory } />
         </div>
+
+        <div class="order-line" if={ !props.enableHidingGame }></div>
 
         <slippage-percentage if={ props.orderFactory.order.isMarketOrder() } order-factory={ props.orderFactory } />
 

@@ -3,11 +3,17 @@ import {chainToken, getConnectedNetworkConfig, isConnectedToEthereumMainNet} fro
 
 export class UrlManager {
 
-    constructor() {}
+    constructor(base) {
+        this.setBase(base)
+    }
+
+    setBase(base) {
+        this.base = `/#/${base}/`
+    }
 
     async urlSellToken() {
         let token = UrlManager.defaultSellToken()
-        let url = window.location.href.split('/#/')
+        let url = window.location.href.split(this.base)
         if (url.length === 2) {
             let addresses = url[1].split('/')
             if (addresses.length === 2) {
@@ -22,7 +28,7 @@ export class UrlManager {
 
     async urlBuyToken() {
         let token = UrlManager.defaultBuyToken()
-        let url = window.location.href.split('/#/')
+        let url = window.location.href.split(this.base)
         if (url.length === 2) {
             let addresses = url[1].split('/')
             if (addresses.length === 2) {
@@ -57,11 +63,27 @@ export class UrlManager {
         return config.defaultTokens.find(t => t.symbol.toLowerCase() === "bmetric")
     }
 
+    sanitizeUrl() {
+        let path = window.location.hash
+
+        if (path === "#/trade" || path.startsWith("#/trade/")) {
+            return false
+        }
+
+        if (path === "#/compete" || path.startsWith("#/compete/")) {
+            return false
+        }
+
+        history.replaceState({}, '',"/")
+
+        return true
+    }
+
     updateUrl(sellToken, buyToken) {
         history.replaceState(
             {},
             '',
-            `/#/${sellToken.address}/${buyToken.address}`)
+            `${this.base}${sellToken.address}/${buyToken.address}`)
     }
 
 }

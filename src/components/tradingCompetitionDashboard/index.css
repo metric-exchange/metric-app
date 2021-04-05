@@ -1,0 +1,106 @@
+.competition-dashboard {
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    grid-gap: 2%;
+    grid-template-areas:
+            "activity-period activity-period activity-period"
+            "largest-trades largest-trades largest-trades"
+            "top-daily-traders trading-form top-trades"
+            "prizes prizes prizes"
+            "terms terms terms";
+    margin-right: 10%;
+    margin-left: 10%;
+}
+
+.competition-largest-trades {
+    grid-area: largest-trades;
+}
+
+.competition-trade-volumes {
+    padding: 30px;
+    height: 456px;
+    grid-area: top-trades;
+}
+
+.competition-trade-form {
+    display: grid;
+    place-content: center;
+    height: 516px;
+    grid-area: trading-form;
+}
+
+.competition-top-daily-trade-volumes {
+    padding: 30px;
+    height: 456px;
+    grid-area: top-daily-traders;
+}
+
+.competition-terms {
+    padding: 30px;
+    grid-area: terms;
+}
+
+.competition-prizes {
+    grid-area: prizes;
+}
+
+.competition-terms p {
+    color: var(--token-selector-table-text-color);
+    font-size: small;
+}
+
+.competition-prizes {
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    grid-gap: 2%;
+}
+
+.competition-prizes div {
+    padding: 30px;
+}
+
+.competition-prizes p,ul {
+    color: var(--token-selector-table-text-color);
+    font-size: small;
+}
+
+.card {
+    border-radius: 10px;
+    background: var(--swap-form-background-color);
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+}
+
+@media(max-width: 1200px){
+
+    .competition-dashboard {
+        grid-template-columns: auto;
+        grid-template-areas: unset;
+        grid-gap: 20px;
+    }
+
+    .competition-largest-trades {
+        grid-area: unset;
+    }
+
+    .competition-trade-volumes {
+        grid-area: unset;
+    }
+
+    .competition-trade-form {
+        grid-area: unset;
+    }
+
+    .competition-top-daily-trade-volumes {
+        grid-area: unset;
+    }
+
+    .competition-terms {
+        grid-area: unset;
+    }
+
+    .competition-prizes {
+        grid-area: unset;
+        grid-template-columns: auto;
+        grid-gap: 20px;
+    }
+}

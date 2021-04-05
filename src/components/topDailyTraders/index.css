@@ -17,8 +17,9 @@
 
 .daily-trade-stat-line {
     display: grid;
-    grid-template-columns: 10% 5% 35% 44%;
-    grid-gap: 2%;
+    grid-template-columns: 10% 40% 40%;
+    grid-gap: 5%;
+    cursor: pointer;
 }
 
 .daily-trade-stat-body:hover {
@@ -44,9 +45,5 @@
 @media(min-width: 600px){
     .daily-trader-address a {
         display: block;
-    }
-
-    .daily-trade-stat-line {
-        grid-template-columns: 10% 25% 25% 34%;
     }
 }

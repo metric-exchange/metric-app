@@ -1,0 +1,123 @@
+
+.board-selectors {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-template-areas:
+            "slogan slogan slogan slogan"
+            "trade trade compete compete" ;
+    grid-gap: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 10%;
+}
+
+.slogan {
+    text-align: center;
+    font-size: xxx-large;
+    margin-bottom: 100px;
+    color: var(--swap-button-text-color);
+    grid-area: slogan;
+}
+
+.trade-button {
+    grid-area: trade;
+    background-color: var(--swap-button-background-color);
+    color: var(--swap-button-text-color);
+    cursor: pointer;
+}
+
+.compete-button {
+    grid-area: compete;
+    background: var(--inactive-button-background-color);
+    color: var(--token-selector-table-text-color);
+}
+
+.board-selector {
+    border-radius: 10px;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    text-align: center;
+    font-size: large;
+    box-sizing: border-box;
+    border: 1px solid var(--theme-switch-active-button-border-color);
+}
+
+.trade-button:hover {
+    box-shadow: 0 1px 8px 2px rgba(0, 0, 0, 0.1);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: auto;
+    margin: 100px 30% 60px;
+    grid-gap: 60px;
+}
+
+.footer-social-media-links {
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    grid-gap: 2%;
+    place-items: center;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    grid-gap: 2%;
+    color: var(--token-selector-table-text-color);
+    place-items: center;
+}
+
+.footer-social-media-links a svg path {
+    fill: var(--token-selector-table-text-color);
+}
+
+.footer-social-media-links a:hover svg path {
+    fill: #60FFD9;
+}
+
+.footer-links a, .footer-links a:hover, .footer-links a:visited {
+    color: var(--token-selector-table-text-color);
+    font-size: 12px;
+    margin: 0 5px;
+}
+
+.footer-links a:hover {
+    color: var(--main-text-color);
+}
+
+
+@media(max-width: 600px){
+    .board-selectors {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-areas: unset;
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+
+    .trade-button {
+        grid-area: unset;
+    }
+
+    .compete-button {
+        grid-area: unset;
+    }
+
+    .slogan {
+        grid-area: unset;
+    }
+
+    .footer-content {
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+
+    .footer-links {
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 30px;
+        justify-items: center;
+    }
+
+}

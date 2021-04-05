@@ -16,8 +16,9 @@
 
 .trade-stat-line {
     display: grid;
-    grid-template-columns: 10% 15% 5% 54%;
-    grid-gap: 2%;
+    grid-template-columns: 10% 80%;
+    grid-gap: 10%;
+    cursor: pointer;
 }
 
 .trade-stat-body:hover {
@@ -33,19 +34,9 @@
     border-radius: 3px;
 }
 
-.trader-address a {
-    display: none;
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--main-text-color);
-}
-
 @media(min-width: 600px){
-    .trader-address a {
-        display: block;
-    }
 
     .trade-stat-line {
-        grid-template-columns: 10% 10% 30% 44%;
+        grid-template-columns: 20% 32% 44%;
     }
 }

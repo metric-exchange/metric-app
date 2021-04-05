@@ -48,9 +48,12 @@
             },
             onAmountChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
-                    document.getElementById("order-amount-output").value =
-                        this.props.orderFactory.order.buyAmount.value.toFixed(this.props.orderFactory.order.buyToken.decimals)
-                    this.update()
+                    let input = document.getElementById("order-amount-output")
+                    if (input !== null) {
+                        input.value =
+                            this.props.orderFactory.order.buyAmount.value.toFixed(this.props.orderFactory.order.buyToken.decimals)
+                        this.update()
+                    }
                 }
             },
             switchDirection(e) {

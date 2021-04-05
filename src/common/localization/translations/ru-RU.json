@@ -135,7 +135,7 @@
             "largest_trade" : "Крупнейшая сделка",
             "most_active_trader" : "Самый активный трейдер",
             "largest_metric_trade" : "Крупнейшая сделка на $METRIC",
-            "top_daily_metric_traders" : "Лучшие ежедневные трейдеры по $METRIC",
+            "top_daily_metric_traders" : "Лучшие ежедневные трейдеры",
             "top_traders" : "Лучшие трейдеры",
             "trades" : "Сделки",
             "total_volume" : "Полный объем",

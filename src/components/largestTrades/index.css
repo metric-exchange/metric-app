@@ -9,7 +9,7 @@
 
 .largest-trade-stat-line {
     display: grid;
-    grid-template-rows: 40px 50px 30px;
+    grid-template-rows: 40px 50px;
     grid-gap: 5px;
 }
 
@@ -31,12 +31,6 @@
     border-radius: 3px;
 }
 
-.largest-trader-address a {
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--main-text-color);
-}
-
 .largest-trade-title {
     color: var(--token-selector-table-text-color);
     line-height: 40px;
@@ -47,6 +41,8 @@
     display: grid;
     grid-template-columns: 20% 79%;
     grid-gap: 1%;
+    align-items: center;
+    cursor: pointer;
 }
 
 .largest-trade-volume {

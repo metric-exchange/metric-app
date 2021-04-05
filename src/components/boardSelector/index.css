@@ -4,7 +4,8 @@
     grid-template-columns: auto auto auto auto;
     grid-template-areas:
             "slogan slogan slogan slogan"
-            "trade trade compete compete" ;
+            "trade trade compete compete"
+            "empty empty info info";
     grid-gap: 20px;
     margin-left: 25%;
     margin-right: 25%;
@@ -29,6 +30,12 @@
 .compete-button {
     grid-area: compete;
     background: var(--inactive-button-background-color);
+    color: var(--token-selector-table-text-color);
+}
+
+.compete-info {
+    grid-area: info;
+    text-align: center;
     color: var(--token-selector-table-text-color);
 }
 
@@ -105,6 +112,10 @@
     }
 
     .slogan {
+        grid-area: unset;
+    }
+
+    .compete-info {
         grid-area: unset;
     }
 

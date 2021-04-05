@@ -25,12 +25,12 @@
 
     <div style={ isClicked() ? "display:block" : 'display:none'} >
         <div class="dropdown-content" id="settings-dropdown">
-            <div if={ this.isWalletConnected() }
-                 class="wallet-switch"
-                 onclick={ this.switchWallet }
-            >
-                { this.i18next.t('wallet.change_wallet') }
-            </div>
+<!--            <div if={ this.isWalletConnected() }-->
+<!--                 class="wallet-switch"-->
+<!--                 onclick={ this.switchWallet }-->
+<!--            >-->
+<!--                { this.i18next.t('wallet.change_wallet') }-->
+<!--            </div>-->
             <language-selector/>
             <theme-switch/>
         </div>

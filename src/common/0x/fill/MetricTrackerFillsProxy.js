@@ -24,7 +24,7 @@ export class MetricTrackerFillsProxy {
     }
 
     traderWithLargestTrade() {
-        let trades = this.fills.value.sort((a, b) => b.usdTotalValue - a.usdTotalValue)
+        let trades = this.eligibleFills().sort((a, b) => b.usdTotalValue - a.usdTotalValue)
         if (trades.length > 0) {
             return {
                 address: trades[0].address,
@@ -37,8 +37,9 @@ export class MetricTrackerFillsProxy {
 
     traderWithMostTrades() {
         let traders = []
-        for (let index = 0; index < this.fills.value.length; index++) {
-            let fill = this.fills.value[index]
+        let fills = this.eligibleFills()
+        for (let index = 0; index < fills.length; index++) {
+            let fill = fills[index]
             let trader = traders.find(t => t.address === fill.address)
             if (trader) {
                 trader.tradesCount += 1
@@ -61,8 +62,9 @@ export class MetricTrackerFillsProxy {
 
     traderWithLargestMetricTrade() {
         let traders = []
-        for (let index = 0; index < this.fills.value.length; index++) {
-            let fill = this.fills.value[index]
+        let fills = this.eligibleFills()
+        for (let index = 0; index < fills.length; index++) {
+            let fill = fills[index]
             let trader = traders.find(t => t.address === fill.address)
             if (trader) {
                 trader.usdVolume = Math.max(trader.usdVolume, fill.usdMetricValue)
@@ -85,8 +87,9 @@ export class MetricTrackerFillsProxy {
 
     topDailyTradersByVolume() {
         let topDailyTraders = []
-        for (let index = 0; index < this.fills.value.length; index++) {
-            let fill = this.fills.value[index]
+        let fills = this.eligibleFills()
+        for (let index = 0; index < fills.length; index++) {
+            let fill = fills[index]
             let date = topDailyTraders.find(t => t.date === fill.date)
             if (date) {
                 let trader = date.traders.find(t => t.address === fill.address)
@@ -131,8 +134,9 @@ export class MetricTrackerFillsProxy {
 
     tradersVolume() {
         let traders = []
-        for (let index = 0; index < this.fills.value.length; index++) {
-            let fill = this.fills.value[index]
+        let fills = this.eligibleFills()
+        for (let index = 0; index < fills.length; index++) {
+            let fill = fills[index]
             let trader = traders.find(t => t.address === fill.address)
             if (trader) {
                 trader.usdVolume += fill.usdTotalValue
@@ -158,8 +162,10 @@ export class MetricTrackerFillsProxy {
             total: { usd: 0, count: 0 }
         }
 
-        for (let index = 0; index < this.fills.value.length; index++) {
-            let fill = this.fills.value[index]
+        let fills = this.eligibleFills()
+
+        for (let index = 0; index < fills.length; index++) {
+            let fill = fills[index]
             if (fill.isSwap) {
                 volumes.swaps.usd += fill.usdTotalValue
                 volumes.swaps.count += 1
@@ -212,11 +218,33 @@ export class MetricTrackerFillsProxy {
             }
 
             if (!storedFills.find(f => f.id === fill.id)) {
+
+                let concurrentFills = storedFills.filter(f => f.transactionHash === fill.transactionHash)
+
+                let parentFill = concurrentFills.find(f =>
+                    f.details.takerTokenAddress === fill.makerTokenAddress
+                    && f.details.takerAmount === fill.makerTokenAmount
+                )
+
+                let childFill = concurrentFills.find(f =>
+                    f.details.makerTokenAddress === fill.takerTokenAddress
+                    && f.details.makerAmount === fill.takerTokenAmount
+                )
+
+                if (childFill) {
+                    childFill.ignore = true
+                }
+
+                if (parentFill) {
+                    parentFill.ignore = true
+                }
+
                 storedFills.push({
                     id: fill.id,
                     address: fill.address,
                     name: fill.name,
                     date: fill.date,
+                    transactionHash: fill.transactionHash,
                     details: {
                         makerTokenSymbol: fill.makerTokenSymbol,
                         makerTokenAddress: fill.makerTokenAddress,
@@ -227,7 +255,8 @@ export class MetricTrackerFillsProxy {
                     },
                     usdTotalValue: fill.usdValue,
                     usdMetricValue: fill.isMetricTrade ? fill.usdValue: 0,
-                    isSwap: fill.isSwap
+                    isSwap: fill.isSwap,
+                    ignore: false
                 })
 
                 await this.fills.set(
@@ -254,6 +283,7 @@ export class MetricTrackerFillsProxy {
                 takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
                 takerTokenAddress: fill.assets.find(a => a.traderType === "taker").tokenAddress,
                 takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount),
+                hash: fill.transactionHash,
                 isSwap: false
             }
         }
@@ -272,6 +302,7 @@ export class MetricTrackerFillsProxy {
                 takerTokenAddress: fill.assets.find(a => a.traderType === "taker").tokenAddress,
                 takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
                 takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount),
+                hash: fill.transactionHash,
                 isSwap: true
             }
         }
@@ -283,6 +314,10 @@ export class MetricTrackerFillsProxy {
         } else {
             return fill.taker.address
         }
+    }
+
+    eligibleFills() {
+        return this.fills.value.filter(f => !f.ignore)
     }
 
 }

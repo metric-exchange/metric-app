@@ -100,6 +100,7 @@ a {
     top: 70px;
     display: grid;
     grid-template-columns: auto;
+    justify-items: center;
 }
 
 .analytics-link {

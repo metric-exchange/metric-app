@@ -1,15 +1,13 @@
 .competition-dashboard {
     display: grid;
-    grid-template-columns: 32% 32% 32%;
-    grid-gap: 2%;
+    grid-template-columns: 400px 400px 400px;
+    grid-gap: 30px;
     grid-template-areas:
             "activity-period activity-period activity-period"
             "largest-trades largest-trades largest-trades"
             "top-daily-traders trading-form top-trades"
             "prizes prizes prizes"
             "terms terms terms";
-    margin-right: 10%;
-    margin-left: 10%;
 }
 
 .competition-largest-trades {
@@ -24,9 +22,15 @@
 
 .competition-trade-form {
     display: grid;
-    place-content: center;
     height: 516px;
+    width: 400px;
     grid-area: trading-form;
+}
+
+.competition-trade-form .order-form-loader {
+    height: 516px;
+    display: grid;
+    place-content: center;
 }
 
 .competition-top-daily-trade-volumes {
@@ -70,10 +74,23 @@
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
 }
 
-@media(max-width: 1200px){
+@media(max-width: 1400px){
+    .competition-dashboard {
+        grid-template-columns: 400px 400px;
+        grid-template-areas:
+            "activity-period activity-period"
+            "largest-trades largest-trades"
+            "trading-form top-trades"
+            "top-daily-traders top-daily-traders"
+            "prizes prizes"
+            "terms terms";
+    }
+}
+
+@media(max-width: 900px){
 
     .competition-dashboard {
-        grid-template-columns: auto;
+        grid-template-columns: 350px;
         grid-template-areas: unset;
         grid-gap: 20px;
     }
@@ -88,6 +105,7 @@
 
     .competition-trade-form {
         grid-area: unset;
+        width: 350px;
     }
 
     .competition-top-daily-trade-volumes {

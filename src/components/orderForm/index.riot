@@ -6,8 +6,8 @@
     <div id="order-form" if={ props.orderFactory !== null }>
 
         <div class="order-line order-type-switch" if={ this.isConnectedToEthereumMainNet() }>
-            <div id="market-button" class="market-button active-order-type" onclick={ () => toggleOrderType(0) }>{ this.i18next.t('order.market_type') }</div>
-            <div id="limit-button" class="limit-button" onclick={ () => toggleOrderType(1) }>{ this.i18next.t('order.limit_type') }</div>
+            <div id="market-button" class="market-button active-order-type" onclick={ props.setMarketOrderType }>{ this.i18next.t('order.market_type') }</div>
+            <div id="limit-button" class="limit-button" onclick={ props.setLimitOrderType }>{ this.i18next.t('order.limit_type') }</div>
         </div>
 
         <div class="order-line order-type-switch" if={ !this.isConnectedToEthereumMainNet() }></div>
@@ -142,23 +142,33 @@
                 }
                 this.update()
             },
-            toggleOrderType(type) {
-                if (type === 1) {
-                    document.getElementById("market-button").classList.remove("active-order-type")
-                    document.getElementById("market-button").onclick = () => { this.toggleOrderType(0) }
+            onUpdated() {
+                if (this.props.orderFactory !== null) {
 
-                    document.getElementById("limit-button").classList.add("active-order-type")
-                    document.getElementById("limit-button").onclick = null
+                    let marketOrderButton = document.getElementById("market-button")
+                    let limitOrderButton = document.getElementById("limit-button")
 
-                    this.props.setLimitOrderType()
-                } else {
-                    document.getElementById("market-button").classList.add("active-order-type")
-                    document.getElementById("market-button").onclick = null
+                    if (this.props.orderFactory.order.isLimitOrder() &&
+                        marketOrderButton !== null &&
+                        marketOrderButton.classList.contains('active-order-type'))
+                    {
+                        marketOrderButton.classList.remove("active-order-type")
+                        marketOrderButton.onclick = () => { this.props.setMarketOrderType() }
 
-                    document.getElementById("limit-button").classList.remove("active-order-type")
-                    document.getElementById("limit-button").onclick = () => { this.toggleOrderType(1) }
+                        limitOrderButton.classList.add("active-order-type")
+                        limitOrderButton.onclick = null
+                    }
 
-                    this.props.setMarketOrderType()
+                    if (this.props.orderFactory.order.isMarketOrder() &&
+                        limitOrderButton !== null &&
+                        limitOrderButton.classList.contains('active-order-type'))
+                    {
+                        marketOrderButton.classList.add("active-order-type")
+                        marketOrderButton.onclick = null
+
+                        limitOrderButton.classList.remove("active-order-type")
+                        limitOrderButton.onclick = () => { this.props.setLimitOrderType() }
+                    }
                 }
             },
             setTime(dateString, format) {

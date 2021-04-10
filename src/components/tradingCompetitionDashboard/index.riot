@@ -130,9 +130,9 @@
                 let buyToken = await this.props.urlManager.urlBuyToken()
 
                 this.state.orderFactory =
-                    new SwapOrderFactory(
+                    new LimitOrderFactory(
                         new Order(
-                            Order.MarketOrderType,
+                            Order.LimitOrderType,
                             sellToken,
                             buyToken
                         ),

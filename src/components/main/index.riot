@@ -2,7 +2,7 @@
 
     <header class="header">
         <div class="header-logo">
-            <img width="142" height="32" src={ config.Logo }>
+            <img width="142" height="32" src={ config.Logo } onclick={ routeToHome }>
         </div>
 
         <div class="header-links">
@@ -94,6 +94,9 @@
                 if (id === this.SelectedBoardId.COMPETITION) {
                     router.push("/#/compete")
                 }
+            },
+            routeToHome() {
+                router.push("/")
             }
         }
     </script>

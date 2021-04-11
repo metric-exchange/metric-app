@@ -13,18 +13,23 @@
 
 .slogan {
     text-align: center;
-    font-size: xxx-large;
+    font-size: 50px;
     color: var(--swap-button-text-color);
     grid-area: slogan;
+    margin-bottom: 40px;
 }
 
 .sub-slogan {
     text-align: center;
-    font-size: medium;
-    font-style: italic;
+    font-size: 20px;
     margin-bottom: 100px;
-    color: var(--swap-button-text-color);
+    line-height: 30px;
+    color: var(--token-selector-table-text-color);
     grid-area: sub-slogan;
+}
+
+.sub-slogan b {
+    color: var(--main-text-color);
 }
 
 .trade-button {

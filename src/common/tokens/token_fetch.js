@@ -108,19 +108,10 @@ async function updateBalance(token, address, balance) {
         }
 
         if (token.balance.isGreaterThan(0) && token.address !== chainToken().address) {
-            await Promise.all(
-                [
-                    fetchAllowance(token, address, Erc20ProxyAddress),
-                    fetchAllowance(token, address, ExchangeProxyV4Address)
-                ]
-            )
+            await fetchAllowance(token, address, ExchangeProxyV4Address)
         } else {
             let balanceChanged = false
             let allowance = token.address !== chainToken().address ? 0 : 1e27
-            if (token.allowance[Erc20ProxyAddress] !== allowance) {
-                token.allowance[Erc20ProxyAddress] = allowance
-                balanceChanged = true
-            }
             if (token.allowance[ExchangeProxyV4Address] !== allowance) {
                 token.allowance[ExchangeProxyV4Address] = allowance
                 balanceChanged = true
@@ -300,5 +291,4 @@ let tokenListInitialized = false
 
 export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
 
-export let Erc20ProxyAddress = "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
 export let ExchangeProxyV4Address = "0xdef1c0ded9bec7f1a1670819833240f027b25eff"

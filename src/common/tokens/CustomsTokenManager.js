@@ -18,10 +18,10 @@ export class CustomTokenManager {
         let chainInfo = this.customtokens.chains.find(ch => ch.id === ConnectedNetworkId);
         if (chainInfo === undefined) {
             let index = this.customtokens.chains.push({
-                id: EthereumNetworkId,
+                id: ConnectedNetworkId,
                 tokens: []
             })
-            chainInfo = this.customtokens.chains[index];
+            chainInfo = this.customtokens.chains[index - 1];
         }
 
         if (chainInfo.tokens.find(t => t.address === token.address) === undefined) {

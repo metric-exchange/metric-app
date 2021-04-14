@@ -44,7 +44,7 @@
         import {UrlManager} from "../../common/url/UrlManager";
         import {Order} from "../../common/order/Order";
         import {OrderStateManager} from "../../common/order/OrderStateManager";
-        import {isSupportedNetwork} from "../../common/ChainHelpers";
+        import {isConnectedToEthereumMainNet, isSupportedNetwork} from "../../common/ChainHelpers";
 
         export default {
             components: {
@@ -66,16 +66,7 @@
                 let sellToken = await this.props.urlManager.urlSellToken()
                 let buyToken = await this.props.urlManager.urlBuyToken()
 
-                this.state.orderFactory =
-                    new LimitOrderFactory(
-                        new Order(
-                            Order.LimitOrderType,
-                            sellToken,
-                            buyToken
-                        ),
-                        new OrderStateManager(),
-                        accountAddress()
-                    )
+                await this.setDefaultFactory()
 
                 this.props.urlManager.updateUrl(sellToken, buyToken)
                 await this.state.orderFactory.refreshOrderState()
@@ -128,6 +119,34 @@
                 this.state.orderFactory.order.type = Order.LimitOrderType
                 this.state.orderFactory.clearValues()
                 this.update()
+            },
+            async setDefaultFactory() {
+                let sellToken = await this.props.urlManager.urlSellToken()
+                let buyToken = await this.props.urlManager.urlBuyToken()
+
+                if (isConnectedToEthereumMainNet()) {
+                    this.state.orderFactory =
+                        new LimitOrderFactory(
+                            new Order(
+                                Order.LimitOrderType,
+                                sellToken,
+                                buyToken
+                            ),
+                            new OrderStateManager(),
+                            accountAddress()
+                        )
+                } else {
+                    this.state.orderFactory =
+                        new SwapOrderFactory(
+                            new Order(
+                                Order.MarketOrderType,
+                                sellToken,
+                                buyToken
+                            ),
+                            new OrderStateManager(),
+                            accountAddress()
+                        )
+                }
             }
         }
 

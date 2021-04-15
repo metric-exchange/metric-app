@@ -97,6 +97,7 @@
         import {isConnectedToEthereumMainNet, isSupportedNetwork} from "../../common/ChainHelpers";
         import {MetricTrackerFillsProxy} from "../../common/0x/fill/MetricTrackerFillsProxy";
         import {UrlManager} from "../../common/url/UrlManager";
+        import moment from "moment/moment";
 
         export default {
             components: {
@@ -106,7 +107,7 @@
                 LargestTrades
             },
             state: {
-                fillsProxy: new MetricTrackerFillsProxy(),
+                fillsProxy: new MetricTrackerFillsProxy(10, moment('2021-04-29')),
                 orderFactory: null
             },
             onBeforeMount() {

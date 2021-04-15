@@ -1,25 +1,25 @@
 <largest-trades>
 
     <div class="largest-trades-list">
-        <div class="largest-trade-stat-line largest-trade-stat-body" if={state.largestTrade}>
+        <div class="largest-trade-stat-line largest-trade-stat-body">
             <div class="largest-trade-title">{ this.i18next.t('analytics.largest_trade') }</div>
-            <div class="largest-trader-info" onclick={ () => openTraderPage(state.largestTrade) }>
+            <div class="largest-trader-info" onclick={ () => openTraderPage(state.largestTrade) } if={state.largestTrade}>
                 <img class="largest-trader-logo" src={ TraderLogo(state.largestTrade.address) } height="20" width="20"/>
                 <div class="largest-trade-volume">${ this.formatNumber(state.largestTrade.usdVolume)  }</div>
             </div>
         </div>
 
-        <div class="largest-trade-stat-line largest-trade-stat-body" if={state.mostActiveTrader}>
+        <div class="largest-trade-stat-line largest-trade-stat-body">
             <div class="largest-trade-title">{ this.i18next.t('analytics.most_active_trader') }</div>
-            <div class="largest-trader-info" onclick={ () => openTraderPage(state.mostActiveTrader) }>
+            <div class="largest-trader-info" onclick={ () => openTraderPage(state.mostActiveTrader) } if={state.mostActiveTrader}>
                 <img class="largest-trader-logo" src={ TraderLogo(state.mostActiveTrader.address) } height="20" width="20"/>
                 <div class="largest-trade-volume">{ this.formatNumber(state.mostActiveTrader.tradesCount) } { this.i18next.t('analytics.trades') }</div>
             </div>
         </div>
 
-        <div class="largest-trade-stat-line largest-trade-stat-body" if={state.largestMetricTrade}>
+        <div class="largest-trade-stat-line largest-trade-stat-body">
             <div class="largest-trade-title">{ this.i18next.t('analytics.largest_metric_trade') }</div>
-            <div class="largest-trader-info" onclick={ () => openTraderPage(state.largestMetricTrade) }>
+            <div class="largest-trader-info" onclick={ () => openTraderPage(state.largestMetricTrade) } if={state.largestMetricTrade}>
                 <img class="largest-trader-logo" src={ TraderLogo(state.largestMetricTrade.address) } height="20" width="20"/>
                 <div class="largest-trade-volume">${ this.formatNumber(state.largestMetricTrade.usdVolume)  }</div>
             </div>

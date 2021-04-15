@@ -6,11 +6,11 @@ import {CoinPriceProxy} from "../../tokens/CoinGeckoProxy";
 import {tryFormatWalletName} from "../../wallet/WalletManager";
 
 export class MetricTrackerFillsProxy {
-    constructor() {
-        this.period = 30
+    constructor(period = 30, end = moment().add(1, 'days')) {
+        this.period = period
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
-        this.startDate = new ObservableValue(moment().subtract(this.period, 'days'))
-        this.endDate = new ObservableValue(moment().add(1, 'days'))
+        this.endDate = new ObservableValue(end)
+        this.startDate = new ObservableValue(end.clone().subtract(this.period, 'days'))
         this.fills = new ObservableValue([])
 
         this.startDate.observe(this, 'refreshFills')
@@ -187,7 +187,7 @@ export class MetricTrackerFillsProxy {
     async fetchFills(source, page = 1) {
         try {
             let fills =
-                await fetchJson(`https://api.metric.exchange/fills?page=${page}&dateFrom=${this.startDate.value.format('YYYY-MM-DD')}`)
+                await fetchJson(`https://api.metric.exchange/fills?page=${page}&dateFrom=${this.startDate.value.format('YYYY-MM-DD')}&dateTo=${this.endDate.value.format('YYYY-MM-DD')}`)
 
             if (fills.fills.length > 0) {
                 await this.updateFills(source, fills.fills)

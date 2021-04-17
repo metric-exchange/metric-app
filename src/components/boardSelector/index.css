@@ -66,6 +66,10 @@
     box-shadow: 0 1px 8px 2px rgba(0, 0, 0, 0.1);
 }
 
+.compete-button:hover {
+    box-shadow: 0 1px 8px 2px rgba(0, 0, 0, 0.1);
+}
+
 .footer-content {
     display: grid;
     grid-template-columns: auto;

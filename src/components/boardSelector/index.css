@@ -41,8 +41,9 @@
 
 .compete-button {
     grid-area: compete;
-    background: var(--inactive-button-background-color);
-    color: var(--token-selector-table-text-color);
+    background-color: var(--swap-button-background-color);
+    color: var(--swap-button-text-color);
+    cursor: pointer;
 }
 
 .compete-info {

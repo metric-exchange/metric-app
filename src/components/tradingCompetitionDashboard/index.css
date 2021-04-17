@@ -24,6 +24,7 @@
     display: grid;
     height: 516px;
     width: 400px;
+    color: var(--token-selector-table-text-color);
     grid-area: trading-form;
 }
 

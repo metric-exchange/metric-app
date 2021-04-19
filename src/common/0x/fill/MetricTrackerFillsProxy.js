@@ -65,17 +65,19 @@ export class MetricTrackerFillsProxy {
         let fills = this.eligibleFills()
         for (let index = 0; index < fills.length; index++) {
             let fill = fills[index]
-            let trader = traders.find(t => t.address === fill.address)
-            if (trader) {
-                trader.usdVolume = Math.max(trader.usdVolume, fill.usdMetricValue)
-            } else {
-                traders.push(
-                    {
-                        address: fill.address,
-                        name: fill.name,
-                        usdVolume: fill.usdMetricValue
-                    }
-                )
+            if (fill.usdMetricValue > 0) {
+                let trader = traders.find(t => t.address === fill.address)
+                if (trader) {
+                    trader.usdVolume = Math.max(trader.usdVolume, fill.usdMetricValue)
+                } else {
+                    traders.push(
+                        {
+                            address: fill.address,
+                            name: fill.name,
+                            usdVolume: fill.usdMetricValue
+                        }
+                    )
+                }
             }
         }
 

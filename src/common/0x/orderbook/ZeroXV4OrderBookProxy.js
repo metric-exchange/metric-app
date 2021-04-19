@@ -19,7 +19,7 @@ export class ZeroXV4OrderBookProxy extends OrderBookProxy {
             remainingFillableTakerAmount: new BigNumber(order.metaData.remainingFillableTakerAmount),
             makerAmount: new BigNumber(order.order.makerAmount),
             takerAmount: new BigNumber(order.order.takerAmount),
-            takerAddress: order.order.takerAddress
+            takerAddress: order.order.taker
         }
     }
 

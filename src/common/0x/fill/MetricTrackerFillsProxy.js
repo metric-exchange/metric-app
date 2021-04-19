@@ -10,7 +10,7 @@ export class MetricTrackerFillsProxy {
         this.period = period
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
         this.endDate = new ObservableValue(end)
-        this.startDate = new ObservableValue(end.clone().subtract(this.period, 'days'))
+        this.startDate = new ObservableValue(end.clone().subtract(this.period - 1, 'days'))
         this.fills = new ObservableValue([])
 
         this.startDate.observe(this, 'refreshFills')

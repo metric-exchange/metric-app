@@ -4,7 +4,7 @@
         <div class="slogan">Gas-less limit orders, Any pair</div>
         <div class="sub-slogan">Collect trading fees by holding <b class="token">$METRIC</b></div>
         <div class="board-selector trade-button" onclick={ () => props.selectBoard(this.SelectedBoardId.TRADING) } >TRADE</div>
-        <div class="board-selector compete-button" if={ !isCompetitionEnded() } onclick={ () => props.selectBoard(this.SelectedBoardId.COMPETITION) } >COMPETE</div>
+        <div class="board-selector compete-button" if={ !isCompetitionEnded() } onclick={ () => props.selectBoard(this.SelectedBoardId.COMPETITION) } >TRADE & WIN UP TO $70K</div>
         <div class="board-selector compete-button" if={ isCompetitionEnded() } onclick={ () => props.selectBoard(this.SelectedBoardId.COMPETITION) } >VIEW COMPETITION RESULTS</div>
         <small class="compete-info" if={ !isCompetitionStarted() }>starts on April 19th</small>
         <small class="compete-info" if={ isCompetitionStarted() && !isCompetitionEnded() }>ends on April 29th</small>

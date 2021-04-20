@@ -158,7 +158,7 @@
                             return filter == null ||
                                 x.symbol.toLowerCase().startsWith(filter) ||
                                 (filter.match(that.state.addressRegEx) && x.address.toLowerCase().startsWith(filter))
-                        })
+                        }).splice(0, 100)
 
                 if (canUpdate) {
                     this.update({ showLoader: false })

@@ -1,15 +1,20 @@
 <order-sell-amount>
 
     <div class="order-line exchange-amount">
+        <div class="input-token-balance">Balance: { this.formatNumber(this.props.orderFactory.order.sellToken.balance) }</div>
+        <div></div>
+        <div></div>
         <div class="order-input">
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellAmount.value) }>
                 { this.i18next.t('order.you_pay') }
             </div>
             <input type="number" id="order-amount-input" oninput={ updateAmount } placeholder="{ this.i18next.t('order.you_pay') }" step="any"/>
         </div>
-        <div if={ isTokenInfoUpdated() } class="max-amount" onclick={ () => props.orderFactory.order.setMaxSellAmount() }>{ this.i18next.t('order.max_amount') }</div>
-        <div class="max-amount-loader" if={ !isTokenInfoUpdated() } >
-            <loader/>
+        <div class="order-input">
+            <div if={ isTokenInfoUpdated() } class="order-line max-amount" onclick={ () => props.orderFactory.order.setMaxSellAmount() }>{ this.i18next.t('order.max_amount') }</div>
+            <div class="order-line max-amount-loader" if={ !isTokenInfoUpdated() } >
+                <loader/>
+            </div>
         </div>
         <div class="order-input">
             <div class="token-selector-button" onclick={ props.openTokenSelector }>
@@ -24,7 +29,6 @@
     <script>
 
         import {isWalletConnected} from "../../../common/wallet/WalletManager"
-        import {OrderPrice} from "../../../common/order/OrderPrice";
         import './index.css'
         import {registerForTokenBalancesUpdate} from "../../../common/tokens/token_fetch";
         import {

@@ -1,6 +1,9 @@
 <order-buy-amount>
 
     <div class="order-line exchange-amount">
+        <div class="input-token-balance">Balance { this.formatNumber(props.orderFactory.order.buyToken.balance) }</div>
+        <div></div>
+        <div></div>
         <div class="order-input">
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) && !props.orderFactory.order.isHidingGameOrder()}>
                 { this.i18next.t('order.you_get') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
@@ -36,6 +39,7 @@
             OrderEventProperties,
             OrderEventSource
         } from "../../../common/order/OrderEventSource";
+        import {registerForTokenBalancesUpdate} from "../../../common/tokens/token_fetch";
         import {BigNumber} from "@0x/utils";
 
         export default {
@@ -43,8 +47,14 @@
                 event: new OrderEventSource(OrderEventProperties.BuyAmount, OrderEventActions.Input)
             },
             onMounted() {
+                registerForTokenBalancesUpdate(this)
                 this.props.orderFactory.order.buyAmount.observe(this, 'onAmountChange')
                 this.props.orderFactory.order.observeTokenChanges(this, 'update')
+            },
+            onTokenBalancesUpdate(token) {
+                if (token.address === this.props.orderFactory.order.buyToken.address) {
+                    this.update()
+                }
             },
             onAmountChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {

@@ -1,5 +1,7 @@
 
 .max-amount {
+    display: grid;
+    place-content: center;
     cursor: pointer;
     color: var(--theme-switch-active-button-text-color);
     background-color: var(--theme-switch-active-button-background-color);
@@ -8,7 +10,6 @@
     text-align: center;
     line-height: 15px;
     font-size: x-small;
-    width: 20px;
 }
 
 .max-amount-loader {

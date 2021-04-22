@@ -136,7 +136,7 @@ input:disabled {
     display: grid;
     grid-template-columns: 61% 10% 25%;
     align-items: center;
-    justify-items: center;
+    justify-items: left;
     grid-gap: 2%;
 }
 
@@ -220,6 +220,11 @@ input:disabled {
 
 .input-sticky-placeholder {
     font-size: xx-small;
+}
+
+.input-token-balance {
+    font-size: xx-small;
+    text-align: left;
 }
 
 .order-submit-loader {

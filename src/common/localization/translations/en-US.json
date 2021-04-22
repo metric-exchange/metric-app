@@ -84,7 +84,7 @@
             "recipient_address_placeholder" : "Recipient address (optional)",
             "market_type" : "MARKET",
             "limit_type" : "LIMIT",
-            "slippage": "Slippage tolerance",
+            "slippage": "Slippage",
             "use_hiding_game": "Earn $ROOK with The Hiding Game",
             "hiding_game_not_supported": "not supported by The Hiding Game"
         },

@@ -102,7 +102,7 @@
                 this.update({ priceImpact: priceImpact })
             },
             async refreshMarketPrice() {
-                if (this.props.orderFactory.order.isMarketOrder()) {
+                if (this.props.orderFactory.order.isMarketOrder() || this.props.orderFactory.order.sellPrice.price.value.isNaN()) {
                     await this.props.orderFactory.order.sellPrice.refreshMarketPrice(
                         this.props.orderFactory.order.sellAmount.value
                     )

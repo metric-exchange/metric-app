@@ -67,6 +67,9 @@
                         if (input !== null) {
                             input.value = this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
                             this.update()
+                            if (this.props.orderFactory.order.sellPrice.price.value.isNaN()) {
+                                this.refreshMarketPrice()
+                            }
                         }
                     } else {
                         this.setPriceImpact()

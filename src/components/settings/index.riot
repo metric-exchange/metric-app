@@ -1,12 +1,6 @@
 <settings>
 
     <div class="identicon">
-        <a if={ this.isWalletConnected() }
-           class="identicon-address"
-           href="https://etherscan.io/address/{ this.accountAddress() }"
-           target="_blank">
-            <span>{ state.accountDisplay }</span>
-        </a>
         <div id="identicon-image" class="identicon-menu" onclick={ toggleDropDown }>
             <img
                     class="identicon-image"

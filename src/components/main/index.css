@@ -38,6 +38,9 @@ a {
     width: 20%;
     display: grid;
     align-content: center;
+}
+
+.header-logo img {
     cursor: pointer;
 }
 

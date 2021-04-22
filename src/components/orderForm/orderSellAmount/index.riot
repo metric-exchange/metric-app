@@ -1,7 +1,7 @@
 <order-sell-amount>
 
     <div class="order-line exchange-amount">
-        <div class="input-token-balance">Balance: { this.formatNumber(this.props.orderFactory.order.sellToken.balance) }</div>
+        <div class="input-token-balance">Balance: { this.formatNumber(this.props.orderFactory.order.sellToken.balance.toNumber()) }</div>
         <div></div>
         <div></div>
         <div class="order-input">

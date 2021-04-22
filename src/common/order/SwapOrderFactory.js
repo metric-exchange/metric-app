@@ -6,7 +6,7 @@ import {formatNumber} from "../helpers";
 import {BigNumber} from "@0x/utils";
 import {getSlippageConfig, setSlippageConfig} from "./SlippageConfig";
 import Rollbar from "rollbar";
-import {chainToken, isUnwrapping, isWrapping, wrappedChainToken} from "../ChainHelpers";
+import {isUnwrapping, isWrapping} from "../ChainHelpers";
 
 export class SwapOrderFactory extends OrderFactory {
 

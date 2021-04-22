@@ -94,7 +94,12 @@
         import {LimitOrderFactory} from "../../common/order/LimitOrderFactory";
         import {Order} from "../../common/order/Order";
         import {OrderStateManager} from "../../common/order/OrderStateManager";
-        import {isConnectedToEthereumMainNet, isSupportedNetwork} from "../../common/ChainHelpers";
+        import {
+            chainToken,
+            isConnectedToEthereumMainNet,
+            isSupportedNetwork,
+            wrappedChainToken
+        } from "../../common/ChainHelpers";
         import {MetricTrackerFillsProxy} from "../../common/0x/fill/MetricTrackerFillsProxy";
         import {UrlManager} from "../../common/url/UrlManager";
         import moment from "moment/moment";
@@ -140,8 +145,8 @@
                         new OrderStateManager(),
                         accountAddress()
                     )
-
-                this.props.urlManager.updateUrl(sellToken, buyToken)
+                this.switchToWrappedTokenIfNeeded()
+                this.props.urlManager.updateUrl(this.state.orderFactory.order.sellToken, this.state.orderFactory.order.buyToken)
                 await this.state.orderFactory.refreshOrderState()
                 this.state.orderFactory.order.observeTokenChanges(this, 'refreshUrl')
 
@@ -190,9 +195,21 @@
                     this.state.orderFactory.stateManager,
                     accountAddress()
                 )
+                this.switchToWrappedTokenIfNeeded()
                 this.state.orderFactory.order.type = Order.LimitOrderType
                 this.state.orderFactory.clearValues()
                 this.update()
+            },
+            switchToWrappedTokenIfNeeded() {
+                let token = chainToken()
+                if (this.state.orderFactory.order.buyToken.symbol === token.symbol) {
+                    this.state.orderFactory.order.setTokens(this.state.orderFactory.order.sellToken, wrappedChainToken())
+                    this.refreshUrl()
+                }
+                if (this.state.orderFactory.order.sellToken.symbol === token.symbol) {
+                    this.state.orderFactory.order.setTokens(wrappedChainToken(), this.state.orderFactory.order.buyToken)
+                    this.refreshUrl()
+                }
             }
         }
 

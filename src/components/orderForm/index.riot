@@ -82,6 +82,7 @@
         import DatePicker from '../datePicker/index.riot'
         import SlippagePercentage from './slippagePercentage/index.riot'
         import OrderBookTypeSwitch from '../orderBookTypeSwitch/index.riot'
+        import {chainToken} from "../../common/ChainHelpers";
 
         export default {
             components: {
@@ -132,7 +133,13 @@
                 this.state.showTokenSelector = true
             },
             excludedTokens() {
-                return [this.props.orderFactory.order.buyToken, this.props.orderFactory.order.sellToken]
+                let tokens = [this.props.orderFactory.order.buyToken, this.props.orderFactory.order.sellToken]
+
+                if (this.props.orderFactory.order.isLimitOrder()) {
+                    tokens.push(chainToken())
+                }
+
+                return tokens
             },
             async selectToken(token) {
                 if (this.state.selectionType === "input") {

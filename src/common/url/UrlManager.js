@@ -17,7 +17,7 @@ export class UrlManager {
         if (url.length === 2) {
             let addresses = url[1].split('/')
             if (addresses.length === 2) {
-                let requestedToken = await findOrAddTokenWithAddress(addresses[0])
+                let requestedToken = await findOrAddTokenWithAddress(addresses[0].toLowerCase())
                 if (requestedToken !== undefined) {
                     token = requestedToken
                 }
@@ -32,7 +32,7 @@ export class UrlManager {
         if (url.length === 2) {
             let addresses = url[1].split('/')
             if (addresses.length === 2) {
-                let requestedToken = await findOrAddTokenWithAddress(addresses[1])
+                let requestedToken = await findOrAddTokenWithAddress(addresses[1].toLowerCase())
                 if (requestedToken !== undefined) {
                     token = requestedToken
                 }

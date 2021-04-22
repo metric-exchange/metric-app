@@ -163,8 +163,13 @@ export async function updateAllowance(token, target, allowance) {
 }
 
 export async function resetTokenList() {
+    clearTokenList()
     tokens = initTokenList()
     await loadTokenList()
+}
+
+export function clearTokenList() {
+    tokens = []
 }
 
 export async function loadTokenList()
@@ -194,7 +199,7 @@ export async function loadTokenList()
                             ExchangeProxyAllowanceTarget: NaN,
                             ExchangeProxyV4Address: NaN
                         },
-                        address: t.address,
+                        address: t.address.toLowerCase(),
                         symbol: t.symbol,
                         decimals: t.decimals,
                         logoURI: t.logoURI
@@ -224,7 +229,7 @@ export function addToken(token) {
 
 export async function addTokenWithAddress(address) {
     try {
-        let token = { address: address }
+        let token = { address: address.toLowerCase() }
         let contract = Erc20ContractProxy.erc20Contract(address)
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
@@ -270,7 +275,7 @@ function initTokenList() {
                     ExchangeProxyAllowanceTarget: NaN,
                     ExchangeProxyV4Address: NaN
                 },
-                address: t.address,
+                address: t.address.toLowerCase(),
                 symbol: t.symbol,
                 decimals: t.decimals,
                 logoURI: t.logoURI

@@ -20,7 +20,7 @@
         import OrderDashboard from '../orderDashboard/index.riot'
         import AnalyticsDashboard from '../analyticsDashboard/index.riot'
         import {initWeb3, registerForWalletChanges} from "../../common/wallet/WalletManager";
-        import {resetTokenList} from "../../common/tokens/token_fetch";
+        import {clearTokenList, resetTokenList} from "../../common/tokens/token_fetch";
 
         export default {
             components: {
@@ -33,6 +33,9 @@
             },
             async onMounted() {
                 initWeb3().then(resetTokenList)
+            },
+            onUnmounted() {
+                clearTokenList()
             },
             onWalletChanges() {
                 this.update()

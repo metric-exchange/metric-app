@@ -26,9 +26,6 @@
             </div>
 
             <div id="orders-separator" class="order-book-columns" >
-                <div class="order-price clickable-price mid-market-price" onclick={ (e) => setPriceFromClick(state.marketPrice) }>{ this.formatNumber(state.marketPrice, config.displayedDecimalPoints, true) }</div>
-                <div/>
-                <div/>
             </div>
 
             <div each={bid in state.bids} class="order order-book-columns" if={ !props.orderFactory.order.sellPrice.inverted }>
@@ -64,7 +61,6 @@
                 orderBook: null,
                 asks: [],
                 bids: [],
-                marketPrice: NaN,
                 triggerScrollToView: true,
                 isLoadingOrders: true
             },
@@ -181,7 +177,6 @@
                         .sumByPrice()
                         .sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
 
-                this.state.marketPrice = await this.props.orderFactory.order.sellPrice.fetchDisplayMarketPrice()
                 await this.update({
                     isLoadingOrders: false,
                     triggerScrollToView: true

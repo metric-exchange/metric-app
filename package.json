@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "start": "parcel index.html --open",
-    "build": "parcel build index.html --out-dir=dist"
+    "build": "parcel build index.html --out-dir=dist --no-source-maps"
   },
   "engines": {
     "node": ">=10.16.0"

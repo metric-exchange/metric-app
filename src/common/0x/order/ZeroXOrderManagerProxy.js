@@ -7,7 +7,7 @@ export async function approveZeroXAllowance(token, target, confirmationCallback,
         token.address,
         target,
         async (a, b) => {
-            await updateAllowance(token, target, Erc20ContractProxy.maxAllowance.toNumber())
+            await updateAllowance(token, target, Erc20ContractProxy.maxAllowance)
             await confirmationCallback(a, b)
         },
         errorCallback

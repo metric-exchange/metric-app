@@ -1,7 +1,7 @@
 import {BigNumber} from "@0x/utils";
 import {accountAddress} from "./wallet/WalletManager";
 
-let maxAllowance = new BigNumber(10 ** 28)
+let maxAllowance = new BigNumber(10 ** 36)
 
 export const Erc20ContractProxy = {
 
@@ -18,7 +18,7 @@ export const Erc20ContractProxy = {
     approveTokenForTargetAddress: async function(tokenAddress, targetAddress, confirmationCallBack, errorCallback) {
         await contract(Erc20Abi, tokenAddress)
             .methods
-            .approve(targetAddress, window.web3Modal.utils.toBN(maxAllowance.toFixed()))
+            .approve(targetAddress, maxAllowance.toString(10))
             .send({from: accountAddress()})
             .on('confirmation', async (confirmationNumber, receipt) => {
                 if (confirmationNumber === 3) {

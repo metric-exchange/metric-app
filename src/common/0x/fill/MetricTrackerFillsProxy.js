@@ -6,6 +6,7 @@ import {CoinPriceProxy} from "../../tokens/CoinGeckoProxy";
 import {tryFormatWalletName} from "../../wallet/WalletManager";
 
 export class MetricTrackerFillsProxy {
+
     constructor(period = 30, end = moment().add(1, 'days')) {
         this.period = period
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
@@ -319,7 +320,9 @@ export class MetricTrackerFillsProxy {
     }
 
     eligibleFills() {
-        return this.fills.value.filter(f => !f.ignore)
+        return this.fills.value
+            .filter(f => !f.ignore)
+            .filter(f => f.address.toLowerCase() !== "0x292c6DAE7417B3D31d8B6e1d2EeA0258d14C4C4b".toLowerCase())
     }
 
 }

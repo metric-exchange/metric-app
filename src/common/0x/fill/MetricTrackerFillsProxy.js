@@ -250,7 +250,7 @@ export class MetricTrackerFillsProxy {
                     address: fill.address,
                     name: fill.name,
                     date: fill.date,
-                    transactionHash: fill.hash,
+                    transactionHash: fill.transactionHash,
                     details: {
                         makerTokenSymbol: fill.makerTokenSymbol,
                         makerTokenAddress: fill.makerTokenAddress,
@@ -289,7 +289,7 @@ export class MetricTrackerFillsProxy {
                 takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
                 takerTokenAddress: fill.assets.find(a => a.traderType === "taker").tokenAddress,
                 takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount),
-                hash: fill.transactionHash,
+                transactionHash: fill.transactionHash,
                 isSwap: false
             }
         }
@@ -308,7 +308,7 @@ export class MetricTrackerFillsProxy {
                 takerTokenAddress: fill.assets.find(a => a.traderType === "taker").tokenAddress,
                 takerTokenSymbol: fill.assets.find(a => a.traderType === "taker").tokenSymbol,
                 takerTokenAmount: parseFloat(fill.assets.find(a => a.traderType === "taker").amount),
-                hash: fill.transactionHash,
+                transactionHash: fill.transactionHash,
                 isSwap: true
             }
         }

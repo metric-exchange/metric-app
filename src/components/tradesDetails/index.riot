@@ -22,6 +22,12 @@
         import makeBlockie from 'ethereum-blockies-base64';
 
         export default {
+            onBeforeMount() {
+                this.props.fillsProxy.fills.observe(this, 'onFillsRefresh')
+            },
+            onFillsRefresh() {
+                this.update()
+            },
             openTrade(fill) {
                 window.open(`https://etherscan.io/tx/${fill.transactionHash}`, "_blank")
             },

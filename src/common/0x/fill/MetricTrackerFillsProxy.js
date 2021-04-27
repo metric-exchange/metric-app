@@ -250,7 +250,7 @@ export class MetricTrackerFillsProxy {
                     address: fill.address,
                     name: fill.name,
                     date: fill.date,
-                    transactionHash: fill.transactionHash,
+                    transactionHash: fill.hash,
                     details: {
                         makerTokenSymbol: fill.makerTokenSymbol,
                         makerTokenAddress: fill.makerTokenAddress,

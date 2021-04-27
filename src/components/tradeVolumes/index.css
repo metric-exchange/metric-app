@@ -18,7 +18,6 @@
     display: grid;
     grid-template-columns: 10% 80%;
     grid-gap: 10%;
-    cursor: pointer;
 }
 
 .trade-stat-body:hover {

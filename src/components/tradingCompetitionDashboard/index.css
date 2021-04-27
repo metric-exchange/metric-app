@@ -6,6 +6,7 @@
             "activity-period activity-period activity-period"
             "largest-trades largest-trades largest-trades"
             "top-daily-traders trading-form top-trades"
+            "trades-details trades-details trades-details"
             "prizes prizes prizes"
             "terms terms terms";
 }
@@ -49,6 +50,11 @@
     grid-area: prizes;
 }
 
+.trades-details {
+    padding: 30px;
+    grid-area: trades-details;
+}
+
 .competition-terms p {
     color: var(--token-selector-table-text-color);
     font-size: small;
@@ -83,6 +89,7 @@
             "largest-trades largest-trades"
             "trading-form top-trades"
             "top-daily-traders top-daily-traders"
+            "trades-details trades-details"
             "prizes prizes"
             "terms terms";
     }
@@ -110,6 +117,10 @@
     }
 
     .competition-top-daily-trade-volumes {
+        grid-area: unset;
+    }
+
+    .trades-details {
         grid-area: unset;
     }
 

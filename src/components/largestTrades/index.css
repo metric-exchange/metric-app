@@ -42,7 +42,6 @@
     grid-template-columns: 20% 79%;
     grid-gap: 1%;
     align-items: center;
-    cursor: pointer;
 }
 
 .largest-trade-volume {

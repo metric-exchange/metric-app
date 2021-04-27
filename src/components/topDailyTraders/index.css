@@ -19,7 +19,6 @@
     display: grid;
     grid-template-columns: 10% 40% 40%;
     grid-gap: 5%;
-    cursor: pointer;
 }
 
 .daily-trade-stat-body:hover {

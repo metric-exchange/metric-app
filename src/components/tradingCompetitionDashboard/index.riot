@@ -33,6 +33,10 @@
             <top-daily-traders fills-proxy={ state.fillsProxy }/>
         </div>
 
+        <div class="trades-details card">
+            <trades-details fills-proxy={ state.fillsProxy } />
+        </div>
+
         <div class="competition-prizes">
             <div class="card">
                 <h1>Overall Winners</h1>
@@ -83,6 +87,7 @@
         import TradeVolumes from '../tradeVolumes/index.riot'
         import TopDailyTraders from '../topDailyTraders/index.riot'
         import LargestTrades from '../largestTrades/index.riot'
+        import TradesDetails from '../tradesDetails/index.riot'
         import {clearTokenList, registerForTokenListUpdate, resetTokenList} from "../../common/tokens/token_fetch";
         import {SwapOrderFactory} from "../../common/order/SwapOrderFactory";
         import {
@@ -108,7 +113,8 @@
                 OrderForm,
                 TradeVolumes,
                 TopDailyTraders,
-                LargestTrades
+                LargestTrades,
+                TradesDetails
             },
             state: {
                 fillsProxy: new MetricTrackerFillsProxy(10, moment('2021-04-28')),

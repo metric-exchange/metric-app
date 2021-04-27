@@ -36,9 +36,10 @@ export class MetricTrackerFillsProxy {
         return undefined
     }
 
-    traderWithMostTrades() {
+    tradersWithMostTrades() {
         let traders = []
         let fills = this.eligibleFills()
+
         for (let index = 0; index < fills.length; index++) {
             let fill = fills[index]
             let trader = traders.find(t => t.address === fill.address)
@@ -56,9 +57,11 @@ export class MetricTrackerFillsProxy {
         }
 
         if (traders.length > 0) {
-            return traders.sort((a, b) => b.tradesCount - a.tradesCount)[0]
+            let orderedTrades = traders.sort((a, b) => b.tradesCount - a.tradesCount)
+            let maxTrades = orderedTrades[0].tradesCount
+            return orderedTrades.filter(t => t.tradesCount === maxTrades)
         }
-        return undefined
+        return []
     }
 
     traderWithLargestMetricTrade() {

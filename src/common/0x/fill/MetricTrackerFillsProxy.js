@@ -7,11 +7,11 @@ import {tryFormatWalletName} from "../../wallet/WalletManager";
 
 export class MetricTrackerFillsProxy {
 
-    constructor(period = 30, end = moment().add(1, 'days')) {
+    constructor(period = 30, end = moment()) {
         this.period = period
         this.app = '811412ed-0d07-48ba-984b-b72f6a1f27d6'
-        this.endDate = new ObservableValue(end)
-        this.startDate = new ObservableValue(end.clone().subtract(this.period - 1, 'days'))
+        this.endDate = new ObservableValue(end.add(1, 'days'))
+        this.startDate = new ObservableValue(this.endDate.value.clone().subtract(this.period, 'days'))
         this.fills = new ObservableValue([])
 
         this.startDate.observe(this, 'refreshFills')

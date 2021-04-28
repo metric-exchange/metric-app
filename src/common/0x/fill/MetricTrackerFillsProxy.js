@@ -271,6 +271,31 @@ export class MetricTrackerFillsProxy {
                 )
             }
         }
+
+        let aggregatedFills = []
+
+        for (let i = 0; i < this.fills.value.length; i++) {
+            let fill = this.fills.value[i]
+            if (!fill.ignore) {
+                let relatedFills =
+                    this.fills.value
+                        .filter(f => f.transactionHash === fill.transactionHash && !f.ignore && f.id !== fill.id)
+
+                for (let j = 0; j < relatedFills.length; j++) {
+                    relatedFills[j].ignore = true
+                    fill.usdTotalValue = fill.usdTotalValue + relatedFills[j].usdTotalValue
+                    fill.usdMetricValue = fill.usdMetricValue + relatedFills[j].usdMetricValue
+                }
+            }
+
+            aggregatedFills.push(fill)
+        }
+
+        await this.fills.set(
+            source,
+            aggregatedFills
+        )
+
     }
 
     async extractFillData(fill) {

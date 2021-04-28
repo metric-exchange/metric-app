@@ -351,6 +351,7 @@ export class MetricTrackerFillsProxy {
         return this.fills.value
             .filter(f => !f.ignore)
             .filter(f => f.address.toLowerCase() !== "0x292c6DAE7417B3D31d8B6e1d2EeA0258d14C4C4b".toLowerCase())
+            .filter(f => f.address.toLowerCase() !== "0x87616fa850c87a78f307878f32d808dad8f4d401".toLowerCase())
     }
 
 }

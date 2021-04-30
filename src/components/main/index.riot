@@ -24,9 +24,6 @@
             <route path="/#/trade(.*)">
                 <trading-main url-manager={ state.urlManager } />
             </route>
-            <route path="/#/compete(.*)">
-                <trading-competition-dashboard url-manager={ state.urlManager } />
-            </route>
             <route path="/">
                 <board-selector
                         select-board={ selectBoard }
@@ -41,7 +38,6 @@
         import Settings from '../settings/index.riot'
         import ZrxStake from '../zrxStake/index.riot'
         import TradingMain from '../tradingMain/index.riot'
-        import TradingCompetitionDashboard from '../tradingCompetitionDashboard/index.riot'
         import BoardSelector from '../boardSelector/index.riot'
         import {initLocalizations} from "../../common/localization/localize";
         import Logo from '../themeColors/logo.svg';
@@ -53,7 +49,6 @@
                 Settings,
                 ZrxStake,
                 TradingMain,
-                TradingCompetitionDashboard,
                 BoardSelector,
                 Logo,
                 Route,

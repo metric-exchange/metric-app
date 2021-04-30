@@ -5,8 +5,7 @@
     grid-template-areas:
             "slogan slogan slogan slogan"
             "sub-slogan sub-slogan sub-slogan sub-slogan"
-            "trade trade compete compete"
-            "empty empty info info";
+            "trade trade trade trade";
     grid-gap: 20px;
     margin-top: 15%;
 }
@@ -39,19 +38,6 @@
     cursor: pointer;
 }
 
-.compete-button {
-    grid-area: compete;
-    background-color: var(--swap-button-background-color);
-    color: var(--swap-button-text-color);
-    cursor: pointer;
-}
-
-.compete-info {
-    grid-area: info;
-    text-align: center;
-    color: var(--token-selector-table-text-color);
-}
-
 .board-selector {
     border-radius: 10px;
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
@@ -63,10 +49,6 @@
 }
 
 .trade-button:hover {
-    box-shadow: 0 1px 8px 2px rgba(0, 0, 0, 0.1);
-}
-
-.compete-button:hover {
     box-shadow: 0 1px 8px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -122,10 +104,6 @@
         grid-area: unset;
     }
 
-    .compete-button {
-        grid-area: unset;
-    }
-
     .slogan {
         grid-area: unset;
     }
@@ -133,11 +111,6 @@
     .sub-slogan {
         grid-area: unset;
     }
-
-    .compete-info {
-        grid-area: unset;
-    }
-
 
     .footer-links {
         display: grid;

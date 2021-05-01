@@ -3,7 +3,6 @@ import moment from "moment/moment";
 import {fetchJson} from "../../JsonApiFetch";
 import {METRIC_TOKEN_ADDRESS} from "../../tokens/token_fetch";
 import {CoinPriceProxy} from "../../tokens/CoinGeckoProxy";
-import {tryFormatWalletName} from "../../wallet/WalletManager";
 
 export class MetricTrackerFillsProxy {
 
@@ -29,7 +28,6 @@ export class MetricTrackerFillsProxy {
         if (trades.length > 0) {
             return {
                 address: trades[0].address,
-                name: trades[0].name,
                 usdVolume: trades[0].usdTotalValue
             }
         }
@@ -49,7 +47,6 @@ export class MetricTrackerFillsProxy {
                 traders.push(
                     {
                         address: fill.address,
-                        name: fill.name,
                         tradesCount: 1
                     }
                 )
@@ -77,7 +74,6 @@ export class MetricTrackerFillsProxy {
                     traders.push(
                         {
                             address: fill.address,
-                            name: fill.name,
                             usdVolume: fill.usdMetricValue
                         }
                     )
@@ -105,7 +101,6 @@ export class MetricTrackerFillsProxy {
                     date.traders.push(
                         {
                             address: fill.address,
-                            name: fill.name,
                             usdVolume: fill.usdTotalValue
                         }
                     )
@@ -116,7 +111,6 @@ export class MetricTrackerFillsProxy {
                     traders: [
                         {
                             address: fill.address,
-                            name: fill.name,
                             usdVolume: fill.usdTotalValue
                         }
                     ]
@@ -130,7 +124,6 @@ export class MetricTrackerFillsProxy {
                 return {
                     date: t.date,
                     address: topTrader.address,
-                    name: topTrader.name,
                     usdVolume: topTrader.usdVolume
                 }
             })
@@ -150,7 +143,6 @@ export class MetricTrackerFillsProxy {
                 traders.push(
                     {
                         address: fill.address,
-                        name: fill.name,
                         usdVolume: fill.usdTotalValue
                     }
                 )
@@ -248,7 +240,6 @@ export class MetricTrackerFillsProxy {
                 storedFills.push({
                     id: fill.id,
                     address: fill.address,
-                    name: fill.name,
                     date: fill.date,
                     transactionHash: fill.transactionHash,
                     details: {
@@ -305,7 +296,6 @@ export class MetricTrackerFillsProxy {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
                 address: fill.makerAddress,
-                name: await tryFormatWalletName(fill.makerAddress),
                 usdValue: fill.value.USD ? fill.value.USD : 0,
                 isMetricTrade: fill.assets.find(a => { return a.tokenAddress.toUpperCase() === METRIC_TOKEN_ADDRESS.toUpperCase() }) !== undefined,
                 makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,
@@ -324,7 +314,6 @@ export class MetricTrackerFillsProxy {
                 id: fill.id,
                 date: fill.date.substring(0, 10),
                 address: this.extractTakerAddress(fill),
-                name: await tryFormatWalletName(this.extractTakerAddress(fill)),
                 usdValue: fill.value.USD ? fill.value.USD : 0,
                 isMetricTrade: fill.assets.find(a => { return a.tokenAddress.toUpperCase() === METRIC_TOKEN_ADDRESS.toUpperCase() }) !== undefined,
                 makerTokenSymbol: fill.assets.find(a => a.traderType === "maker").tokenSymbol,

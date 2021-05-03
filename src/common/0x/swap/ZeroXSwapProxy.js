@@ -2,7 +2,6 @@ import {fetchJson} from "../../JsonApiFetch";
 import {stringify} from "query-string";
 import {BigNumber} from "@0x/utils";
 import {getSlippageConfig} from "../../order/SlippageConfig";
-import Rollbar from "rollbar";
 import {accountAddress} from "../../wallet/WalletManager";
 import {calculateMetricFee, MetricReferralAddress} from "../../MetricFee";
 import {getConnectedNetworkConfig} from "../../ChainHelpers";
@@ -25,7 +24,8 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = new Big
         if (quote.price !== null) {
             return {
                 price: new BigNumber(quote.price),
-                gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18)
+                gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
+                routes: extractRoutes(quote)
             }
         }
     } catch (e) {
@@ -34,7 +34,8 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = new Big
 
     return {
         price: new BigNumber(0),
-        gasCost: new BigNumber(0)
+        gasCost: new BigNumber(0),
+        routes: []
     }
 }
 
@@ -55,7 +56,8 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
         if (quote.price !== null) {
             return {
                 price: new BigNumber(1).dividedBy(new BigNumber(quote.price)),
-                gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18)
+                gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
+                routes: extractRoutes(quote)
             }
         }
     } catch (e) {
@@ -64,11 +66,16 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
 
     return {
         price: new BigNumber(0),
-        gasCost: new BigNumber(0)
+        gasCost: new BigNumber(0),
+        routes: []
     }
 }
 
 export async function callSwapApi(params) {
     let networkConfig = getConnectedNetworkConfig()
     return await fetchJson(`${networkConfig.uris.zeroX}/swap/v1/quote?${stringify(params)}`)
+}
+
+function extractRoutes(quote) {
+    return quote.sources.filter(s => s.proportion !== "0")
 }

@@ -233,6 +233,11 @@ input:disabled {
     left: 10px;
 }
 
+.order-route {
+    display: flex;
+    font-size: xx-small;
+}
+
 @media(min-width: 600px) {
     #token-selector-box {
         padding: 30px;

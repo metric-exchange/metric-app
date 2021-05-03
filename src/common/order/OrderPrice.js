@@ -19,6 +19,7 @@ export class OrderPrice {
         this.disableFee = false
 
         this.gasCost = new BigNumber(0)
+        this.routes = []
 
         this.priceInversionObservers = new ObservationRegister()
     }
@@ -80,6 +81,7 @@ export class OrderPrice {
         let price = await getSwapPrice(this.baseToken, this.quoteToken, amount)
 
         this.gasCost = price.gasCost
+        this.routes = price.routes
 
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,
@@ -89,7 +91,9 @@ export class OrderPrice {
 
     async refreshMarketPriceForBuy(amount = 1, source = null) {
         let price = await getSwapPriceForBuy(this.baseToken, this.quoteToken, amount)
+
         this.gasCost = price.gasCost
+        this.routes = price.routes
 
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,

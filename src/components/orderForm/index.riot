@@ -39,11 +39,13 @@
             </div>
         </div>
 
-        <div class="order-line" if={ props.enableHidingGame }>
+        <div class="order-line" if={ props.enableHidingGame && props.orderFactory.order.isLimitOrder() }>
             <order-book-type-switch order-factory={ props.orderFactory } />
         </div>
 
-        <div class="order-line" if={ !props.enableHidingGame }></div>
+        <div class="order-line" if={ props.orderFactory.order.isMarketOrder() }>
+            <order-routes order-factory={ props.orderFactory }/>
+        </div>
 
         <slippage-percentage if={ props.orderFactory.order.isMarketOrder() } order-factory={ props.orderFactory } />
 
@@ -82,6 +84,7 @@
         import DatePicker from '../datePicker/index.riot'
         import SlippagePercentage from './slippagePercentage/index.riot'
         import OrderBookTypeSwitch from '../orderBookTypeSwitch/index.riot'
+        import OrderRoutes from './orderRoutes/index.riot'
         import {chainToken} from "../../common/ChainHelpers";
 
         export default {
@@ -94,7 +97,8 @@
                 OrderBuyAmount,
                 OrderPrice,
                 SlippagePercentage,
-                OrderBookTypeSwitch
+                OrderBookTypeSwitch,
+                OrderRoutes
             },
             state: {
                 showTokenSelector: false

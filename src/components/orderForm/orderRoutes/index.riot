@@ -1,0 +1,30 @@
+<order-routes>
+
+    <div>{ formatRoutes(props.orderFactory.order.sellPrice.routes) }</div>
+
+    <script>
+        export default {
+
+            onMounted() {
+                this.props.orderFactory.order.sellPrice.price.observe(this, 'onPriceChange')
+            },
+
+            onPriceChange(source) {
+                this.update()
+            },
+
+            formatRoutes(routes) {
+                let message = ""
+
+                if (routes.length === 0) {
+                    return message
+                }
+
+                message = routes.map(r => `${r.name} ${this.formatNumber(parseFloat(r.proportion)*100)}%`).reduce((a,b) => `${a}, ${b}`)
+
+                return `Route: ${message}`
+            }
+        }
+    </script>
+
+</order-routes>

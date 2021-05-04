@@ -264,7 +264,6 @@ input:disabled {
     top: 31px;
     border-radius: 3px;
     background: var(--main-background-color);
-    border-bottom: 1px solid var(--token-selector-border-color);
     z-index: 1;
 }
 
@@ -272,6 +271,7 @@ input:disabled {
     padding-top: 5px;
     padding-bottom: 5px;
     cursor: pointer;
+    border-bottom: 1px solid var(--token-selector-border-color);
 }
 
 @media(min-width: 600px) {

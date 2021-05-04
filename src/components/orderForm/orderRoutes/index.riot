@@ -3,6 +3,8 @@
     <div>{ formatRoutes(props.orderFactory.order.sellPrice.routes) }</div>
 
     <script>
+        import {tokensList} from "../../../common/tokens/token_fetch";
+
         export default {
 
             onMounted() {
@@ -20,9 +22,19 @@
                     return message
                 }
 
-                message = routes.map(r => `${r.name} ${this.formatNumber(parseFloat(r.proportion)*100)}%`).reduce((a,b) => `${a}, ${b}`)
+                message = routes.map(r => `${this.formatName(r)} ${this.formatNumber(parseFloat(r.proportion)*100)}%`).reduce((a,b) => `${a}, ${b}`)
 
                 return `Route: ${message}`
+            },
+
+            formatName(route) {
+                if (route.name === "MultiHop") {
+                    let token = tokensList().find(t => t.address.toLowerCase() === route.intermediateToken.toLowerCase())
+
+                    return `${route.hops[0]} → ${token.symbol} → ${route.hops[1]}`
+                }
+
+                return route.name
             }
         }
     </script>

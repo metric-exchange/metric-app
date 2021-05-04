@@ -214,12 +214,14 @@ input:disabled {
 }
 
 .input-sticky-placeholder {
-    font-size: xx-small;
+    font-size: x-small;
+    line-height: 15px;
 }
 
 .input-token-balance {
-    font-size: xx-small;
+    font-size: x-small;
     text-align: right;
+    line-height: 15px;
     width: 100%;
 }
 

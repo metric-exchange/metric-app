@@ -107,10 +107,11 @@
                     accountAddress()
                 )
                 this.state.orderFactory.order.type = Order.MarketOrderType
+                this.state.orderFactory.order.useHidingGame.value = false
                 this.state.orderFactory.clearValues()
                 this.update()
             },
-            setLimitOrderType() {
+            setLimitOrderType(isHidingGame = false) {
                 this.state.orderFactory = new LimitOrderFactory(
                     this.state.orderFactory.order,
                     this.state.orderFactory.stateManager,
@@ -118,6 +119,7 @@
                 )
                 this.switchToWrappedTokenIfNeeded()
                 this.state.orderFactory.order.type = Order.LimitOrderType
+                this.state.orderFactory.order.useHidingGame.value = isHidingGame
                 this.state.orderFactory.clearValues()
                 this.update()
             },

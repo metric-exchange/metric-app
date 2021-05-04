@@ -1,14 +1,15 @@
 <order-type-selector>
 
     <div class="order-type-selector" if={ this.isConnectedToEthereumMainNet() }>
-        <div if={ props.orderFactory.order.isLimitOrder() } onclick={ showOrderTypesList } >LIMIT</div>
+        <div if={ props.orderFactory.order.isLimitOrder() && !props.orderFactory.order.useHidingGame.value } onclick={ showOrderTypesList } >LIMIT</div>
         <div if={ props.orderFactory.order.isMarketOrder() } onclick={ showOrderTypesList } >SWAP</div>
+        <div if={ props.orderFactory.order.useHidingGame.value } onclick={ showOrderTypesList } >HIDING GAME</div>
         <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="order-types-list" if={ state.showList }>
             <div class="order-type"
-                 if={ !props.orderFactory.order.isLimitOrder() }
+                 if={ !props.orderFactory.order.isLimitOrder() || props.orderFactory.order.useHidingGame.value }
                  onclick={ () => setOrderType(props.setLimitOrderType) }
             >
                 LIMIT
@@ -19,21 +20,51 @@
             >
                 SWAP
             </div>
+            <div class="order-type"
+                 if={ !props.orderFactory.order.useHidingGame.value && isOrderSupportedByHidingGame() }
+                 onclick={ setHidingGameOrderType }
+            >
+                HIDING GAME
+            </div>
         </div>
     </div>
 
     <script>
 
+        import {getHidingGameProxy} from "../../../common/0x/order/ZeroXV3UserPendingOrdersProxy";
+
         export default {
             state: {
                 showList: false
             },
+            onBeforeMount() {
+                this.props.orderFactory.order.tokensChangesObservers.register(this, 'updateDisplay')
+                getHidingGameProxy().supportedTokens.observe(this, 'updateDisplay')
+            },
             showOrderTypesList() {
-                this.update({ showList: true })
+                this.update({ showList: !this.state.showList })
             },
             setOrderType(callback) {
-                this.state.showList = false
+                this.update({ showList: false })
                 callback()
+            },
+            updateDisplay() {
+                this.update()
+            },
+            isOrderSupportedByHidingGame() {
+                return getHidingGameProxy().supportedTokens.value
+                        .find(t => t.address.toLowerCase() === this.props.orderFactory.order.sellToken.address.toLowerCase()) &&
+                    getHidingGameProxy().supportedTokens.value
+                        .find(t => t.address.toLowerCase() === this.props.orderFactory.order.buyToken.address.toLowerCase())
+            },
+            setHidingGameOrderType() {
+                this.update({ showList: false })
+                if (this.props.orderFactory.order.isMarketOrder()) {
+                    this.props.setLimitOrderType(true)
+                } else {
+                    this.props.orderFactory.toggleHidingGameSupport()
+                    this.update()
+                }
             }
         }
 

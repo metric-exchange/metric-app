@@ -23,6 +23,9 @@
                 set-limit-order-type={ props.setLimitOrderType }
         />
 
+        <div class="order-line" if={ props.orderFactory.order.isLimitOrder() }>
+        </div>
+
         <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">
             <div class="order-input order-valid-until-label">
                 { this.i18next.t('order.valid_until') }
@@ -34,10 +37,6 @@
                     set-time={ setTime }
                 />
             </div>
-        </div>
-
-        <div class="order-line" if={ props.enableHidingGame && props.orderFactory.order.isLimitOrder() }>
-            <order-book-type-switch order-factory={ props.orderFactory } />
         </div>
 
         <div class="order-line" if={ props.orderFactory.order.isMarketOrder() }>
@@ -80,7 +79,6 @@
         import OrderPrice from './orderPrice/index.riot'
         import DatePicker from '../datePicker/index.riot'
         import SlippagePercentage from './slippagePercentage/index.riot'
-        import OrderBookTypeSwitch from '../orderBookTypeSwitch/index.riot'
         import OrderRoutes from './orderRoutes/index.riot'
         import {chainToken} from "../../common/ChainHelpers";
 
@@ -94,7 +92,6 @@
                 OrderBuyAmount,
                 OrderPrice,
                 SlippagePercentage,
-                OrderBookTypeSwitch,
                 OrderRoutes
             },
             state: {

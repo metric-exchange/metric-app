@@ -1,13 +1,17 @@
 
 .board-selectors {
     display: grid;
-    grid-template-columns: 200px 200px 200px 200px;
+    grid-template-columns: 800px;
     grid-template-areas:
-            "slogan slogan slogan slogan"
-            "sub-slogan sub-slogan sub-slogan sub-slogan"
-            "trade trade trade trade";
+            "slogan"
+            "sub-slogan"
+            "trade";
     grid-gap: 20px;
-    margin-top: 15%;
+    margin-top: 10%;
+}
+
+.board-selectors .volume-title {
+    color: var(--token-selector-table-text-color);
 }
 
 .slogan {

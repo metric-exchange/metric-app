@@ -3,7 +3,7 @@
     <div class="order-line exchange-amount">
         <div></div>
         <div></div>
-        <div class="input-token-balance">Balance: { this.formatNumber(this.props.orderFactory.order.sellToken.balance.toNumber()) }</div>
+        <div class="input-token-balance">{ this.formatNumber(this.props.orderFactory.order.sellToken.balance.toNumber()) }</div>
         <div class="order-input">
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.sellAmount.value) }>
                 { this.i18next.t('order.you_pay') }

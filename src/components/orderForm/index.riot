@@ -5,12 +5,7 @@
 
     <div id="order-form" if={ props.orderFactory !== null }>
 
-        <div class="order-line order-type-switch" if={ this.isConnectedToEthereumMainNet() }>
-            <div id="limit-button" class="limit-button" onclick={ props.setLimitOrderType }>{ this.i18next.t('order.limit_type') }</div>
-            <div id="market-button" class="market-button active-order-type" onclick={ props.setMarketOrderType }>{ this.i18next.t('order.market_type') }</div>
-        </div>
-
-        <div class="order-line order-type-switch" if={ !this.isConnectedToEthereumMainNet() }></div>
+        <div class="order-line"></div>
 
         <order-sell-amount
                 order-factory={ props.orderFactory }
@@ -24,6 +19,8 @@
 
         <order-price
                 order-factory={ props.orderFactory }
+                set-market-order-type={ props.setMarketOrderType }
+                set-limit-order-type={ props.setLimitOrderType }
         />
 
         <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">

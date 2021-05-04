@@ -30,6 +30,11 @@
                 { props.orderFactory.order.sellPrice.displayPrice().toFixed(4) } ({ this.displayPriceImpact() ? state.priceImpact.toFixed(2) : '0'}%)
             </div>
         </div>
+        <order-type-selector
+                order-factory={ props.orderFactory }
+                set-market-order-type={ props.setMarketOrderType }
+                set-limit-order-type={ props.setLimitOrderType }
+        />
     </div>
 
     <script>
@@ -40,11 +45,13 @@
             OrderEventSource
         } from "../../../common/order/OrderEventSource";
         import Loader from '../../loader/index.riot'
+        import OrderTypeSelector from '../orderTypeSelector/index.riot'
         import {BigNumber} from "@0x/utils";
 
         export default {
             components: {
-                Loader
+                Loader,
+                OrderTypeSelector
             },
             config: {
                 event: new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Input)

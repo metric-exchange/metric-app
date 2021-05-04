@@ -29,7 +29,7 @@ input:disabled {
     position: relative;
     height: 476px;
     display: grid;
-    grid-template-rows: 10% 10% 10% 10% 10% 10% 10%;
+    grid-template-rows: 4% 11% 11% 11% 11% 11% 11%;
     grid-gap: 5%;
     padding: 20px;
     align-items: center;
@@ -120,15 +120,10 @@ input:disabled {
     cursor: pointer;
 }
 
-.active-order-type {
-    color: var(--active-text-color);
-}
-
 .exchange-price {
     display: grid;
-    grid-template-columns: 10% 88%;
+    grid-template-columns: 10% 49% 37%;
     align-items: center;
-    justify-items: center;
     grid-gap: 2%;
 }
 
@@ -236,6 +231,45 @@ input:disabled {
 .order-route {
     display: flex;
     font-size: xx-small;
+}
+
+.order-type-selector {
+    position: relative;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    align-items: center;
+    cursor: pointer;
+    color: var(--theme-switch-active-button-text-color);
+    background-color: var(--theme-switch-active-button-background-color);
+    border-radius: 3px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    line-height: 20px;
+    width: 100%;
+}
+
+.order-type-selector svg path {
+    stroke: var(--theme-switch-active-button-text-color);
+    stroke-width: 50;
+}
+
+.order-type-selector .order-types-list {
+    display: grid;
+    grid-template-columns: 100%;
+    position: absolute;
+    width: 100%;
+    line-height: 20px;
+    top: 31px;
+    border-radius: 3px;
+    background: var(--main-background-color);
+    border-bottom: 1px solid var(--token-selector-border-color);
+}
+
+.order-type-selector .order-types-list .order-type {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
 }
 
 @media(min-width: 600px) {

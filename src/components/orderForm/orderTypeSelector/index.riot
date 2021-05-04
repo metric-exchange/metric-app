@@ -1,0 +1,42 @@
+<order-type-selector>
+
+    <div class="order-type-selector" if={ this.isConnectedToEthereumMainNet() }>
+        <div if={ props.orderFactory.order.isLimitOrder() } onclick={ showOrderTypesList } >LIMIT</div>
+        <div if={ props.orderFactory.order.isMarketOrder() } onclick={ showOrderTypesList } >SWAP</div>
+        <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="order-types-list" if={ state.showList }>
+            <div class="order-type"
+                 if={ !props.orderFactory.order.isLimitOrder() }
+                 onclick={ () => setOrderType(props.setLimitOrderType) }
+            >
+                LIMIT
+            </div>
+            <div class="order-type"
+                 if={ !props.orderFactory.order.isMarketOrder() }
+                 onclick={ () => setOrderType(props.setMarketOrderType) }
+            >
+                SWAP
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        export default {
+            state: {
+                showList: false
+            },
+            showOrderTypesList() {
+                this.update({ showList: true })
+            },
+            setOrderType(callback) {
+                this.state.showList = false
+                callback()
+            }
+        }
+
+    </script>
+
+</order-type-selector>

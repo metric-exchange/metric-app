@@ -101,7 +101,7 @@ a {
 .main-content{
     width: 100%;
     position: relative;
-    top: 80px;
+    top: 100px;
     display: grid;
     grid-template-columns: auto;
     justify-items: center;

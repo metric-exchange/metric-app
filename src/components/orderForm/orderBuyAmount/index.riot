@@ -1,9 +1,9 @@
 <order-buy-amount>
 
     <div class="order-line exchange-amount">
+        <div></div>
+        <div></div>
         <div class="input-token-balance">Balance: { this.formatNumber(props.orderFactory.order.buyToken.balance.toNumber()) }</div>
-        <div></div>
-        <div></div>
         <div class="order-input">
             <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) && !props.orderFactory.order.isHidingGameOrder()}>
                 { this.i18next.t('order.you_get') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
@@ -76,7 +76,11 @@
                 this.update()
             },
             formattedFeeAmount() {
-                return this.formatNumber(this.props.orderFactory.order.sellPrice.buyFeeAmountFor(this.props.orderFactory.order.buyAmount.value))
+                return this.formatNumber(
+                    this.props.orderFactory.order.sellPrice
+                        .buyFeeAmountFor(this.props.orderFactory.order.buyAmount.value)
+                        .toNumber()
+                )
             }
         }
 

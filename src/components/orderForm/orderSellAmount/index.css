@@ -6,9 +6,9 @@
     color: var(--theme-switch-active-button-text-color);
     background-color: var(--theme-switch-active-button-background-color);
     border-radius: 3px;
-    padding: 5px;
+    padding: 7px;
     text-align: center;
-    line-height: 15px;
+    line-height: 20px;
     font-size: x-small;
 }
 

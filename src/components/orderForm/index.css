@@ -151,7 +151,7 @@ input:disabled {
     color: var(--theme-switch-active-button-text-color);
     background-color: var(--theme-switch-active-button-background-color);
     border-radius: 3px;
-    padding: 5px 8px;
+    padding: 7px 8px;
     text-align: center;
     line-height: 20px;
 }
@@ -245,8 +245,8 @@ input:disabled {
     color: var(--theme-switch-active-button-text-color);
     background-color: var(--theme-switch-active-button-background-color);
     border-radius: 3px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     text-align: center;
     line-height: 20px;
     width: 100%;
@@ -263,14 +263,14 @@ input:disabled {
     position: absolute;
     width: 100%;
     line-height: 20px;
-    top: 31px;
+    top: 35px;
     border-radius: 3px;
     background: var(--main-background-color);
 }
 
 .order-type-selector .order-types-list .order-type {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     cursor: pointer;
     color: var(--token-selector-table-text-color);
 }

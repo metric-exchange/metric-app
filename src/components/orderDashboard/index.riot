@@ -11,7 +11,7 @@
             />
         </div>
 
-        <div class="order-book" if={ this.isConnectedToEthereumMainNet() }>
+        <div class="order-book" if={ state.orderFactory && state.orderFactory.order.isLimitOrder() }>
             <order-book order-factory={ state.orderFactory }/>
         </div>
 

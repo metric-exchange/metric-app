@@ -16,8 +16,6 @@
     border-radius: 10px;
     background: var(--swap-form-background-color);
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
-    grid-column: 1;
-    grid-row: 1;
     width: 350px;
     height: 516px;
 }
@@ -28,34 +26,30 @@
     border-radius: 10px;
     background: var(--swap-form-background-color);
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
-    grid-column: 1;
-    grid-row: 2;
     width: 350px;
     height: 516px;
 }
 
 .order-list{
-    grid-row: 3;
-    grid-column: 1;
     background-color: var(--token-selector-background-color);
     border-radius: 10px;
     padding: 20px;
-    min-height: 275px;
+    min-height: 255px;
     font-style: normal;
     font-weight: normal;
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+    width: 310px;
 }
 
 .trade-list {
-    grid-row: 4;
-    grid-column: 1;
     background-color: var(--token-selector-background-color);
     border-radius: 10px;
     padding: 20px;
-    min-height: 275px;
+    min-height: 255px;
     font-style: normal;
     font-weight: normal;
     box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+    width: 310px;
 }
 
 .dashboard #token-selector .tokens {
@@ -65,7 +59,7 @@
 
 @media(min-width: 600px){
     .dashboard {
-        grid-template-columns: auto auto;
+        grid-template-columns: auto;
         justify-content: center;
         place-items: stretch;
     }
@@ -76,6 +70,14 @@
 
     .order-book {
         width: 455px;
+    }
+
+    .order-list {
+        width: 415px;
+    }
+
+    .trade-list {
+        width: 415px;
     }
 
     .dashboard #token-selector .tokens {
@@ -91,26 +93,12 @@
         place-items: stretch;
     }
 
-    .order-form {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    .order-book {
-        grid-row: 1;
-        grid-column: 2;
-    }
-
     .trade-list {
-        grid-row: 2;
-        grid-column: 1;
-        height: 496px;
+        height: 476px;
     }
 
     .order-list{
-        grid-row: 2;
-        grid-column: 2;
-        height: 496px;
+        height: 476px;
     }
 
 }

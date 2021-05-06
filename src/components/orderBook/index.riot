@@ -75,35 +75,31 @@
                     )
                 }
             },
+            onBeforeMount() {
+                this.state.orderBook = new ZeroXOrderBook(
+                    this.props.orderFactory.order.sellToken,
+                    this.props.orderFactory.order.buyToken
+                )
+
+                this.props.orderFactory.order.observeTokenChanges(this, 'onTokenChanges')
+                this.props.orderFactory.order.sellPrice.observePriceInversions(this, 'onPriceInversion')
+                this.state.orderBook.observe(this)
+            },
             async onUpdated() {
-                if (this.props.orderFactory !== null) {
+                if (this.state.triggerScrollToView && !this.state.isLoadingOrders) {
 
-                    if (this.state.orderBook === null) {
-                        this.state.orderBook = new ZeroXOrderBook(
-                            this.props.orderFactory.order.sellToken,
-                            this.props.orderFactory.order.buyToken
-                        )
+                    this.scrollOrderBookIntoView()
+                    this.state.triggerScrollToView = false
 
-                        this.props.orderFactory.order.observeTokenChanges(this, 'onTokenChanges')
-                        this.props.orderFactory.order.sellPrice.observePriceInversions(this, 'onPriceInversion')
-                        this.state.orderBook.observe(this)
-                    }
-
-                    if (this.state.triggerScrollToView && !this.state.isLoadingOrders) {
-
-                        this.scrollOrderBookIntoView()
-                        this.state.triggerScrollToView = false
-
-                        let prices = document.getElementsByClassName("clickable-price")
-                        for (let i = 0; i < prices.length; i++) {
-                            if (this.props.orderFactory.order.type === Order.MarketOrderType) {
-                                if (prices[i].classList.contains("order-price")) {
-                                    prices[i].classList.remove("order-price")
-                                }
-                            } else {
-                                if (!prices[i].classList.contains("order-price")) {
-                                    prices[i].classList.add("order-price")
-                                }
+                    let prices = document.getElementsByClassName("clickable-price")
+                    for (let i = 0; i < prices.length; i++) {
+                        if (this.props.orderFactory.order.type === Order.MarketOrderType) {
+                            if (prices[i].classList.contains("order-price")) {
+                                prices[i].classList.remove("order-price")
+                            }
+                        } else {
+                            if (!prices[i].classList.contains("order-price")) {
+                                prices[i].classList.add("order-price")
                             }
                         }
                     }

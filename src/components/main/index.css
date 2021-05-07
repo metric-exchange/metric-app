@@ -59,10 +59,10 @@ a {
 .header-links {
     width: 60%;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto;
     align-items: center;
     justify-items: center;
-    color: var(--token-selector-table-text-color);
+    color: var(--main-text-color);
 }
 
 .dashboard-links {

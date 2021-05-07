@@ -6,6 +6,7 @@
         </div>
 
         <div class="header-links">
+            <connected-wallet/>
         </div>
 
         <div class="header-settings">
@@ -39,6 +40,7 @@
         import ZrxStake from '../zrxStake/index.riot'
         import TradingMain from '../tradingMain/index.riot'
         import BoardSelector from '../boardSelector/index.riot'
+        import ConnectedWallet from '../connectedWallet/index.riot'
         import {initLocalizations} from "../../common/localization/localize";
         import Logo from '../themeColors/logo.svg';
         import {Router, Route, setBase, router} from "@riotjs/route";
@@ -50,6 +52,7 @@
                 ZrxStake,
                 TradingMain,
                 BoardSelector,
+                ConnectedWallet,
                 Logo,
                 Route,
                 Router

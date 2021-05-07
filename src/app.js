@@ -9,7 +9,7 @@ import {
     connectWallet,
     switchWallet,
     updateAccountAddress,
-    isWalletConnected
+    isWalletConnected, obfuscateAddress
 } from './common/wallet/WalletManager'
 import { isDarkThemeSet, isLightThemeSet, initTheme } from './common/ThemeManager'
 
@@ -75,6 +75,8 @@ install(c => {
     c.isConnectedToEthereumMainNet = isConnectedToEthereumMainNet
     c.isConnectedToBscMainNet = isConnectedToBscMainNet
     c.isSupportedNetwork = isSupportedNetwork
+
+    c.obfuscateAddress = obfuscateAddress
 
     c.SelectedBoardId = {
         NONE: 0,

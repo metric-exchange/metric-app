@@ -1,0 +1,22 @@
+<connected-wallet>
+
+    <div if={ this.accountAddress() !== undefined } >
+        { this.obfuscateAddress(this.accountAddress()) }
+    </div>
+
+    <script>
+        import {registerForWalletChanges} from "../../common/wallet/WalletManager";
+
+        export default {
+
+            onMounted() {
+                registerForWalletChanges(this)
+            },
+            onWalletChanges() {
+                this.update()
+            }
+
+        }
+    </script>
+
+</connected-wallet>

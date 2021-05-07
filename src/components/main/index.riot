@@ -27,7 +27,7 @@
             </route>
             <route path="/">
                 <board-selector
-                        select-board={ selectBoard }
+                        route-to-trade={ routeToTrade }
                 />
             </route>
         </router>
@@ -83,15 +83,8 @@
                     router.push(`/`)
                 }
             },
-            selectBoard(id) {
-
-                if (id === this.SelectedBoardId.TRADING) {
-                    router.push(`/#/trade`)
-                }
-
-                if (id === this.SelectedBoardId.COMPETITION) {
-                    router.push("/#/compete")
-                }
+            routeToTrade() {
+                router.push(`/#/trade`)
             },
             routeToHome() {
                 router.push("/")

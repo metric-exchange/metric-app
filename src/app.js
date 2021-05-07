@@ -78,12 +78,6 @@ install(c => {
 
     c.obfuscateAddress = obfuscateAddress
 
-    c.SelectedBoardId = {
-        NONE: 0,
-        TRADING: 1,
-        COMPETITION: 2
-    };
-
 })
 
 component(Main)(document.getElementById('app'), {})

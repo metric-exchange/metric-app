@@ -53,10 +53,8 @@
                 this.update()
             },
             isOrderSupportedByHidingGame() {
-                return getHidingGameProxy().supportedTokens.value
-                        .find(t => t.address.toLowerCase() === this.props.orderFactory.order.sellToken.address.toLowerCase()) &&
-                    getHidingGameProxy().supportedTokens.value
-                        .find(t => t.address.toLowerCase() === this.props.orderFactory.order.buyToken.address.toLowerCase())
+                return this.props.orderFactory.order.sellToken.hasHidingGame &&
+                    this.props.orderFactory.order.buyToken.hasHidingGame
             },
             setHidingGameType() {
                 this.update({ showList: false })

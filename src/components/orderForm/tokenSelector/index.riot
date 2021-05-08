@@ -39,6 +39,8 @@
         import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../../common/wallet/WalletManager";
         import TokenSelection from './tokenSelection/index.riot'
         import Loader from '../../loader/index.riot'
+        import {getHidingGameProxy} from "../../../common/0x/order/ZeroXV3UserPendingOrdersProxy";
+        import {isConnectedToEthereumMainNet} from "../../../common/ChainHelpers";
 
         export default {
             components: {
@@ -57,19 +59,34 @@
             async onBeforeMount() {
                 await this.buildSortedTokenList(null, false)
             },
-            onMounted() {
+            async onMounted() {
                 document.addEventListener('click', this.listenToSelectorCloseClick)
                 registerForTokenListUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForWalletChanges(this)
 
                 if (isTokenListInitialized() && isWalletConnected()) {
-                    fetchTokensInfo(accountAddress())
+                    await fetchTokensInfo(accountAddress())
                     this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
+                if (getHidingGameProxy().supportedTokens.value.length === 0) {
+                    await getHidingGameProxy().init()
+                }
+                await this.onHidingGameInit()
+                this.update()
             },
             onBeforeUnmount() {
                 clearInterval(this.state.tokenListSynchroHandle)
+            },
+            onHidingGameInit() {
+                if (isConnectedToEthereumMainNet()) {
+                    getHidingGameProxy().supportedTokens.value.forEach(t => {
+                        let token = tokensList().find(tt => t.address === tt.address)
+                        if (token) {
+                            token.hasHidingGame = true
+                        }
+                    })
+                }
             },
             onWalletChanges() {
                 resetTokensInfo()
@@ -81,11 +98,7 @@
                 this.update()
             },
             async onTokenListUpdate() {
-                if (isWalletConnected()) {
-                    clearInterval(this.state.tokenListSynchroHandle)
-                    await fetchTokensInfo(accountAddress())
-                    this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
-                }
+                await this.onHidingGameInit()
                 await this.filterTokenSearch()
             },
             async onTokenBalancesUpdate(token) {

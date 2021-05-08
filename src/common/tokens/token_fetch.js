@@ -14,8 +14,6 @@ import {chainToken, getConnectedNetworkConfig} from "../ChainHelpers";
 export function resetTokensInfo() {
     tokens.forEach(t => {
         t.balance = new BigNumber(NaN)
-        t.allowance.ExchangeProxyAllowanceTarget = NaN
-        t.allowance.Erc20Proxy = NaN
         t.allowance.ExchangeProxyV4Address = NaN
     })
 }
@@ -26,10 +24,6 @@ export function registerForTokenListUpdate(item) {
 
 export function registerForTokenBalancesUpdate(item) {
     balancesRegister.push(item)
-}
-
-export function registerForTokenAllowancesUpdate(item) {
-    allowancesRegister.push(item)
 }
 
 export function disableToken(symbol) {
@@ -202,7 +196,8 @@ export async function loadTokenList()
                         address: t.address.toLowerCase(),
                         symbol: t.symbol,
                         decimals: t.decimals,
-                        logoURI: t.logoURI
+                        logoURI: t.logoURI,
+                        hadHidingGame: false
                     })
                 })
             })
@@ -229,14 +224,12 @@ export function addToken(token) {
 
 export async function addTokenWithAddress(address) {
     try {
-        let token = { address: address.toLowerCase() }
+        let token = { address: address.toLowerCase(), hadHidingGame: false }
         let contract = Erc20ContractProxy.erc20Contract(address)
         token.symbol = await contract.methods.symbol().call().then(s => s.toUpperCase())
         token.decimals = await contract.methods.decimals().call().then(s => parseInt(s))
         token.balance = new BigNumber(NaN)
         token.allowance = {
-            Erc20Proxy: NaN,
-            ExchangeProxyAllowanceTarget: NaN,
             ExchangeProxyV4Address: NaN
         }
 
@@ -244,9 +237,7 @@ export async function addTokenWithAddress(address) {
 
         addToken(token)
 
-        await Promise.all(
-            register.map(item => item.onTokenListUpdate())
-        )
+        await notifyTokenListRegisteredObjects()
 
         if (isWalletConnected()) {
             await fetchBalance(token, address)
@@ -255,6 +246,12 @@ export async function addTokenWithAddress(address) {
     } catch (e) {
         console.info(`Invalid token address: ${address} ${e}`)
     }
+}
+
+export async function notifyTokenListRegisteredObjects() {
+    await Promise.all(
+        register.map(item => item.onTokenListUpdate())
+    )
 }
 
 function initTokenList() {
@@ -271,14 +268,13 @@ function initTokenList() {
             tokens.push({
                 balance: new BigNumber(NaN),
                 allowance: {
-                    Erc20Proxy: NaN,
-                    ExchangeProxyAllowanceTarget: NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 address: t.address.toLowerCase(),
                 symbol: t.symbol,
                 decimals: t.decimals,
-                logoURI: t.logoURI
+                logoURI: t.logoURI,
+                hadHidingGame: false
             })
         })
     }

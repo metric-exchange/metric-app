@@ -24,7 +24,6 @@
         />
 
         <div class="order-line" if={ props.orderFactory.order.isLimitOrder() }>
-            <order-book-type-switch order-factory={ props.orderFactory } />
         </div>
 
         <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">
@@ -81,7 +80,6 @@
         import DatePicker from '../datePicker/index.riot'
         import SlippagePercentage from './slippagePercentage/index.riot'
         import OrderRoutes from './orderRoutes/index.riot'
-        import OrderBookTypeSwitch from '../orderBookTypeSwitch/index.riot'
         import {chainToken} from "../../common/ChainHelpers";
 
         export default {
@@ -94,8 +92,7 @@
                 OrderBuyAmount,
                 OrderPrice,
                 SlippagePercentage,
-                OrderRoutes,
-                OrderBookTypeSwitch
+                OrderRoutes
             },
             state: {
                 showTokenSelector: false

@@ -32,5 +32,8 @@
 }
 
 .token-selection .symbol {
+    display: grid;
+    grid-template-columns: 100px auto;
+    align-items: center;
     text-align: left;
 }

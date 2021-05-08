@@ -10,7 +10,7 @@
             />
         </div>
 
-        <div class="order-book" if={ state.orderFactory && state.orderFactory.order.isLimitOrder() }>
+        <div class="order-book" if={ state.orderFactory && state.orderFactory.order.isLimitOrder() && !state.orderFactory.order.isHidingGameOrder()}>
             <order-book order-factory={ state.orderFactory }/>
         </div>
 

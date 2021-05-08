@@ -58,11 +58,8 @@
             },
             setHidingGameType() {
                 this.update({ showList: false })
-                if (this.props.orderFactory.order.isMarketOrder()) {
+                if (!this.props.orderFactory.order.isHidingGameOrder()) {
                     this.props.setLimitOrderType(true)
-                } else {
-                    this.props.orderFactory.toggleHidingGameSupport()
-                    this.update()
                 }
             },
             setLimitType() {

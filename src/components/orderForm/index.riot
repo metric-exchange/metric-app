@@ -23,7 +23,11 @@
                 set-limit-order-type={ props.setLimitOrderType }
         />
 
-        <div class="order-line" if={ props.orderFactory.order.isLimitOrder() }>
+        <div class="order-line" if={ props.orderFactory.order.isLimitOrder() && !props.orderFactory.order.isHidingGameOrder()}>
+        </div>
+
+        <div class="order-line" if={ props.orderFactory.order.isHidingGameOrder() }>
+            { this.i18next.t('order.use_hiding_game') }
         </div>
 
         <div if={ props.orderFactory.order.isLimitOrder() } class="order-line order-validity-input">

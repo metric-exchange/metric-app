@@ -7,7 +7,6 @@
                     order-factory={ state.orderFactory }
                     set-market-order-type={ setMarketOrderType }
                     set-limit-order-type={ setLimitOrderType }
-                    enable-hiding-game={ true }
             />
         </div>
 
@@ -101,6 +100,7 @@
                 )
             },
             setMarketOrderType() {
+                localStorage.setItem('orderType', Order.MarketOrderType)
                 this.state.orderFactory = new SwapOrderFactory(
                     this.state.orderFactory.order,
                     this.state.orderFactory.stateManager,
@@ -112,6 +112,7 @@
                 this.update()
             },
             setLimitOrderType(isHidingGame = false) {
+                localStorage.setItem('orderType', Order.LimitOrderType)
                 this.state.orderFactory = new LimitOrderFactory(
                     this.state.orderFactory.order,
                     this.state.orderFactory.stateManager,
@@ -127,7 +128,10 @@
                 let sellToken = await this.props.urlManager.urlSellToken()
                 let buyToken = await this.props.urlManager.urlBuyToken()
 
-                if (isConnectedToEthereumMainNet()) {
+                let orderType =
+                    localStorage.getItem('orderType') ? parseInt(localStorage.getItem('orderType')) : Order.LimitOrderType
+
+                if (isConnectedToEthereumMainNet() && orderType === Order.LimitOrderType) {
                     this.state.orderFactory =
                         new LimitOrderFactory(
                             new Order(

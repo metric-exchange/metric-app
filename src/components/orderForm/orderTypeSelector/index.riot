@@ -1,30 +1,30 @@
 <order-type-selector>
 
     <div class="order-type-selector" if={ this.isConnectedToEthereumMainNet() }>
-        <div if={ props.orderFactory.order.isLimitOrder() && !props.orderFactory.order.useHidingGame.value } onclick={ showOrderTypesList } >LIMIT</div>
-        <div if={ props.orderFactory.order.isMarketOrder() } onclick={ showOrderTypesList } >SWAP</div>
-        <div if={ props.orderFactory.order.useHidingGame.value } onclick={ showOrderTypesList } >HIDING GAME</div>
+        <div if={ currentOrderType() === config.LIMIT } onclick={ showOrderTypesList } >{ config.LIMIT }</div>
+        <div if={ currentOrderType() === config.SWAP } onclick={ showOrderTypesList } >{ config.SWAP }</div>
+        <div if={ currentOrderType() === config.HIDING_GAME } onclick={ showOrderTypesList } >{ config.HIDING_GAME }</div>
         <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg" onclick={ showOrderTypesList }>
             <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="order-types-list" if={ state.showList }>
             <div class="order-type"
-                 if={ !props.orderFactory.order.isLimitOrder() || props.orderFactory.order.useHidingGame.value }
-                 onclick={ () => setOrderType(props.setLimitOrderType) }
+                 if={ currentOrderType() !== config.LIMIT }
+                 onclick={ setLimitType }
             >
-                LIMIT
+                { config.LIMIT }
             </div>
             <div class="order-type"
-                 if={ !props.orderFactory.order.isMarketOrder() }
-                 onclick={ () => setOrderType(props.setMarketOrderType) }
+                 if={ currentOrderType() !== config.SWAP }
+                 onclick={ setSwapType }
             >
-                SWAP
+                { config.SWAP }
             </div>
             <div class="order-type"
-                 if={ !props.orderFactory.order.useHidingGame.value && isOrderSupportedByHidingGame() }
-                 onclick={ setHidingGameOrderType }
+                 if={ currentOrderType() !== config.HIDING_GAME && isOrderSupportedByHidingGame() }
+                 onclick={ setHidingGameType }
             >
-                HIDING GAME
+                { config.HIDING_GAME }
             </div>
         </div>
     </div>
@@ -34,6 +34,11 @@
         import {getHidingGameProxy} from "../../../common/0x/order/ZeroXV3UserPendingOrdersProxy";
 
         export default {
+            config:{
+                SWAP: 'SWAP',
+                LIMIT: 'LIMIT',
+                HIDING_GAME: 'HIDING GAME'
+            },
             state: {
                 showList: false
             },
@@ -44,10 +49,6 @@
             showOrderTypesList() {
                 this.update({ showList: !this.state.showList })
             },
-            setOrderType(callback) {
-                this.update({ showList: false })
-                callback()
-            },
             updateDisplay() {
                 this.update()
             },
@@ -57,7 +58,7 @@
                     getHidingGameProxy().supportedTokens.value
                         .find(t => t.address.toLowerCase() === this.props.orderFactory.order.buyToken.address.toLowerCase())
             },
-            setHidingGameOrderType() {
+            setHidingGameType() {
                 this.update({ showList: false })
                 if (this.props.orderFactory.order.isMarketOrder()) {
                     this.props.setLimitOrderType(true)
@@ -65,6 +66,25 @@
                     this.props.orderFactory.toggleHidingGameSupport()
                     this.update()
                 }
+            },
+            setLimitType() {
+                this.update({ showList: false })
+                this.props.setLimitOrderType(false)
+            },
+            setSwapType() {
+                this.update({ showList: false })
+                this.props.setMarketOrderType()
+            },
+            currentOrderType() {
+                if (this.props.orderFactory.order.isMarketOrder()) {
+                    return this.config.SWAP
+                }
+
+                if (this.props.orderFactory.order.isLimitOrder() && this.props.orderFactory.order.useHidingGame.value ) {
+                    return this.config.HIDING_GAME
+                }
+
+                return this.config.LIMIT
             }
         }
 

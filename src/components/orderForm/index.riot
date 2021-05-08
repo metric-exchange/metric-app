@@ -150,35 +150,6 @@
                 }
                 this.update()
             },
-            onUpdated() {
-                if (this.props.orderFactory !== null) {
-
-                    let marketOrderButton = document.getElementById("market-button")
-                    let limitOrderButton = document.getElementById("limit-button")
-
-                    if (this.props.orderFactory.order.isLimitOrder() &&
-                        marketOrderButton !== null &&
-                        marketOrderButton.classList.contains('active-order-type'))
-                    {
-                        marketOrderButton.classList.remove("active-order-type")
-                        marketOrderButton.onclick = () => { this.props.setMarketOrderType() }
-
-                        limitOrderButton.classList.add("active-order-type")
-                        limitOrderButton.onclick = null
-                    }
-
-                    if (this.props.orderFactory.order.isMarketOrder() &&
-                        limitOrderButton !== null &&
-                        limitOrderButton.classList.contains('active-order-type'))
-                    {
-                        marketOrderButton.classList.add("active-order-type")
-                        marketOrderButton.onclick = null
-
-                        limitOrderButton.classList.remove("active-order-type")
-                        limitOrderButton.onclick = () => { this.props.setLimitOrderType() }
-                    }
-                }
-            },
             setTime(dateString, format) {
                 this.props.orderFactory.setExpiryTime(dateString, format)
             }

@@ -62,7 +62,9 @@
                     let input = document.getElementById("order-amount-input")
                     if (input !== null) {
                         input.value =
-                            this.props.orderFactory.order.sellAmount.value.toFixed(this.props.orderFactory.order.sellToken.decimals)
+                            this.props.orderFactory.order.sellAmount.value
+                                .decimalPlaces(this.props.orderFactory.order.sellToken.decimals)
+                                .toString()
                         this.update()
                     }
                 }

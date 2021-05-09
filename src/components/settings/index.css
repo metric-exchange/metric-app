@@ -40,10 +40,6 @@
     cursor: pointer;
 }
 
-.identicon-menu:hover {
-    background-color: var(--token-selector-table-hover-background-color);
-}
-
 .identicon-menu svg path {
     stroke: var(--main-text-color);
 }

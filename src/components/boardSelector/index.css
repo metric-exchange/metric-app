@@ -85,7 +85,7 @@
 }
 
 .footer-social-media-links a:hover svg path {
-    fill: #60FFD9;
+    fill: var(--main-text-color);
 }
 
 .footer-links a, .footer-links a:hover, .footer-links a:visited {

@@ -16,13 +16,16 @@
 
         <div id="trade-list" class="trade-list" if={ this.isConnectedToEthereumMainNet() }>
             <trade-list
-                    show-trades-list={ showTradesList }
-                    hide-trades-list={ hideTradesList }
+                    show-trades-list={ () => toggleItem("trade-list", false) }
+                    hide-trades-list={ () => toggleItem("trade-list", true) }
             />
         </div>
 
-        <div class="order-list" if={ this.isConnectedToEthereumMainNet() }>
-            <order-list/>
+        <div id="order-list" class="order-list" if={ this.isConnectedToEthereumMainNet() }>
+            <order-list
+                    show-orders-list={ () => toggleItem("order-list", false) }
+                    hide-orders-list={ () => toggleItem("order-list", true) }
+            />
         </div>
 
     </div>
@@ -69,16 +72,10 @@
                 registerForWalletChanges(this)
                 registerForNetworkChanges(this)
             },
-            showTradesList() {
-                let item = document.getElementById("trade-list")
+            toggleItem(id, hide) {
+                let item = document.getElementById(id)
                 if (item) {
-                    item.style.display = "block"
-                }
-            },
-            hideTradesList() {
-                let item = document.getElementById("trade-list")
-                if (item) {
-                    item.style.display = "none"
+                    item.style.display = hide ? "none" : "block"
                 }
             },
             async onTokenListUpdate() {

@@ -64,6 +64,7 @@
                     this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress()), 30000)
                 } else {
                     getHidingGameProxy().init()
+                    this.toggleOrderList()
                 }
             },
             onBeforeUnmount() {
@@ -73,13 +74,18 @@
                 this.update()
             },
             onWalletChanges() {
+
                 this.update({orders: []})
+
                 if (isWalletConnected()) {
                     this.update({isLoadingOrders: true})
                     clearInterval(this.state.orderSynchroHandle)
                     synchronizeUserOrders(accountAddress())
                     this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress()), 30000)
+                } else {
+                    this.toggleOrderList()
                 }
+
             },
             async onUserOrderUpdates() {
 
@@ -88,6 +94,8 @@
                 } else {
                     this.state.orders = []
                 }
+
+                this.toggleOrderList()
 
                 this.update({isLoadingOrders: false})
             },
@@ -129,6 +137,13 @@
                     let hash = this.state.selectedOrders[this.state.selectedOrders.length-1]
                     let order = this.state.orders.find(o => o.metaData.orderHash === hash)
                     await cancelOrder(order)
+                }
+            },
+            toggleOrderList() {
+                if (this.state.orders.length > 0) {
+                    this.props.showOrdersList()
+                } else {
+                    this.props.hideOrdersList()
                 }
             }
         }

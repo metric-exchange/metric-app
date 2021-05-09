@@ -62,6 +62,7 @@
     grid-template-columns: auto;
     margin: 60px;
     grid-gap: 60px;
+    width: 60%;
 }
 
 .footer-social-media-links {

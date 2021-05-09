@@ -1,5 +1,5 @@
 :root {
-  --main-background-color: #303030;
+  --main-background-color: #333033;
   --main-text-color: #FFFFFF;
 
   --swap-form-background-color: #181A1B;
@@ -39,7 +39,7 @@
 }
 
 [data-theme="light"] {
-  --main-background-color: #F9F9F9;
+  --main-background-color: #f3f1f3;
   --main-text-color: #000000;
 
   --swap-form-background-color: #FFFFFF;

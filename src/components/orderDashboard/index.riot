@@ -21,7 +21,7 @@
             />
         </div>
 
-        <div id="order-list" class="order-list" if={ this.isConnectedToEthereumMainNet() }>
+        <div id="order-list" class="order-list" if={ this.isConnectedToEthereumMainNet() && state.orderFactory && state.orderFactory.order.isLimitOrder() }>
             <order-list
                     show-orders-list={ () => toggleItem("order-list", false) }
                     hide-orders-list={ () => toggleItem("order-list", true) }

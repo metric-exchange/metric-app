@@ -15,6 +15,7 @@ export function resetTokensInfo() {
     tokens.forEach(t => {
         t.balance = new BigNumber(NaN)
         t.allowance.ExchangeProxyV4Address = NaN
+        balancesRegister.map(item => item.onTokenBalancesUpdate(t))
     })
 }
 
@@ -110,11 +111,6 @@ async function updateBalance(token, address, balance) {
                 token.allowance[ExchangeProxyV4Address] = allowance
                 balanceChanged = true
             }
-            if (balanceChanged) {
-                await Promise.all(
-                    allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
-                )
-            }
         }
 
     }
@@ -149,9 +145,6 @@ export async function updateAllowance(token, target, allowance) {
         if (newAllowance !== token.allowance[target]) {
             console.debug(`update allowance to trade ${token.symbol} to ${newAllowance} for ${target}`)
             token.allowance[target] = newAllowance
-            await Promise.all(
-                allowancesRegister.map(item => item.onTokenAllowancesUpdate(token))
-            )
         }
     }
 }
@@ -287,7 +280,6 @@ let customTokensManager = new CustomTokenManager()
 let tokens = []
 let register = []
 let balancesRegister = []
-let allowancesRegister = []
 let tokenListInitialized = false
 
 export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"

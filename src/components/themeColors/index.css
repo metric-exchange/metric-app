@@ -32,6 +32,10 @@
   --item-card-color: #0000003B;
 
   --active-text-color: #60FFD9;
+
+  --connect-wallet-button-background: #8600ff;
+  --connect-wallet-button-text-color: #FFFFFF;
+
 }
 
 [data-theme="light"] {
@@ -68,6 +72,9 @@
   --item-card-color: #F9F9F9;
 
   --active-text-color: #000000;
+
+  --connect-wallet-button-background: #a94bff;
+  --connect-wallet-button-text-color: #FFFFFF;
 }
 
 ::-webkit-scrollbar {

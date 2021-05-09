@@ -23,6 +23,12 @@
     cursor: pointer;
 }
 
+.order-state-connect-wallet {
+    background-color: var(--connect-wallet-button-background);
+    color: var(--connect-wallet-button-text-color);
+    cursor: pointer;
+}
+
 .order-state-invalid {
     background-color: var(--invalid-button-background-color);
 }

@@ -14,8 +14,11 @@
             <order-book order-factory={ state.orderFactory }/>
         </div>
 
-        <div class="trade-list" if={ this.isConnectedToEthereumMainNet() }>
-            <trade-list/>
+        <div id="trade-list" class="trade-list" if={ this.isConnectedToEthereumMainNet() }>
+            <trade-list
+                    show-trades-list={ showTradesList }
+                    hide-trades-list={ hideTradesList }
+            />
         </div>
 
         <div class="order-list" if={ this.isConnectedToEthereumMainNet() }>
@@ -65,6 +68,18 @@
                 registerForTokenListUpdate(this)
                 registerForWalletChanges(this)
                 registerForNetworkChanges(this)
+            },
+            showTradesList() {
+                let item = document.getElementById("trade-list")
+                if (item) {
+                    item.style.display = "block"
+                }
+            },
+            hideTradesList() {
+                let item = document.getElementById("trade-list")
+                if (item) {
+                    item.style.display = "none"
+                }
             },
             async onTokenListUpdate() {
                 await this.setDefaultFactory()

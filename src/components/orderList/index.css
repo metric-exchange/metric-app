@@ -50,8 +50,8 @@
     white-space: pre-wrap;
     text-align: center;
     height: 20px;
-    background: var(--theme-switch-active-button-background-color);
-    color: var(--theme-switch-active-button-text-color);
+    background: var(--connect-wallet-button-background);
+    color: var(--connect-wallet-button-text-color);
     cursor: pointer;
 }
 

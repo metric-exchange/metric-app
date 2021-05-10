@@ -18,12 +18,6 @@
 }
 
 .order-state-active {
-    background-color: var(--swap-button-background-color);
-    color: var(--swap-button-text-color);
-    cursor: pointer;
-}
-
-.order-state-connect-wallet {
     background-color: var(--connect-wallet-button-background);
     color: var(--connect-wallet-button-text-color);
     cursor: pointer;

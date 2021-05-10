@@ -51,9 +51,7 @@
                 this.update()
             },
             buttonClass() {
-                if (this.props.orderFactory.stateManager.current.code === OrderState.NO_WALLET_CONNECTION) {
-                    return "order-state-connect-wallet"
-                } else if (this.props.orderFactory.stateManager.isReady()) {
+                if (this.props.orderFactory.stateManager.isReady()) {
                     return "order-state-active"
                 } else if (this.props.orderFactory.stateManager.current.code === OrderState.REJECTED) {
                     return "order-state-invalid"

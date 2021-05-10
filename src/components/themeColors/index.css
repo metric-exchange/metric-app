@@ -28,7 +28,7 @@
 
   --scrollbar-color: #3D3D3D;
   --inactive-button-background-color: #000000;
-  --invalid-button-background-color: #300000;
+  --invalid-button-background-color: #b30202;
   --item-card-color: #0000003B;
 
   --active-text-color: #60FFD9;
@@ -68,7 +68,7 @@
 
   --scrollbar-color: #EDEDED;
   --inactive-button-background-color: #F9F9F9;
-  --invalid-button-background-color: #ffdfdf;
+  --invalid-button-background-color: #ff3c3c;
   --item-card-color: #F9F9F9;
 
   --active-text-color: #000000;

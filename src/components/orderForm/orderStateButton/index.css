@@ -31,4 +31,5 @@
 
 .order-state-invalid {
     background-color: var(--invalid-button-background-color);
+    color: var(--connect-wallet-button-text-color);
 }

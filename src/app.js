@@ -30,7 +30,12 @@ if (process.env.NODE_ENV === 'production') {
 */
 
 import * as Rollbar from "rollbar";
-import {isConnectedToBscMainNet, isConnectedToEthereumMainNet, isSupportedNetwork} from "./common/ChainHelpers";
+import {
+    isConnectedToBscMainNet,
+    isConnectedToEthereumMainNet,
+    isConnectedToPolygonMainNet,
+    isSupportedNetwork
+} from "./common/ChainHelpers";
 Rollbar.init(
     {
         accessToken: "b317442394e7414b92fabd9608992313",
@@ -74,6 +79,7 @@ install(c => {
 
     c.isConnectedToEthereumMainNet = isConnectedToEthereumMainNet
     c.isConnectedToBscMainNet = isConnectedToBscMainNet
+    c.isConnectedToPolygonMainNet = isConnectedToPolygonMainNet
     c.isSupportedNetwork = isSupportedNetwork
 
     c.obfuscateAddress = obfuscateAddress

@@ -17,7 +17,18 @@
     margin: 4px 2px 4px 15px;
 }
 
+.chain-list {
+    display: grid;
+    grid-template-columns: auto;
+}
+
 .binance-smart-chain {
     background-color: gold;
     color: black;
+}
+
+.polygon-chain {
+    background-color: white;
+    color: #8600ff;
+    border: 2px solid #8600ff;
 }

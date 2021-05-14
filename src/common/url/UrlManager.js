@@ -1,5 +1,10 @@
 import {findOrAddTokenWithAddress} from "../tokens/token_fetch";
-import {chainToken, getConnectedNetworkConfig, isConnectedToEthereumMainNet} from "../ChainHelpers";
+import {
+    chainToken,
+    getConnectedNetworkConfig,
+    isConnectedToBscMainNet,
+    isConnectedToEthereumMainNet
+} from "../ChainHelpers";
 
 export class UrlManager {
 
@@ -51,16 +56,25 @@ export class UrlManager {
             return config.defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
         }
 
-        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "busd")
+        if (isConnectedToBscMainNet()) {
+            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "busd")
+        }
+
+        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "usdc")
     }
 
     static metricToken() {
         let config = getConnectedNetworkConfig()
+
         if (isConnectedToEthereumMainNet()) {
             return config.defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
         }
 
-        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "bmetric")
+        if (isConnectedToBscMainNet()) {
+            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "bmetric")
+        }
+
+        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "matic")
     }
 
     sanitizeUrl() {

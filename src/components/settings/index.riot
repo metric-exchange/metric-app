@@ -46,13 +46,18 @@
         import ChainSelection from '../chainSelection/index.riot'
         import EthIcon from '../../common/tokens/eth.png'
         import BscIcon from '../../common/tokens/bnb.png'
+        import PolygonIcon from '../../common/tokens/polygon.png'
         import {
             accountAddress,
             obfuscateAddress,
             registerForWalletChanges, tryFormatWalletName
         } from "../../common/wallet/WalletManager";
         import makeBlockie from 'ethereum-blockies-base64';
-        import {isConnectedToBscMainNet, isConnectedToEthereumMainNet} from "../../common/ChainHelpers";
+        import {
+            isConnectedToBscMainNet,
+            isConnectedToEthereumMainNet,
+            isConnectedToPolygonMainNet
+        } from "../../common/ChainHelpers";
 
         let DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000"
 
@@ -66,6 +71,7 @@
                 icon: Image,
                 ethIcon: EthIcon,
                 bscIcon: BscIcon,
+                polygonIcon: PolygonIcon,
                 dropDownClicked: false,
                 address: DEFAULT_ADDRESS,
                 accountDisplay: null,
@@ -117,6 +123,10 @@
 
                 if (isConnectedToBscMainNet()) {
                     return this.state.bscIcon
+                }
+
+                if (isConnectedToPolygonMainNet()) {
+                    return this.state.polygonIcon
                 }
 
                 return null

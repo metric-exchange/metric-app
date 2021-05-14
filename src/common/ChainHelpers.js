@@ -1,4 +1,4 @@
-import {BinanceChainNetworkId, EthereumNetworkId, SupportedNetworks} from "./constants";
+import {BinanceChainNetworkId, EthereumNetworkId, PolygonNetworkId, SupportedNetworks} from "./constants";
 import {ConnectedNetworkId} from "./wallet/WalletManager";
 import {web3ModalProvider} from "./wallet/Web3Modal";
 
@@ -15,8 +15,14 @@ export function isConnectedToBscMainNet() {
     return ConnectedNetworkId === BinanceChainNetworkId
 }
 
+export function isConnectedToPolygonMainNet() {
+    return ConnectedNetworkId === PolygonNetworkId
+}
+
 export function isSupportedNetwork() {
-    return ConnectedNetworkId === EthereumNetworkId || ConnectedNetworkId === BinanceChainNetworkId
+    return ConnectedNetworkId === EthereumNetworkId
+        || ConnectedNetworkId === BinanceChainNetworkId
+        || ConnectedNetworkId === PolygonNetworkId
 }
 
 export function chainToken() {

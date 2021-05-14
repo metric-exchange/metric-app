@@ -7,6 +7,7 @@ import GoldIcon from "./tokens/gold.png";
 export let EthereumNetworkId = 1;
 
 export let BinanceChainNetworkId = 56;
+export let PolygonNetworkId = 137;
 
 export let SupportedNetworks = [
     {
@@ -153,6 +154,71 @@ export let SupportedNetworks = [
                 },
                 disabled: false,
                 hasHidingGame: false
+            }
+        ]
+    },
+    {
+        id: PolygonNetworkId,
+        name: "polygon chain",
+        config: {
+            chainId: '0x89',
+            chainName: 'Polygon Mainnet',
+            nativeCurrency:
+                {
+                    name: 'MATIC',
+                    symbol: 'MATIC',
+                    decimals: 18
+                },
+            rpcUrls: [
+                "https://rpc-mainnet.matic.network",
+                "wss://ws-mainnet.matic.network"
+            ]
+        },
+        uris: {
+            zeroX: "https://polygon.api.0x.org",
+            tokens: "https://unpkg.com/quickswap-default-token-list@1.0.48/build/quickswap-default.tokenlist.json"
+        },
+        defaultTokens: [
+            {
+                address: "0x0000000000000000000000000000000000001010".toLowerCase(),
+                decimals: 18,
+                symbol: "MATIC",
+                logoURI: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg?1612939050",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                chainToken: true
+            },
+            {
+                address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                decimals: 18,
+                symbol: "WMATIC",
+                logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                wrappedChainToken: true
+            },
+            {
+                address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+                decimals: 6,
+                symbol: "USDC",
+                logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false
             }
         ]
     }

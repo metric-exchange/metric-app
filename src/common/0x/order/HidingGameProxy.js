@@ -1,6 +1,6 @@
 import {fetchJson, postJson} from "../../JsonApiFetch";
 import Rollbar from "rollbar";
-import {RfqOrder, eip712SignTypedDataWithProviderAsync} from "@0x/protocol-utils";
+import {RfqOrder, SignatureType} from "@0x/protocol-utils";
 import {generatePseudoRandom256BitNumber} from '@0x/utils'
 import {ObservableValue} from "../../order/ObservableValue";
 import {accountAddress, getProvider} from "../../wallet/WalletManager";
@@ -43,11 +43,15 @@ export class HidingGameProxy {
             expiry: orderParams.expiry
         });
 
-        let signature = await eip712SignTypedDataWithProviderAsync(
-            order.getEIP712TypedData(),
-            accountAddress().toLowerCase(),
-            getProvider()
-        )
+        const signature = await order.getSignatureWithProviderAsync(
+            getProvider(),
+        );
+
+        // to activate when this is released: https://github.com/MetaMask/metamask-extension/pull/11064
+        // const signature = await order.getSignatureWithProviderAsync(
+        //     getProvider(),
+        //     SignatureType.EIP712,
+        // );
 
         return {
             maker: order.maker,

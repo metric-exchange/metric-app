@@ -23,6 +23,7 @@ export class OrderStateDisplays {
         this.messages[OrderState.INSUFFICIENT_TOKEN_BALANCE] = "submit.insufficient_balance"
         this.messages[OrderState.UNKNOWN_TOKEN_ALLOWANCE] = "submit.checking_approval"
         this.messages[OrderState.INSUFFICIENT_TOKEN_ALLOWANCE] = "submit.approve"
+        this.messages[OrderState.LIMIT_ORDER_BELOW_MARKET_PRICE] = "submit.place_order_below_market_price"
         this.messages[OrderState.VALID_ORDER] = "submit.place_order"
         this.messages[OrderState.VALID_WRAP] = "submit.wrap_eth"
         this.messages[OrderState.VALID_UNWRAP] = "submit.unwrap_eth"

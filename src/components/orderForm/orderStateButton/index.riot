@@ -51,13 +51,20 @@
                 this.update()
             },
             buttonClass() {
+                let buttonClasses = ""
+
                 if (this.props.orderFactory.stateManager.isReady()) {
-                    return "order-state-active"
-                } else if (this.props.orderFactory.stateManager.current.code === OrderState.REJECTED) {
-                    return "order-state-invalid"
+                    buttonClasses += "order-state-active"
                 }
 
-                return ""
+                if (
+                    this.props.orderFactory.stateManager.current.code === OrderState.REJECTED ||
+                    this.props.orderFactory.stateManager.current.code === OrderState.LIMIT_ORDER_BELOW_MARKET_PRICE
+                ) {
+                    buttonClasses += " order-state-invalid"
+                }
+
+                return buttonClasses
             },
             async buttonAction() {
                 if (!isWalletConnected()) {

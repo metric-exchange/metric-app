@@ -99,6 +99,7 @@
             "approving" : "正在批准{{token.symbol}}",
             "fill_order_params": "输入金额和价格",
             "fill_swap_params": "输入金额",
+            "place_order_below_market_price" : "下单价比市场价格低{{diff}}％",
             "place_order" : "发送订单",
             "wrap_eth" : "得到WETH",
             "unwrap_eth" : "恢复ETH",

@@ -99,6 +99,7 @@
             "approving" : "APPROVING {{token.symbol}}",
             "fill_order_params": "ENTER ORDER AMOUNTS & PRICE",
             "fill_swap_params": "ENTER AMOUNTS",
+            "place_order_below_market_price" : "PLACE ORDER {{diff}}% LOWER THAN MARKET PRICE",
             "place_order" : "PLACE ORDER",
             "wrap_eth" : "WRAP ETH",
             "unwrap_eth" : "UNWRAP ETH",

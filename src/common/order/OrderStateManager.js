@@ -75,6 +75,7 @@ export const OrderState = {
     INSUFFICIENT_TOKEN_BALANCE      : 70,
     UNKNOWN_TOKEN_ALLOWANCE         : 80,
     INSUFFICIENT_TOKEN_ALLOWANCE    : 100,
+    LIMIT_ORDER_BELOW_MARKET_PRICE  : 105,
     VALID_ORDER                     : 110,
     VALID_WRAP                      : 120,
     VALID_UNWRAP                    : 130,

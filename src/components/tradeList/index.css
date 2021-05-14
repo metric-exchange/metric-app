@@ -54,7 +54,7 @@
 }
 
 .sell-trade {
-    color: #CC3F3F;
+    color: var(--invalid-button-background-color);
 }
 
 .buy-trade {

@@ -20,7 +20,7 @@
 }
 
 .ask {
-    color: #CC3F3F;
+    color: var(--invalid-button-background-color);
 }
 
 .order {

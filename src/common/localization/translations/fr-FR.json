@@ -99,6 +99,7 @@
             "approving" : "{{token.symbol}} EN COURS D'APPROBATION",
             "fill_order_params": "SAISIR LES MONTANTS & PRIX",
             "fill_swap_params": "SAIRIR LES MONTANTS",
+            "place_order_below_market_price" : "PLACER l'ORDRE {{diff}}% INFÉRIEUR AU PRIX DU MARCHÉ",
             "place_order" : "PLACER l'ORDRE",
             "wrap_eth" : "OBTENIR WETH",
             "unwrap_eth" : "RECUPERER ETH",

@@ -24,6 +24,20 @@ export class OrderPrice {
         this.priceInversionObservers = new ObservationRegister()
     }
 
+    async priceDiffToMarket(sellAmount) {
+        let marketPrice = await getSwapPrice(this.baseToken, this.quoteToken, sellAmount)
+
+        if (this.price.value.isGreaterThan(0)) {
+            return marketPrice
+                    .price
+                    .minus(this.price.value)
+                    .multipliedBy(100)
+                    .dividedBy(marketPrice.price)
+        } else {
+            return new BigNumber(NaN)
+        }
+    }
+
     priceTokens() {
         if (!this.inverted) {
             return {

@@ -100,6 +100,7 @@
             "approval_rejected": "{{token.symbol}} УТВЕРЖДЕНИЕ ОТКЛОНЕНО",
             "fill_order_params": "ВВЕДИТЕ СУММЫ И ЦЕНЫ",
             "fill_swap_params": "УЗНАТЬ СУММЫ",
+            "place_order_below_market_price" : "РАЗМЕСТИТЬ ЗАКАЗ НА {{diff}}% НИЖЕ РЫНОЧНОЙ ЦЕНЫ",
             "place_order" : "РАЗМЕСТИТЬ ЗАКАЗ",
             "wrap_eth" : "получать WETH",
             "unwrap_eth" : "рекуперировать ETH",

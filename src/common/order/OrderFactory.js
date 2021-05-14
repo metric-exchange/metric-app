@@ -4,6 +4,7 @@ import {approveZeroXAllowance} from "../0x/order/ZeroXOrderManagerProxy";
 import Rollbar from "rollbar";
 import {UrlManager} from "../url/UrlManager";
 import {chainToken, isUnwrapping, isWrapping} from "../ChainHelpers";
+import {formatNumber} from "../helpers";
 
 export class OrderFactory {
 
@@ -65,7 +66,12 @@ export class OrderFactory {
         } else if (isUnwrapping(this.order.sellToken, this.order.buyToken)) {
             await this.stateManager.setReadyState(OrderState.VALID_UNWRAP)
         } else {
-            await this.stateManager.setReadyState(OrderState.VALID_ORDER)
+            let priceToMarketDiff = await this.order.sellPrice.priceDiffToMarket(this.order.sellAmount.value)
+            if (this.order.isLimitOrder() && priceToMarketDiff.isGreaterThan(5)) {
+                await this.stateManager.setReadyState(OrderState.LIMIT_ORDER_BELOW_MARKET_PRICE, {diff: formatNumber(priceToMarketDiff, 0)})
+            } else {
+                await this.stateManager.setReadyState(OrderState.VALID_ORDER)
+            }
         }
     }
 

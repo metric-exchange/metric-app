@@ -46,7 +46,7 @@
 }
 
 .sell-amount {
-    color: #CC3F3F;
+    color: var(--invalid-button-background-color);
 }
 
 .buy-amount {

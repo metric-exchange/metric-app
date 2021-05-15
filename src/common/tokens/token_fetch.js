@@ -184,8 +184,6 @@ export async function loadTokenList()
                     addToken({
                         balance: new BigNumber(NaN),
                         allowance: {
-                            Erc20Proxy: NaN,
-                            ExchangeProxyAllowanceTarget: NaN,
                             ExchangeProxyV4Address: NaN
                         },
                         address: t.address.toLowerCase(),

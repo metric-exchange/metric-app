@@ -189,8 +189,8 @@
                 if (this.state.orderFactory.order.isHidingGameOrder()) {
                     if (!this.state.orderFactory.order.sellToken.hasHidingGame) {
                         this.state.orderFactory.order.setTokens(
-                            this.state.orderFactory.order.sellToken,
-                            wrappedChainToken()
+                            wrappedChainToken(),
+                            this.state.orderFactory.order.buyToken,
                         )
                     }
 

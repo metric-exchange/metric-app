@@ -12,9 +12,9 @@
 }
 
 .language-selection-line select {
-    background-color: var(--swap-form-background-color);
-    color: var(--theme-switch-button-text-color);
-    border: none;
+    color: var(--theme-switch-active-button-text-color);
+    background: var(--theme-switch-active-button-background-color);
+    border: 1px solid var(--theme-switch-active-button-border-color);
     border-radius: 5px;
     margin-top: 10px;
     padding: 10px;
@@ -29,5 +29,6 @@
 }
 
 .language-selection-line select option:after {
-    background: var(--token-selector-table-hover-background-color);
+    color: var(--theme-switch-active-button-text-color);
+    background: var(--theme-switch-active-button-background-color);
 }

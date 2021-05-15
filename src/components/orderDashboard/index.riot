@@ -103,10 +103,6 @@
             },
             async onNetworkChanges() {
                 if (isSupportedNetwork()) {
-                    let sellToken = UrlManager.defaultSellToken()
-                    let buyToken = UrlManager.defaultBuyToken()
-                    this.props.urlManager.updateUrl(sellToken, buyToken)
-
                     location.reload()
                 }
             },

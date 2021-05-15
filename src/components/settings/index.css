@@ -60,10 +60,18 @@
 }
 
 .wallet-switch {
-    padding-bottom: 10px;
-    padding-top: 10px;
-    padding-left: 15px;
+    display: inline-block;
+    background: var(--connect-wallet-button-background);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    color: var(--connect-wallet-button-text-color);
+    border: none;
+    padding: 10px;
     cursor: pointer;
+    margin: 4px 2px 4px 15px;
 }
 
 .dropdown-content{
@@ -93,4 +101,8 @@
                 border-radius: 5px;
     }
 
+}
+
+.settings-section {
+    padding: 10px;
 }

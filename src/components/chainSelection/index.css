@@ -1,0 +1,23 @@
+.network-switch-title {
+    margin-left: 15px;
+}
+
+.chain-selector {
+    display: inline-block;
+    background: var(--theme-switch-button-background-color);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    color: var(--theme-switch-button-text-color);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin: 4px 2px 4px 15px;
+}
+
+.binance-smart-chain {
+    background-color: gold;
+    color: black;
+}

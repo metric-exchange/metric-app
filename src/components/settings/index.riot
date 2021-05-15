@@ -19,14 +19,23 @@
 
     <div style={ isClicked() ? "display:block" : 'display:none'} >
         <div class="dropdown-content" id="settings-dropdown">
-            <div if={ this.isWalletConnected() }
-                 class="wallet-switch"
-                 onclick={ this.switchWallet }
-            >
-                { this.i18next.t('wallet.change_wallet') }
+            <div class="settings-section">
+                <div if={ this.isWalletConnected() }
+                     class="wallet-switch"
+                     onclick={ this.switchWallet }
+                >
+                    { this.i18next.t('wallet.change_wallet') }
+                </div>
             </div>
-            <language-selector/>
-            <theme-switch/>
+            <div class="settings-section">
+                <chain-selection/>
+            </div>
+            <div class="settings-section">
+                <language-selector/>
+            </div>
+            <div class="settings-section">
+                <theme-switch/>
+            </div>
         </div>
     </div>
 
@@ -34,6 +43,7 @@
         import './index.css'
         import ThemeSwitch from '../themeSwitch/index.riot'
         import LanguageSelector from '../languageSelector/index.riot'
+        import ChainSelection from '../chainSelection/index.riot'
         import EthIcon from '../../common/tokens/eth.png'
         import BscIcon from '../../common/tokens/bnb.png'
         import {
@@ -49,7 +59,8 @@
         export default {
             components: {
                 ThemeSwitch,
-                LanguageSelector
+                LanguageSelector,
+                ChainSelection
             },
             state: {
                 icon: Image,

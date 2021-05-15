@@ -21,7 +21,7 @@
                 { config.SWAP }
             </div>
             <div class="order-type"
-                 if={ currentOrderType() !== config.HIDING_GAME && isOrderSupportedByHidingGame() }
+                 if={ currentOrderType() !== config.HIDING_GAME }
                  onclick={ setHidingGameType }
             >
                 { config.HIDING_GAME }
@@ -30,8 +30,6 @@
     </div>
 
     <script>
-
-        import {getHidingGameProxy} from "../../../common/0x/order/ZeroXV3UserPendingOrdersProxy";
 
         export default {
             config:{
@@ -42,19 +40,8 @@
             state: {
                 showList: false
             },
-            onBeforeMount() {
-                this.props.orderFactory.order.tokensChangesObservers.register(this, 'updateDisplay')
-                getHidingGameProxy().supportedTokens.observe(this, 'updateDisplay')
-            },
             showOrderTypesList() {
                 this.update({ showList: !this.state.showList })
-            },
-            updateDisplay() {
-                this.update()
-            },
-            isOrderSupportedByHidingGame() {
-                return this.props.orderFactory.order.sellToken.hasHidingGame &&
-                    this.props.orderFactory.order.buyToken.hasHidingGame
             },
             setHidingGameType() {
                 this.update({ showList: false })
@@ -75,7 +62,7 @@
                     return this.config.SWAP
                 }
 
-                if (this.props.orderFactory.order.isLimitOrder() && this.props.orderFactory.order.useHidingGame.value ) {
+                if (this.props.orderFactory.order.isHidingGameOrder()) {
                     return this.config.HIDING_GAME
                 }
 

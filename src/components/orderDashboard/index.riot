@@ -37,7 +37,12 @@
         import OrderBook from '../orderBook/index.riot'
         import OrderList from '../orderList/index.riot'
         import TradeList from '../tradeList/index.riot'
-        import {registerForTokenListUpdate} from "../../common/tokens/token_fetch";
+        import {
+            registerForTokenListFilterUpdate,
+            registerForTokenListUpdate,
+            tokensList, triggerTokenListFilterUpdateEvent,
+            triggerTokenListUpdateEvent
+        } from "../../common/tokens/token_fetch";
         import {SwapOrderFactory} from "../../common/order/SwapOrderFactory";
         import {
             accountAddress,
@@ -123,6 +128,7 @@
                 this.state.orderFactory.order.useHidingGame.value = false
                 this.state.orderFactory.clearValues()
                 this.update()
+                triggerTokenListFilterUpdateEvent()
             },
             setLimitOrderType(isHidingGame = false) {
                 localStorage.setItem('orderType', Order.LimitOrderType)
@@ -131,11 +137,12 @@
                     this.state.orderFactory.stateManager,
                     accountAddress()
                 )
-                this.switchToWrappedTokenIfNeeded()
                 this.state.orderFactory.order.type = Order.LimitOrderType
                 this.state.orderFactory.order.useHidingGame.value = isHidingGame
+                this.switchToWrappedTokenIfNeeded()
                 this.state.orderFactory.clearValues()
                 this.update()
+                triggerTokenListFilterUpdateEvent()
             },
             async setDefaultFactory() {
                 let sellToken = await this.props.urlManager.urlSellToken()
@@ -174,12 +181,33 @@
                 let token = chainToken()
                 if (this.state.orderFactory.order.buyToken.symbol === token.symbol) {
                     this.state.orderFactory.order.setTokens(this.state.orderFactory.order.sellToken, wrappedChainToken())
-                    this.refreshUrl()
                 }
                 if (this.state.orderFactory.order.sellToken.symbol === token.symbol) {
                     this.state.orderFactory.order.setTokens(wrappedChainToken(), this.state.orderFactory.order.buyToken)
-                    this.refreshUrl()
                 }
+
+                if (this.state.orderFactory.order.isHidingGameOrder()) {
+                    if (!this.state.orderFactory.order.sellToken.hasHidingGame) {
+                        this.state.orderFactory.order.setTokens(
+                            this.state.orderFactory.order.sellToken,
+                            wrappedChainToken()
+                        )
+                    }
+
+                    if (!this.state.orderFactory.order.buyToken.hasHidingGame ||
+                        this.state.orderFactory.order.buyToken.address === this.state.orderFactory.order.sellToken.address
+                    ) {
+                        let another = tokensList()
+                            .find(t => t.hasHidingGame && t.address !== this.state.orderFactory.order.sellToken.address)
+
+                        this.state.orderFactory.order.setTokens(
+                            this.state.orderFactory.order.sellToken,
+                            another
+                        )
+                    }
+                }
+
+                this.refreshUrl()
             },
             switchToUnwrappedTokenIfNeeded() {
                 let wrappedToken = wrappedChainToken()

@@ -32,8 +32,12 @@
         import {
             addTokenWithAddress,
             fetchTokensInfo,
-            findTokenWithAddress, isTokenListInitialized, registerForTokenBalancesUpdate,
-            registerForTokenListUpdate, resetTokensInfo,
+            findTokenWithAddress,
+            isTokenListInitialized,
+            registerForTokenBalancesUpdate,
+            registerForTokenListFilterUpdate,
+            registerForTokenListUpdate,
+            resetTokensInfo,
             tokensList
         } from "../../../common/tokens/token_fetch";
         import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../../common/wallet/WalletManager";
@@ -62,6 +66,7 @@
             async onMounted() {
                 document.addEventListener('click', this.listenToSelectorCloseClick)
                 registerForTokenListUpdate(this)
+                registerForTokenListFilterUpdate(this)
                 registerForTokenBalancesUpdate(this)
                 registerForWalletChanges(this)
 
@@ -96,6 +101,9 @@
                     this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
                 this.update()
+            },
+            async onTokenListFilterUpdate() {
+                await this.onTokenListUpdate()
             },
             async onTokenListUpdate() {
                 await this.onHidingGameInit()
@@ -164,6 +172,7 @@
                 let that = this
                 this.state.sortedTokens =
                     this.sortTokens(tokensList().filter(t => !t.disabled), filter)
+                        .filter(t => !that.props.hidingGameOnly || t.hasHidingGame)
                         .filter(t => {
                             return excluded.find(te => te.address === t.address) === undefined
                         })
@@ -171,7 +180,7 @@
                             return filter == null ||
                                 x.symbol.toLowerCase().startsWith(filter) ||
                                 (filter.match(that.state.addressRegEx) && x.address.toLowerCase().startsWith(filter))
-                        }).splice(0, 100)
+                        }).splice(0, 500)
 
                 if (canUpdate) {
                     this.update({ showLoader: false })

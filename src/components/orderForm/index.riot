@@ -65,6 +65,7 @@
 
         <div id="token-selector-box" style="display:none" }>
             <token-selector
+                    hidingGameOnly={ props.orderFactory.order.isHidingGameOrder() }
                     excludedTokens={ excludedTokens }
                     closeTokenSelector={ closeTokenSelector }
                     selectToken={ selectToken }

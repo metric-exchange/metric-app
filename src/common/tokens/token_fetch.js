@@ -23,6 +23,10 @@ export function registerForTokenListUpdate(item) {
     register.push(item)
 }
 
+export function registerForTokenListFilterUpdate(item) {
+    filterRegister.push(item)
+}
+
 export function registerForTokenBalancesUpdate(item) {
     balancesRegister.push(item)
 }
@@ -105,11 +109,9 @@ async function updateBalance(token, address, balance) {
         if (token.balance.isGreaterThan(0) && token.address !== chainToken().address) {
             await fetchAllowance(token, address, ExchangeProxyV4Address)
         } else {
-            let balanceChanged = false
             let allowance = token.address !== chainToken().address ? 0 : 1e27
             if (token.allowance[ExchangeProxyV4Address] !== allowance) {
                 token.allowance[ExchangeProxyV4Address] = allowance
-                balanceChanged = true
             }
         }
 
@@ -197,12 +199,23 @@ export async function loadTokenList()
 
         tokenListInitialized = true
 
-        await Promise.all(
-            register.map(item => item.onTokenListUpdate())
-        )
+        await triggerTokenListUpdateEvent()
+
     } catch (e) {
         console.error(`Token list fetch failed, search by address can still be used ${e}`)
     }
+}
+
+export async function triggerTokenListUpdateEvent() {
+    await Promise.all(
+        register.map(item => item.onTokenListUpdate())
+    )
+}
+
+export async function triggerTokenListFilterUpdateEvent() {
+    await Promise.all(
+        filterRegister.map(item => item.onTokenListFilterUpdate())
+    )
 }
 
 export function isTokenListInitialized() {
@@ -279,6 +292,7 @@ let customTokensManager = new CustomTokenManager()
 
 let tokens = []
 let register = []
+let filterRegister = []
 let balancesRegister = []
 let tokenListInitialized = false
 

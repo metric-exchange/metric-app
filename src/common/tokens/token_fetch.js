@@ -57,6 +57,17 @@ export async function fetchTokensInfo(address) {
     await executeBatch(address, 0, 100, 500)
 }
 
+export async function updateTokenBalance(token, address) {
+    if (token.address === chainToken().address) {
+        let b = await window.web3Modal.eth.getBalance(address)
+        await updateBalance(token, address, b)
+    } else {
+        let contract = new window.web3Modal.eth.Contract(Erc20Abi, token.address);
+        let b = await contract.methods.balanceOf(address).call()
+        await updateBalance(token, address, b)
+    }
+}
+
 async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
     if (batchIndex*batchSize < tokens.length) {
         try {

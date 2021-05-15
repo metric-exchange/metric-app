@@ -38,7 +38,7 @@
             registerForTokenListFilterUpdate,
             registerForTokenListUpdate,
             resetTokensInfo,
-            tokensList
+            tokensList, updateTokenBalance
         } from "../../../common/tokens/token_fetch";
         import {accountAddress, isWalletConnected, registerForWalletChanges} from "../../../common/wallet/WalletManager";
         import TokenSelection from './tokenSelection/index.riot'
@@ -71,6 +71,14 @@
                 registerForWalletChanges(this)
 
                 if (isTokenListInitialized() && isWalletConnected()) {
+                    await Promise.all([
+                        updateTokenBalance(this.props.orderFactory.order.sellToken, accountAddress()),
+                        updateTokenBalance(this.props.orderFactory.order.buyToken, accountAddress())
+                    ])
+                    if (isConnectedToEthereumMainNet()) {
+                        let metric = tokensList().find(t => t.symbol.toLowerCase() === "metric")
+                        await updateTokenBalance(metric, accountAddress())
+                    }
                     await fetchTokensInfo(accountAddress())
                     this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
@@ -93,11 +101,15 @@
                     })
                 }
             },
-            onWalletChanges() {
+            async onWalletChanges() {
                 resetTokensInfo()
                 if (isWalletConnected() && isTokenListInitialized()) {
                     clearInterval(this.state.tokenListSynchroHandle)
-                    fetchTokensInfo(accountAddress())
+                    await Promise.all([
+                        updateTokenBalance(this.props.orderFactory.order.sellToken, accountAddress()),
+                        updateTokenBalance(this.props.orderFactory.order.buyToken, accountAddress())
+                    ])
+                    await fetchTokensInfo(accountAddress())
                     this.state.tokenListSynchroHandle = setInterval(fetchTokensInfo, 60000, accountAddress())
                 }
                 this.update()

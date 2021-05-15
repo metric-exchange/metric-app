@@ -13,11 +13,7 @@ export function calculateMetricFee() {
 
 export function fetchMetricBalance() {
 
-    let metric = tokensList().find(t => {
-        let symbol = t.symbol.toLowerCase()
-        return symbol === "metric" || symbol === "bmetric"
-    })
-
+    let metric = tokensList().find(t => t.symbol.toLowerCase() === "metric")
     if (metric !== undefined) {
         return metric.balance
     }

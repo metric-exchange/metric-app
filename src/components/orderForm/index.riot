@@ -65,6 +65,7 @@
 
         <div id="token-selector-box" style="display:none" }>
             <token-selector
+                    orderFactory={ props.orderFactory }
                     hidingGameOnly={ props.orderFactory.order.isHidingGameOrder() }
                     excludedTokens={ excludedTokens }
                     closeTokenSelector={ closeTokenSelector }
@@ -86,6 +87,8 @@
         import SlippagePercentage from './slippagePercentage/index.riot'
         import OrderRoutes from './orderRoutes/index.riot'
         import {chainToken} from "../../common/ChainHelpers";
+        import {accountAddress, isWalletConnected} from "../../common/wallet/WalletManager";
+        import {updateTokenBalance} from "../../common/tokens/token_fetch";
 
         export default {
             components: {
@@ -144,13 +147,16 @@
 
                 return tokens
             },
-            async selectToken(token) {
+            selectToken(token) {
                 if (this.state.selectionType === "input") {
                     this.props.orderFactory.order.setTokens(token, this.props.orderFactory.order.buyToken)
                 } else {
                     this.props.orderFactory.order.setTokens(this.props.orderFactory.order.sellToken, token)
                 }
                 this.update()
+                if (isWalletConnected()) {
+                    updateTokenBalance(token, accountAddress());
+                }
             },
             setTime(dateString, format) {
                 this.props.orderFactory.setExpiryTime(dateString, format)

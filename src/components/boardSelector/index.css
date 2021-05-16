@@ -67,8 +67,7 @@
 
 .footer-social-media-links {
     display: grid;
-    grid-template-columns: 32% 32% 32%;
-    grid-gap: 2%;
+    grid-template-columns: 25% 25% 25% 25%;
     place-items: center;
 }
 

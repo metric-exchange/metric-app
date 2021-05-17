@@ -23,7 +23,10 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = new Big
 
         if (quote.price !== null) {
             return {
-                price: new BigNumber(quote.price),
+                price: new BigNumber(quote.buyAmount)
+                    .dividedBy(10 ** outputToken.decimals)
+                    .dividedBy(sellAmount)
+                ,
                 gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
                 routes: extractRoutes(quote)
             }
@@ -55,7 +58,10 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
 
         if (quote.price !== null) {
             return {
-                price: new BigNumber(1).dividedBy(new BigNumber(quote.price)),
+                price: new BigNumber(buyAmount)
+                    .dividedBy(quote.sellAmount)
+                    .multipliedBy(10 ** inputToken.decimals)
+                ,
                 gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
                 routes: extractRoutes(quote)
             }

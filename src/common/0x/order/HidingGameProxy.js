@@ -4,6 +4,7 @@ import {RfqOrder, SignatureType} from "@0x/protocol-utils";
 import {generatePseudoRandom256BitNumber} from '@0x/utils'
 import {ObservableValue} from "../../order/ObservableValue";
 import {accountAddress, getProvider} from "../../wallet/WalletManager";
+import {MetricReferralAddress} from "../../MetricFee";
 
 export class HidingGameProxy {
 
@@ -29,6 +30,9 @@ export class HidingGameProxy {
 
     async buildSignedOrder(orderParams) {
 
+        let salt = generatePseudoRandom256BitNumber().mod(2**64 ).toString(10)
+        let partnerAddress = MetricReferralAddress.toLowerCase()
+
         const order = new RfqOrder({
             maker: accountAddress().toLowerCase(),
             makerToken: orderParams.makerToken.toLowerCase(),
@@ -37,7 +41,7 @@ export class HidingGameProxy {
             takerAmount: orderParams.takerAmount,
             txOrigin: this.trxOrigin,
             pool: this.pool,
-            salt: generatePseudoRandom256BitNumber(),
+            salt: `${partnerAddress}0000${salt}`,
             verifyingContract: this.verifyingContract,
             taker: this.taker,
             expiry: orderParams.expiry

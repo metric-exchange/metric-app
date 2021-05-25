@@ -12,6 +12,10 @@ export class ObservationRegister {
         })
     }
 
+    unregister(observer) {
+        this._register = [...this._register.filter(o => o.observer !== observer)]
+    }
+
     toNotify(source, event = undefined) {
         return this._register.map(async (o) => {await o.observer[o.callback](source, event)})
     }

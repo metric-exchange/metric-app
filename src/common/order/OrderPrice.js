@@ -149,6 +149,10 @@ export class OrderPrice {
         this.priceInversionObservers.register(observer, callback)
     }
 
+    stopObservePriceInversions(observer) {
+        this.priceInversionObservers.unregister(observer)
+    }
+
     buyFeeAmountFor(amount) {
         return amount.multipliedBy(this.tryMetricFee())
     }

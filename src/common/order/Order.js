@@ -46,6 +46,10 @@ export class Order {
         this.tokensChangesObservers.register(observer, callback)
     }
 
+    stopObserveTokenChanges(observer) {
+        this.tokensChangesObservers.unregister(observer)
+    }
+
     async setTokens(sellToken, buyToken) {
         this.sellToken = sellToken
         this.buyToken = buyToken

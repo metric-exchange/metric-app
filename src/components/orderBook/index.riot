@@ -81,6 +81,8 @@
                     this.props.orderFactory.order.buyToken
                 )
 
+                this.state.orderBook.reset()
+
                 this.props.orderFactory.order.observeTokenChanges(this, 'onTokenChanges')
                 this.props.orderFactory.order.sellPrice.observePriceInversions(this, 'onPriceInversion')
                 this.state.orderBook.observe(this)
@@ -107,6 +109,8 @@
             },
             onBeforeUnmount() {
                 if (this.state.orderBook) {
+                    this.props.orderFactory.order.stopObserveTokenChanges(this)
+                    this.props.orderFactory.order.sellPrice.stopObservePriceInversions(this)
                     this.state.orderBook.clear()
                 }
             },

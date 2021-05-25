@@ -14,8 +14,6 @@ export class ZeroXOrderBook {
         this.asks = []
 
         this.observers = []
-        this.activeSyncroLoopId = setInterval((obj) => obj.refresh(), 10000, this)
-        this.refresh()
     }
 
     setTokens(baseToken, quoteToken) {

@@ -25,7 +25,7 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = new Big
             return {
                 price: new BigNumber(quote.buyAmount)
                     .dividedBy(10 ** outputToken.decimals)
-                    .dividedBy(sellAmount)
+                    .dividedBy(correctedAmount)
                 ,
                 gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
                 routes: extractRoutes(quote)

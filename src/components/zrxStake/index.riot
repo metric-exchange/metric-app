@@ -3,20 +3,26 @@
     <input type="text" oninput={ fillPoolId } placeholder="Input pool id, eg: 0x0000000000000000000000000000000000000000000000000000000000000001"/>
     <button onclick={ unstake } if={ correctUnstakePoolId() }>Unstake</button>
     <button onclick={ createPoolAndStake }>CreatePool</button>
+    <button onclick={ getPoolStats }>PoolStats</button>
+    <button onclick={ transferFees }>TransferFees</button>
 
     <script>
-        import {StakingContract} from "@0x/contract-wrappers";
-        import {accountAddress, getProvider} from "../../common/wallet/WalletManager";
+        import {IZeroExContract, StakingContract} from "@0x/contract-wrappers";
+        import {accountAddress, connectWallet, getProvider, initWeb3} from "../../common/wallet/WalletManager";
         import {BigNumber} from "@0x/utils";
         import {Web3Wrapper} from "@0x/web3-wrapper";
 
         export default {
             config: {
                 zrxStakingContract: '0xa26e80e7dea86279c6d778d702cc413e6cffa777',
+                zrxProxyContract: '0xDef1C0ded9bec7F1a1670819833240f027b25EfF',
                 nilPool: '0x0000000000000000000000000000000000000000000000000000000000000000'
             },
             state: {
                 unstakePoolId: undefined
+            },
+            async onMounted() {
+                await connectWallet(false);
             },
             correctUnstakePoolId() {
                 let reg = new RegExp("0x[0-9a-zA-Z]{64}")
@@ -75,6 +81,33 @@
                 );
 
                 console.log('create pool', poolId)
+            },
+
+            async getPoolStats() {
+                const stakingContract =
+                    new StakingContract(this.config.zrxStakingContract, getProvider(), { from: accountAddress() });
+
+                const poolStats = await stakingContract.getStakingPoolStatsThisEpoch(
+                    "0x0000000000000000000000000000000000000000000000000000000000000037"
+                ).callAsync();
+
+                console.log(
+                    poolStats.feesCollected.dividedBy(1e18).toString(10),
+                    poolStats.weightedStake.dividedBy(1e18).toString(10),
+                    poolStats.membersStake.dividedBy(1e18).toString(10),
+                )
+            },
+
+            async transferFees() {
+                const exchangeContract =
+                    new IZeroExContract(this.config.zrxProxyContract, getProvider(), { from: accountAddress() });
+
+                await exchangeContract.transferProtocolFeesForPools([
+                    "0x0000000000000000000000000000000000000000000000000000000000000037"
+                    ]
+                ).awaitTransactionSuccessAsync(
+                    { from: accountAddress() }
+                );
             }
 
         }

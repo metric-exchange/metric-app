@@ -56,45 +56,17 @@ export let SupportedNetworks = [
                 hasHidingGame: false
             },
             {
-                address: "0xb7412e57767ec30a76a4461d408d78b36688409c".toLowerCase(),
+                address: "0xefc1c73a3d8728dc4cf2a18ac5705fe93e5914ac".toLowerCase(),
                 decimals: 18,
-                symbol: "bCRED",
+                symbol: "METRIC",
+                logoURI: "https://etherscan.io/token/images/metric_32.png",
                 balance: new BigNumber(NaN),
                 allowance: {
-                    ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN
-                },
-                disabled: false,
-                hasHidingGame: false
-            },
-            {
-                address: "0xfbfaf8d8e5d82e87b80578fd348f60fb664e9390".toLowerCase(),
-                decimals: 18,
-                symbol: "UPDOWN",
-                logoURI: UpdownIcon,
-                balance: new BigNumber(NaN),
-                allowance: {
-                    ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
-                    ExchangeProxyV4Address: NaN
-                },
-                disabled: false,
-                hasHidingGame: false
-            },
-            {
-                address: "0x940c7ccd1456b29a6f209b641fb0edaa96a15c2d".toLowerCase(),
-                decimals: 18,
-                symbol: "BSGB",
-                balance: new BigNumber(NaN),
-                allowance: {
-                    ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false,
                 hasHidingGame: false
             }
-
         ]
     },
     {
@@ -206,19 +178,6 @@ export let SupportedNetworks = [
                 },
                 disabled: false,
                 wrappedChainToken: true
-            },
-            {
-                address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-                decimals: 6,
-                symbol: "USDC",
-                logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-                balance: new BigNumber(NaN),
-                allowance: {
-                    ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
-                    ExchangeProxyV4Address: NaN
-                },
-                disabled: false
             },
             {
                 address: "0x9f1Aeb72d5F38f2852b2a0f610bFb0391a6a9aB4".toLowerCase(),

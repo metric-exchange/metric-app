@@ -27,7 +27,7 @@
                     { this.i18next.t('wallet.change_wallet') }
                 </div>
             </div>
-            <div class="settings-section">
+            <div class="settings-section" if={ this.isWalletConnected()  }>
                 <chain-selection/>
             </div>
             <div class="settings-section">

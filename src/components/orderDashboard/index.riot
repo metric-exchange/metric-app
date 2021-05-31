@@ -101,6 +101,10 @@
             },
             async onNetworkChanges() {
                 if (isSupportedNetwork()) {
+                    this.props.urlManager.updateUrl(
+                        UrlManager.defaultSellToken(),
+                        UrlManager.defaultBuyToken()
+                    )
                     location.reload()
                 }
             },

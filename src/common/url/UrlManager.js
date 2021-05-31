@@ -51,30 +51,11 @@ export class UrlManager {
     }
 
     static defaultBuyToken() {
-        let config = getConnectedNetworkConfig()
-        if (isConnectedToEthereumMainNet()) {
-            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
-        }
-
-        if (isConnectedToBscMainNet()) {
-            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "busd")
-        }
-
-        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "usdc")
+        return this.metricToken()
     }
 
     static metricToken() {
-        let config = getConnectedNetworkConfig()
-
-        if (isConnectedToEthereumMainNet()) {
-            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
-        }
-
-        if (isConnectedToBscMainNet()) {
-            return config.defaultTokens.find(t => t.symbol.toLowerCase() === "bmetric")
-        }
-
-        return config.defaultTokens.find(t => t.symbol.toLowerCase() === "matic")
+        return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "metric")
     }
 
     sanitizeUrl() {

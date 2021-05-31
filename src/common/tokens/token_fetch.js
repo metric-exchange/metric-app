@@ -9,7 +9,7 @@ import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
 import Rollbar from "rollbar";
 import {BigNumber} from "@0x/utils";
-import {chainToken, getConnectedNetworkConfig} from "../ChainHelpers";
+import {chainToken, getConnectedNetworkConfig, isConnectedToPolygonMainNet} from "../ChainHelpers";
 
 export function resetTokensInfo() {
     tokens.forEach(t => {
@@ -232,9 +232,29 @@ export function isTokenListInitialized() {
 }
 
 export function addToken(token) {
-    if (tokens.find(t => t.address.toLowerCase() === token.address.toLowerCase()) === undefined) {
+    if (isConnectedToPolygonMainNet() &&
+        (token.address.toLowerCase() === "0x0000000000000000000000000000000000001010" ||
+        token.address.toLowerCase() === "0x714550c2c1ea08688607d86ed8eef4f5e4f22323")
+    ) {
+        return
+    }
+
+    if (tokens.find(t => isSameToken(t, token)) === undefined) {
         tokens.push(token)
     }
+}
+
+function isSameToken(a,b) {
+
+    let nativeToken = chainToken()
+
+    if (nativeToken.symbol.toLowerCase() === a.symbol.toLowerCase() ||
+        nativeToken.symbol.toLowerCase() === b.symbol.toLowerCase()
+    ) {
+        return a.symbol.toLowerCase() === b.symbol.toLowerCase()
+    }
+
+    return a.address.toLowerCase() === b.address.toLowerCase()
 }
 
 export async function addTokenWithAddress(address) {

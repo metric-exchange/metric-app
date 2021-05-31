@@ -144,9 +144,9 @@ export let SupportedNetworks = [
                 hasHidingGame: false
             },
             {
-                address: "0x6BA452968b79dEF7E1c5577559b951247BFd4245".toLowerCase(),
+                address: "0x29dfd3d644b18e0345eed3a3c94b4efe35f2771b".toLowerCase(),
                 decimals: 18,
-                symbol: "bMETRIC",
+                symbol: "METRIC",
                 logoURI: "https://etherscan.io/token/images/metric_32.png",
                 balance: new BigNumber(NaN),
                 allowance: {
@@ -180,7 +180,7 @@ export let SupportedNetworks = [
         },
         defaultTokens: [
             {
-                address: "0x0000000000000000000000000000000000001010".toLowerCase(),
+                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee".toLowerCase(),
                 decimals: 18,
                 symbol: "MATIC",
                 logoURI: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg?1612939050",
@@ -194,7 +194,7 @@ export let SupportedNetworks = [
                 chainToken: true
             },
             {
-                address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                address: "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
                 decimals: 18,
                 symbol: "WMATIC",
                 logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png",
@@ -219,6 +219,18 @@ export let SupportedNetworks = [
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false
+            },
+            {
+                address: "0x9f1Aeb72d5F38f2852b2a0f610bFb0391a6a9aB4".toLowerCase(),
+                decimals: 18,
+                symbol: "METRIC",
+                logoURI: "https://etherscan.io/token/images/metric_32.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                hasHidingGame: false
             }
         ]
     }

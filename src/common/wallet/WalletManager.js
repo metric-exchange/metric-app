@@ -23,9 +23,12 @@ export async function walletOwnerEnsName(address) {
 export async function tryFormatWalletName(address) {
     let name = null
 
-    if (isWalletConnected()) {
-        name = await walletOwnerEnsName(address)
-    }
+    try {
+        if (isWalletConnected()) {
+            name = await walletOwnerEnsName(address)
+        }
+    } catch (e) {}
+
 
     if (name === null) {
         name = obfuscateAddress(address)

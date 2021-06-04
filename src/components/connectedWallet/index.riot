@@ -1,19 +1,23 @@
 <connected-wallet>
 
-    <div if={ this.accountAddress() !== undefined } >
-        { this.obfuscateAddress(this.accountAddress()) }
+    <div>
+        { state.name }
     </div>
 
     <script>
-        import {registerForWalletChanges} from "../../common/wallet/WalletManager";
+        import {registerForWalletChanges, tryFormatWalletName} from "../../common/wallet/WalletManager";
 
         export default {
-
+            state: {
+                name: undefined
+            },
             onMounted() {
                 registerForWalletChanges(this)
             },
             onWalletChanges() {
-                this.update()
+                let that = this;
+                tryFormatWalletName(this.accountAddress())
+                    .then(name => that.update({name: name}))
             }
 
         }

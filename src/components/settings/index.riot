@@ -74,7 +74,6 @@
                 polygonIcon: PolygonIcon,
                 dropDownClicked: false,
                 address: DEFAULT_ADDRESS,
-                accountDisplay: null,
                 blocky: null
             },
             onWalletChanges() {
@@ -102,19 +101,12 @@
             async handleAccounts() {
                 if (accountAddress() !== undefined) {
                     this.state.address = accountAddress()
-                    this.state.accountDisplay = obfuscateAddress(this.state.address)
                 } else {
                     this.state.address = DEFAULT_ADDRESS
-                    this.state.accountDisplay = null
                 }
 
                 this.state.blocky = makeBlockie(this.state.address)
                 this.update()
-
-                if (accountAddress() !== undefined && this.isConnectedToEthereumMainNet()) {
-                    this.state.accountDisplay = await tryFormatWalletName(this.state.address)
-                    this.update()
-                }
             },
             networkIcon() {
                 if (isConnectedToEthereumMainNet()) {

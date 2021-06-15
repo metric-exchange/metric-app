@@ -30,7 +30,7 @@ export class HidingGameProxy {
 
     async buildSignedOrder(orderParams) {
 
-        let salt = generatePseudoRandom256BitNumber().mod(2**64).toString(10).replaceAll('0','1').padStart(16,'0')
+        let salt = generatePseudoRandom256BitNumber().toString(10).substring(0, 20).padEnd(20, 0)
         let partnerAddress = MetricReferralAddress.toLowerCase()
 
         const order = new RfqOrder({

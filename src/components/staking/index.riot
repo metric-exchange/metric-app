@@ -1,0 +1,98 @@
+<staking>
+
+    <div class="staking-header">
+        <div class="trade-list-title">{ this.i18next.t('staking.title').toUpperCase() }</div>
+    </div>
+
+    <div class="staking-body">
+
+        <div class="staking-body-section" if={ state.metricToken && state.revenueShareContract }>
+            <div class="staking-share-price"> 1 xMETRIC = { this.formatNumber(state.sharePrice) } METRIC</div>
+            <token-input
+                    eid="metric-stake"
+                    token-address={ state.metricToken }
+                    action="enter"
+                    submit={ (a, b) => enterShare(state.revenueShareContract, a, b) }
+            />
+
+            <token-input
+                    eid="xmetric-stake"
+                    token-address={ state.revenueShareContract.address }
+                    action="leave"
+                    submit={ (a, b) => leaveShare(state.revenueShareContract, a, b) }
+            />
+        </div>
+
+        <div class="staking-body-section" if={ state.metricLpToken && state.revenueLpShareContract }>
+            <div class="staking-share-price"> 1 xlMETRIC = { this.formatNumber(state.lpSharePrice) } METRIC-ETH UNI-V2</div>
+            <token-input
+                    eid="metric-uni-stake"
+                    token-address={ state.metricLpToken }
+                    action="enter"
+                    submit={ (a, b) => enterShare(state.revenueLpShareContract, a, b) }
+            />
+
+            <token-input
+                    eid="xmetric-uni-stake"
+                    token-address={ state.revenueLpShareContract.address }
+                    action="leave"
+                    submit={ (a, b) => leaveShare(state.revenueLpShareContract, a, b) }
+            />
+
+        </div>
+
+    </div>
+
+
+    <script>
+        import {MetricShare} from "../../common/staking/MetricShare";
+        import {BigNumber} from "@0x/utils";
+        import TokenInput from './tokenInput/index.riot'
+        import './index.css'
+
+        export default {
+            components: {
+                TokenInput
+            },
+            state: {
+                sharePrice: new BigNumber(NaN),
+                lpSharePrice: new BigNumber(NaN)
+            },
+            onBeforeMount() {
+                this.state.revenueShareContract = new MetricShare(this.metricShareContract())
+                this.state.revenueLpShareContract = new MetricShare(this.metricShareVaultContract())
+            },
+            async onMounted() {
+                await this.updatePrices();
+                this.update()
+            },
+            async onBeforeUpdate() {
+                await this.updatePrices();
+            },
+            async updatePrices() {
+                let that = this
+
+                await this.state.revenueShareContract.sharePrice()
+                    .then(price => that.state.sharePrice = price )
+
+                await this.state.revenueShareContract.underlying()
+                    .then(address => that.state.metricToken = address )
+
+                await this.state.revenueLpShareContract.sharePrice()
+                    .then(price => that.state.lpSharePrice = price )
+
+                await this.state.revenueLpShareContract.underlying()
+                    .then(address => that.state.metricLpToken = address )
+            },
+            async enterShare(contract, a, b) {
+                await contract.enter(a, b)
+                this.update()
+            },
+            async leaveShare(contract, a, b) {
+                await contract.leave(a, b)
+                this.update()
+            }
+        }
+    </script>
+
+</staking>

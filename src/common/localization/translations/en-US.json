@@ -141,6 +141,9 @@
             "total_trades" : "Total Trades",
             "market_orders" : "Market Orders",
             "limit_orders" : "Limit Orders"
+        },
+        "staking": {
+            "title": "EARN TRADING FEES"
         }
     }
 }

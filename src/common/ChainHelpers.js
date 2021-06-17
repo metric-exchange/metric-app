@@ -46,3 +46,19 @@ export function isUnwrapping(sellToken, buToken) {
 export async function addChain(config) {
     await web3ModalProvider.request({method: 'wallet_addEthereumChain', params:[config]})
 }
+
+export function isStakingEnabled() {
+    let chain = getConnectedNetworkConfig()
+    // return chain.staking !== undefined
+    return false
+}
+
+export function metricShareContract() {
+    let chain = getConnectedNetworkConfig()
+    return chain.staking.metricShare
+}
+
+export function metricShareVaultContract() {
+    let chain = getConnectedNetworkConfig()
+    return chain.staking.metricShareVault
+}

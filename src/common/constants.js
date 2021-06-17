@@ -1,8 +1,5 @@
 import EthIcon from "./tokens/eth.png";
 import {BigNumber} from "@0x/utils";
-import HypeIcon from "./tokens/hype.png";
-import UpdownIcon from "./tokens/updown.jpg";
-import GoldIcon from "./tokens/gold.png";
 
 export let EthereumNetworkId = 1;
 
@@ -67,7 +64,11 @@ export let SupportedNetworks = [
                 disabled: false,
                 hasHidingGame: false
             }
-        ]
+        ],
+        staking: {
+            metricShare: "0xdBd974ec753054e78Aa8Eb959761e3d22C632490",
+            metricShareVault: "0xb86142472D87b8d3187F4D7cA449032ad1F38E2a"
+        }
     },
     {
         id: BinanceChainNetworkId,

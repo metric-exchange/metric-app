@@ -141,6 +141,9 @@
             "total_trades" : "Nombre Total de Trades",
             "market_orders" : "Ordres au Prix Marché",
             "limit_orders" : "Ordres Limit"
+        },
+        "staking": {
+            "title": "Accumulez les frais de trading"
         }
     }
 }

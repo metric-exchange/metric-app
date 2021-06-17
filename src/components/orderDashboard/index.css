@@ -52,6 +52,18 @@
     width: 310px;
 }
 
+.staking {
+    background-color: var(--token-selector-background-color);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 255px;
+    font-style: normal;
+    font-weight: normal;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.05);
+    width: 310px;
+    height: 516px;
+}
+
 .dashboard #token-selector .tokens {
     height: 400px;
     overflow: auto;
@@ -80,6 +92,10 @@
         width: 415px;
     }
 
+    .staking {
+        width: 415px;
+    }
+
     .dashboard #token-selector .tokens {
         height: 370px;
     }
@@ -98,6 +114,31 @@
     }
 
     .order-list{
+        height: 476px;
+    }
+
+    .staking {
+        height: 476px;
+    }
+
+}
+
+@media(min-width: 1460px){
+    .dashboard {
+        grid-template-columns: auto auto auto;
+        justify-content: center;
+        place-items: stretch;
+    }
+
+    .trade-list {
+        height: 476px;
+    }
+
+    .order-list{
+        height: 476px;
+    }
+
+    .staking {
         height: 476px;
     }
 

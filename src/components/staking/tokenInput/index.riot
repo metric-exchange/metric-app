@@ -1,0 +1,80 @@
+<token-input>
+
+    <div class="order-line exchange-amount">
+        <div class="input-sticky-placeholder" if={ !state.inputAmount.isNaN() }>
+            { state.tokenSymbol }
+        </div>
+        <div class="input-sticky-placeholder" if={ state.inputAmount.isNaN() }>
+        </div>
+        <div></div>
+        <div class="input-token-balance">{ this.formatNumber(state.tokenBalance.toNumber()) }</div>
+        <div class="order-input">
+            <input type="number" id={props.eid} oninput={ updateAmount } placeholder="{ state.tokenSymbol }" step="any"/>
+        </div>
+        <div class="order-input">
+            <div class="order-line max-amount" onclick={ setMaxAmount }>
+                { this.i18next.t('order.max_amount') }
+            </div>
+        </div>
+        <div class="order-input">
+            <div class="token-selector-button" onclick={ submit }>
+                { props.action }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import {BigNumber} from "@0x/utils";
+        import {accountAddress} from "../../../common/wallet/WalletManager";
+        import {Erc20ContractProxy} from "../../../common/Erc20ContractProxy";
+
+        export default {
+            state: {
+                inputAmount: new BigNumber(NaN),
+                tokenBalance: new BigNumber(NaN),
+                tokenSymbol: undefined,
+                tokenDecimals: 18
+            },
+            async onMounted() {
+                await this.updateBalances()
+            },
+            async onBeforeUpdate() {
+                await this.updateBalances()
+            },
+            async updateBalances() {
+                let that = this;
+                let token = Erc20ContractProxy.erc20Contract(this.props.tokenAddress)
+
+                this.state.tokenDecimals =
+                    await token.methods.decimals().call().then(d => parseInt(d))
+
+                this.state.tokenBalance =
+                    await token.methods.balanceOf(accountAddress()).call()
+                        .then(b => new BigNumber(b).dividedBy(10 ** that.state.tokenDecimals))
+
+                this.state.tokenSymbol = await token.methods.symbol().call()
+                this.update()
+            },
+            updateAmount(e) {
+                let amount = new BigNumber(e.target.value)
+                this.update({ inputAmount: amount })
+            },
+            setMaxAmount() {
+                document.getElementById(this.props.eid).value = this.state.tokenBalance.toString(10)
+                this.update({ inputAmount: this.state.tokenBalance })
+            },
+            async submit() {
+                await this.props.submit(accountAddress(), this.state.inputAmount)
+
+                document.getElementById(this.props.eid).value = null
+
+                let token = Erc20ContractProxy.erc20Contract(this.props.tokenAddress)
+                let newBalance = await token.methods.balanceOf(accountAddress()).call()
+                this.state.tokenBalance = new BigNumber(newBalance).dividedBy(10 ** this.state.tokenDecimals)
+
+                this.update({ inputAmount: new BigNumber(NaN) })
+            }
+        }
+    </script>
+
+</token-input>

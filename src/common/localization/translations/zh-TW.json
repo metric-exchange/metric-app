@@ -141,6 +141,9 @@
             "total_trades" : "總交易",
             "market_orders" : "市場訂單",
             "limit_orders" : "限價單"
+        },
+        "staking": {
+            "title": "賺取交易費"
         }
     }
 }

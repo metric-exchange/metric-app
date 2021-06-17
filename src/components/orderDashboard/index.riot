@@ -28,6 +28,10 @@
             />
         </div>
 
+        <div class="staking" if={ this.isWalletConnected() && this.isStakingEnabled() }>
+            <staking/>
+        </div>
+
     </div>
 
     <script>
@@ -37,6 +41,7 @@
         import OrderBook from '../orderBook/index.riot'
         import OrderList from '../orderList/index.riot'
         import TradeList from '../tradeList/index.riot'
+        import Staking from '../staking/index.riot'
         import {
             registerForTokenListUpdate,
             tokensList, triggerTokenListFilterUpdateEvent,
@@ -64,7 +69,8 @@
                 OrderForm,
                 OrderBook,
                 OrderList,
-                TradeList
+                TradeList,
+                Staking
             },
             state: {
                 orderFactory: null,

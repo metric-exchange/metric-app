@@ -6,11 +6,12 @@
 
     <div class="staking-body">
 
-        <div class="staking-body-section" if={ state.metricToken && state.revenueShareContract }>
-            <div class="staking-share-price"> 1 xMETRIC = { this.formatNumber(state.sharePrice) } METRIC</div>
+        <div class="staking-body-section" if={ state.revenueShareContract }>
+            <div>{ this.i18next.t('staking.staked') }: { this.formatNumber(state.revenueShareContract.staked) } METRIC</div>
+            <div class="staking-share-price"> 1 xMETRIC = { this.formatNumber(state.revenueShareContract.sharePrice) } METRIC</div>
             <token-input
                     eid="metric-stake"
-                    token-address={ state.metricToken }
+                    token-address={ state.revenueShareContract.underlying }
                     action="enter"
                     submit={ (a, b) => enterShare(state.revenueShareContract, a, b) }
             />
@@ -23,11 +24,17 @@
             />
         </div>
 
-        <div class="staking-body-section" if={ state.metricLpToken && state.revenueLpShareContract }>
-            <div class="staking-share-price"> 1 xMETRIC-ETH UNI-V2 = { this.formatNumber(state.lpSharePrice) } METRIC-ETH UNI-V2</div>
+        <div class="staking-body-section" if={ state.revenueLpShareContract }>
+            <div>{ this.i18next.t('staking.staked') }: { this.formatNumber(state.revenueLpShareContract.staked) } METRIC</div>
+            <div class="staking-share-price"> 1 xUNI-V2 = { this.formatNumber(state.revenueLpShareContract.sharePrice) } UNI-V2</div>
+            <a class="add-liquidity"
+               href="https://app.uniswap.org/#/add/v2/ETH/0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC" target="_blank"
+            >
+                { this.i18next.t('staking.add_liquidity') }
+            </a>
             <token-input
                     eid="metric-uni-stake"
-                    token-address={ state.metricLpToken }
+                    token-address={ state.revenueLpShareContract.underlying }
                     action="enter"
                     submit={ (a, b) => enterShare(state.revenueLpShareContract, a, b) }
             />
@@ -59,8 +66,8 @@
                 lpSharePrice: new BigNumber(NaN)
             },
             onBeforeMount() {
-                this.state.revenueShareContract = new MetricShare(this.metricShareContract())
-                this.state.revenueLpShareContract = new MetricShare(this.metricShareVaultContract())
+                this.state.revenueShareContract = new MetricShare(this.metricShareContract(), this.metricToken(), )
+                this.state.revenueLpShareContract = new MetricShare(this.metricShareVaultContract(), this.metricLpToken())
             },
             async onMounted() {
                 await this.updatePrices();
@@ -70,19 +77,10 @@
                 await this.updatePrices();
             },
             async updatePrices() {
-                let that = this
-
-                await this.state.revenueShareContract.sharePrice()
-                    .then(price => that.state.sharePrice = price )
-
-                await this.state.revenueShareContract.underlying()
-                    .then(address => that.state.metricToken = address )
-
-                await this.state.revenueLpShareContract.sharePrice()
-                    .then(price => that.state.lpSharePrice = price )
-
-                await this.state.revenueLpShareContract.underlying()
-                    .then(address => that.state.metricLpToken = address )
+                await Promise.all([
+                    this.state.revenueShareContract.refreshInfo(),
+                    await this.state.revenueLpShareContract.refreshInfo()
+                ])
             },
             async enterShare(contract, a, b) {
                 await contract.enter(a, b)

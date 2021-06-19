@@ -143,7 +143,9 @@
             "limit_orders" : "限价单"
         },
         "staking": {
-            "title": "赚取交易费"
+            "title": "赚取交易费",
+            "staked": "抵押",
+            "add_liquidity": "增加流动性"
         }
     }
 }

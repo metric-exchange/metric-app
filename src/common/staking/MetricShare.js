@@ -1,24 +1,35 @@
 import Abi from './RevenueShare.json'
 import {BigNumber} from "@0x/utils";
 import {Erc20ContractProxy} from "../Erc20ContractProxy";
-import {accountAddress} from "../wallet/WalletManager";
 
 export class MetricShare {
 
-    constructor(address) {
+    constructor(address, underlying) {
         this.address = address
+        this.staked = new BigNumber(NaN)
+        this.underlying = underlying
+        this.sharePrice = new BigNumber(NaN)
     }
 
-    async sharePrice() {
+    async refreshInfo() {
+        await Promise.all([
+            this.setSharePrice(),
+            this.setStaked()
+        ])
+    }
+
+    async setStaked() {
+        let contract = new window.web3Modal.eth.Contract(Abi, this.address)
+        let staked = await contract.methods.balanceUnderlying().call()
+
+        this.staked = new BigNumber(staked).dividedBy(10 ** 18)
+    }
+
+    async setSharePrice() {
         let contract = new window.web3Modal.eth.Contract(Abi, this.address)
         let price = await contract.methods.sharePrice().call()
 
-        return new BigNumber(price).dividedBy(10 ** 18)
-    }
-
-    async underlying() {
-        let contract = new window.web3Modal.eth.Contract(Abi, this.address)
-        return await contract.methods.underlying().call()
+        this.sharePrice = new BigNumber(price).dividedBy(10 ** 18)
     }
 
     async enter(accountAddress, amount) {

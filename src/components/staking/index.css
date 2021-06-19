@@ -1,20 +1,27 @@
 .staking-header {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     color: var(--token-selector-table-text-color);
     line-height: 32px;
 }
 .staking-body {
     display: grid;
     grid-template-columns: 100%;
-    grid-gap: 50px;
+    grid-gap: 40px;
 }
 
 .staking-body-section {
     display: grid;
     grid-template-columns: 100%;
-    grid-gap: 20px;
+    grid-gap: 10px;
 }
 
 .staking-share-price {
     color: var(--token-selector-table-text-color);
+    font-size: 10px;
+}
+
+.add-liquidity {
+    color: var(--active-text-color);
+    text-decoration: underline;
+    text-align: end;
 }

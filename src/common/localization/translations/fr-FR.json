@@ -143,7 +143,9 @@
             "limit_orders" : "Ordres Limit"
         },
         "staking": {
-            "title": "Accumulez les frais de trading"
+            "title": "Accumulez les frais de trading",
+            "staked": "Stake",
+            "add_liquidity": "Ajouter liquidité"
         }
     }
 }

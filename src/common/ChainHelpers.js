@@ -61,3 +61,13 @@ export function metricShareVaultContract() {
     let chain = getConnectedNetworkConfig()
     return chain.staking.metricShareVault
 }
+
+export function metricLpToken() {
+    let chain = getConnectedNetworkConfig()
+    return chain.staking.metricLp
+}
+
+export function metricToken() {
+    let chain = getConnectedNetworkConfig()
+    return chain.staking.metric
+}

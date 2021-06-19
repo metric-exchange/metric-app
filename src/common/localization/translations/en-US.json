@@ -143,7 +143,9 @@
             "limit_orders" : "Limit Orders"
         },
         "staking": {
-            "title": "EARN TRADING FEES"
+            "title": "EARN TRADING FEES",
+            "staked": "Staked",
+            "add_liquidity": "Add liquidity"
         }
     }
 }

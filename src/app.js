@@ -34,7 +34,7 @@ import {
     isConnectedToBscMainNet,
     isConnectedToEthereumMainNet,
     isConnectedToPolygonMainNet, isStakingEnabled,
-    isSupportedNetwork, metricShareContract, metricShareVaultContract
+    isSupportedNetwork, metricLpToken, metricShareContract, metricShareVaultContract, metricToken
 } from "./common/ChainHelpers";
 Rollbar.init(
     {
@@ -84,6 +84,8 @@ install(c => {
     c.isStakingEnabled = isStakingEnabled
     c.metricShareContract = metricShareContract
     c.metricShareVaultContract = metricShareVaultContract
+    c.metricLpToken = metricLpToken
+    c.metricToken = metricToken
 
     c.obfuscateAddress = obfuscateAddress
 

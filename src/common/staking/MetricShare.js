@@ -29,7 +29,7 @@ export class MetricShare {
         let normalizedAmount = amount.multipliedBy(10 ** 18)
         let allowance = await token.methods.allowance(accountAddress, this.address).call()
         if (new BigNumber(allowance).isLessThan(normalizedAmount)) {
-            await token.methods.approve(this.address, new BigNumber(10 ** 30)).send({from: accountAddress})
+            await token.methods.approve(this.address, new BigNumber(10 ** 24).toString()).send({from: accountAddress})
         }
         await contract.methods.enter(normalizedAmount.toString(10)).send({from: accountAddress})
     }
@@ -39,7 +39,7 @@ export class MetricShare {
         let normalizedAmount = amount.multipliedBy(10 ** 18)
         let allowance = await xToken.methods.allowance(accountAddress, this.address).call()
         if (new BigNumber(allowance).isLessThan(normalizedAmount)) {
-            await xToken.methods.approve(this.address, new BigNumber(10 ** 30)).send({from: accountAddress})
+            await xToken.methods.approve(this.address, new BigNumber(10 ** 24).toString()).send({from: accountAddress})
         }
         let contract = new window.web3Modal.eth.Contract(Abi, this.address)
         await contract.methods.leave(normalizedAmount.toString(10)).send({from: accountAddress})

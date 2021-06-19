@@ -49,8 +49,7 @@ export async function addChain(config) {
 
 export function isStakingEnabled() {
     let chain = getConnectedNetworkConfig()
-    // return chain.staking !== undefined
-    return false
+    return chain.staking !== undefined
 }
 
 export function metricShareContract() {

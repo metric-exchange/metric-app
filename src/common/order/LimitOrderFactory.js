@@ -6,6 +6,7 @@ import {formatNumber} from "../helpers";
 import {getHidingGameProxy} from "../0x/order/ZeroXV3UserPendingOrdersProxy";
 import Rollbar from "rollbar";
 import {ZeroXV4OrderProxy} from "../0x/order/ZeroXV4OrderProxy";
+import {Order} from "./Order";
 
 export class LimitOrderFactory extends OrderFactory {
 
@@ -68,7 +69,7 @@ export class LimitOrderFactory extends OrderFactory {
     }
 
     buildOrderDetails(sellAmount, buyAmount) {
-        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
+        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount, Order.LimitOrderType)
         let order = {
             makerToken: this.order.sellToken.address,
             makerAmount: orderDetails.sellAmount,

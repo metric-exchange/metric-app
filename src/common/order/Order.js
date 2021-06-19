@@ -69,7 +69,7 @@ export class Order {
         this.sellToken = this.buyToken
         this.buyToken = token
 
-        let byAmount = this.buyAmount.value.plus(this.sellPrice.buyFeeAmountFor(this.buyAmount.value))
+        let byAmount = this.buyAmount.value.plus(this.sellPrice.buyFeeAmountFor(this.buyAmount.value, this.type))
 
         await this.sellPrice.switchTokens()
         await this.sellAmount.set(
@@ -182,11 +182,11 @@ export class Order {
 
     }
 
-    buildOrderDetails(sellAmount, buyAmount) {
+    buildOrderDetails(sellAmount, buyAmount, orderType) {
         return {
             sellAmount: sellAmount.multipliedBy(10 ** this.sellToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
-            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
+            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount, this.type).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             feeRecipient: MetricReferralAddress
         }
     }

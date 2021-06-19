@@ -81,7 +81,7 @@
             formattedFeeAmount() {
                 return this.formatNumber(
                     this.props.orderFactory.order.sellPrice
-                        .buyFeeAmountFor(this.props.orderFactory.order.buyAmount.value)
+                        .buyFeeAmountFor(this.props.orderFactory.order.buyAmount.value, this.props.orderFactory.order.type)
                         .toNumber()
                 )
             }

@@ -7,6 +7,7 @@ import {BigNumber} from "@0x/utils";
 import {getSlippageConfig, setSlippageConfig} from "./SlippageConfig";
 import Rollbar from "rollbar";
 import {isUnwrapping, isWrapping} from "../ChainHelpers";
+import {Order} from "./Order";
 
 export class SwapOrderFactory extends OrderFactory {
 
@@ -58,7 +59,7 @@ export class SwapOrderFactory extends OrderFactory {
     }
 
     buildOrderDetails(sellAmount, buyAmount) {
-        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount)
+        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount, Order.MarketOrderType)
 
         let fee =
             orderDetails.buyFeeAmount

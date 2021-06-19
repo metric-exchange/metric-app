@@ -7,6 +7,7 @@ import {BigNumber} from "@0x/utils";
 import moment from "moment";
 import {CoinPriceProxy} from "../tokens/CoinGeckoProxy";
 import {isUnwrapping, isWrapping} from "../ChainHelpers";
+import {Order} from "./Order";
 
 export class OrderPrice {
 
@@ -153,8 +154,8 @@ export class OrderPrice {
         this.priceInversionObservers.unregister(observer)
     }
 
-    buyFeeAmountFor(amount) {
-        return amount.multipliedBy(this.tryMetricFee())
+    buyFeeAmountFor(amount, orderType) {
+        return amount.multipliedBy(this.tryMetricFee(orderType))
     }
 
     convertSellAmount(token, amount) {
@@ -165,7 +166,14 @@ export class OrderPrice {
         return this.convertTokenAmount(token, amount)
     }
 
-    tryMetricFee() {
+    tryMetricFee(orderType) {
+
+        if (orderType === Order.MarketOrderType &&
+            this.routes.length === 1 &&
+            this.routes[0].name !== "MultiHop")
+        {
+            return new BigNumber(0)
+        }
 
         if (this.disableFee) {
             return 0

@@ -64,12 +64,14 @@ export class Order {
         )
     }
 
-    async switchTokens() {
+    async switchTokens(accountAddress) {
         let token = this.sellToken
         this.sellToken = this.buyToken
         this.buyToken = token
 
-        let byAmount = this.buyAmount.value.plus(this.sellPrice.buyFeeAmountFor(this.buyAmount.value, this.type))
+        let byAmount = this.buyAmount.value.plus(
+            await this.sellPrice.buyFeeAmountFor(this.buyAmount.value, this.type, accountAddress)
+        )
 
         await this.sellPrice.switchTokens()
         await this.sellAmount.set(
@@ -182,11 +184,12 @@ export class Order {
 
     }
 
-    buildOrderDetails(sellAmount, buyAmount, orderType) {
+    async buildOrderDetails(sellAmount, buyAmount, accountAddress) {
         return {
             sellAmount: sellAmount.multipliedBy(10 ** this.sellToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
-            buyFeeAmount: this.sellPrice.buyFeeAmountFor(buyAmount, this.type).multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
+            buyFeeAmount: await this.sellPrice.buyFeeAmountFor(buyAmount, this.type, accountAddress)
+                .multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             feeRecipient: MetricReferralAddress
         }
     }

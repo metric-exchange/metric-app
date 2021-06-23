@@ -11,7 +11,7 @@
     </div>
 
     <script>
-        import {isWalletConnected} from "../../../common/wallet/WalletManager";
+        import {accountAddress, isWalletConnected} from "../../../common/wallet/WalletManager";
         import {OrderStateDisplays} from "./OrderStateDisplays";
         import Loader from '../../loader/index.riot'
         import './index.css'
@@ -70,7 +70,7 @@
                 if (!isWalletConnected()) {
                     await this.connectWallet()
                 } else if (this.props.orderFactory.stateManager.isReady()) {
-                    await this.props.orderFactory.submitOrder()
+                    await this.props.orderFactory.submitOrder(accountAddress())
                 }
             },
             buttonId() {

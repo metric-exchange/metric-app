@@ -38,9 +38,6 @@
             async onMounted() {
                 await this.updateBalances()
             },
-            async onBeforeUpdate() {
-                await this.updateBalances()
-            },
             async updateBalances() {
                 let that = this;
                 let token = Erc20ContractProxy.erc20Contract(this.props.tokenAddress)
@@ -67,12 +64,9 @@
                 await this.props.submit(accountAddress(), this.state.inputAmount)
 
                 document.getElementById(this.props.eid).value = null
-
-                let token = Erc20ContractProxy.erc20Contract(this.props.tokenAddress)
-                let newBalance = await token.methods.balanceOf(accountAddress()).call()
-                this.state.tokenBalance = new BigNumber(newBalance).dividedBy(10 ** this.state.tokenDecimals)
-
                 this.update({ inputAmount: new BigNumber(NaN) })
+
+                await this.updateBalances()
             }
         }
     </script>

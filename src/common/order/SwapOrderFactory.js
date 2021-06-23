@@ -58,8 +58,8 @@ export class SwapOrderFactory extends OrderFactory {
         }
     }
 
-    buildOrderDetails(sellAmount, buyAmount) {
-        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount, Order.MarketOrderType)
+    async buildOrderDetails(sellAmount, buyAmount, accountAddress) {
+        let orderDetails = await this.order.buildOrderDetails(sellAmount, buyAmount, accountAddress)
 
         let fee =
             orderDetails.buyFeeAmount

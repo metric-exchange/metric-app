@@ -42,7 +42,7 @@ export class LimitOrderFactory extends OrderFactory {
         this.recipientAddress = address
     }
 
-    async sendOrder(order) {
+    async sendOrder(order, accountAddress) {
 
         let orderAmount =
             order.makerAmount
@@ -68,8 +68,8 @@ export class LimitOrderFactory extends OrderFactory {
 
     }
 
-    buildOrderDetails(sellAmount, buyAmount) {
-        let orderDetails = this.order.buildOrderDetails(sellAmount, buyAmount, Order.LimitOrderType)
+    async buildOrderDetails(sellAmount, buyAmount, accountAddress) {
+        let orderDetails = await this.order.buildOrderDetails(sellAmount, buyAmount, accountAddress)
         let order = {
             makerToken: this.order.sellToken.address,
             makerAmount: orderDetails.sellAmount,

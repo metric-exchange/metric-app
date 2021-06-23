@@ -2,7 +2,7 @@
 
     <div class="order-line exchange-amount">
         <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) && !props.orderFactory.order.isHidingGameOrder()}>
-            { this.i18next.t('order.you_get') } { this.i18next.t('order.with_fee', {amount: formattedFeeAmount()}) }
+            { this.i18next.t('order.you_get') } { this.i18next.t('order.with_fee', {amount: state.feeAmount}) }
         </div>
         <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) && props.orderFactory.order.isHidingGameOrder()}>
             { this.i18next.t('order.you_get') }
@@ -42,22 +42,26 @@
         } from "../../../common/order/OrderEventSource";
         import {registerForTokenBalancesUpdate} from "../../../common/tokens/token_fetch";
         import {BigNumber} from "@0x/utils";
+        import {accountAddress} from "../../../common/wallet/WalletManager";
 
         export default {
             config: {
                 event: new OrderEventSource(OrderEventProperties.BuyAmount, OrderEventActions.Input)
+            },
+            state: {
+                feeAmount: '-'
             },
             onMounted() {
                 registerForTokenBalancesUpdate(this)
                 this.props.orderFactory.order.buyAmount.observe(this, 'onAmountChange')
                 this.props.orderFactory.order.observeTokenChanges(this, 'update')
             },
-            onTokenBalancesUpdate(token) {
+            async onTokenBalancesUpdate(token) {
                 if (token.address === this.props.orderFactory.order.buyToken.address) {
-                    this.update()
+                    await this.formatFeeAmount()
                 }
             },
-            onAmountChange(source) {
+            async onAmountChange(source) {
                 if (source.property !== this.config.event.property || source.action !== this.config.event.action) {
                     let input = document.getElementById("order-amount-output")
                     if (input !== null) {
@@ -65,25 +69,30 @@
                             this.props.orderFactory.order.buyAmount.value
                                 .decimalPlaces(this.props.orderFactory.order.buyToken.decimals)
                                 .toString()
-                        this.update()
+                        await this.formatFeeAmount()
                     }
                 }
             },
-            switchDirection(e) {
-                this.props.orderFactory.order.switchTokens()
+            async switchDirection(e) {
+                this.props.orderFactory.order.switchTokens(accountAddress())
                 document.getElementById("order-switch").classList.toggle("transition-half-rotate")
-                this.update()
+                await this.formatFeeAmount()
             },
-            updateAmount(e) {
+            async updateAmount(e) {
                 this.props.orderFactory.order.buyAmount.set(this.config.event, new BigNumber(e.target.value))
-                this.update()
+                await this.formatFeeAmount()
             },
-            formattedFeeAmount() {
-                return this.formatNumber(
-                    this.props.orderFactory.order.sellPrice
-                        .buyFeeAmountFor(this.props.orderFactory.order.buyAmount.value, this.props.orderFactory.order.type)
+            async formatFeeAmount() {
+                this.state.feeAmount = this.formatNumber(
+                    (await this.props.orderFactory.order.sellPrice
+                        .buyFeeAmountFor(
+                            this.props.orderFactory.order.buyAmount.value,
+                            this.props.orderFactory.order.type,
+                            accountAddress()
+                        ))
                         .toNumber()
                 )
+                this.update()
             }
         }
 

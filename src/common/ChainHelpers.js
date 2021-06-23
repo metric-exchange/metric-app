@@ -54,11 +54,21 @@ export function isStakingEnabled() {
 
 export function metricShareContract() {
     let chain = getConnectedNetworkConfig()
+
+    if (!chain.staking) {
+        return undefined
+    }
+
     return chain.staking.metricShare
 }
 
 export function metricShareVaultContract() {
     let chain = getConnectedNetworkConfig()
+
+    if (!chain.staking) {
+        return undefined
+    }
+
     return chain.staking.metricShareVault
 }
 

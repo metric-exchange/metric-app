@@ -91,11 +91,11 @@ export class OrderFactory {
         }
     }
 
-    async submitOrder() {
+    async submitOrder(accountAddress) {
         this.stateManager.lock()
 
         try {
-            let order = this.buildOrderDetails(this.order.sellAmount.value, this.order.buyAmount.value)
+            let order = await this.buildOrderDetails(this.order.sellAmount.value, this.order.buyAmount.value, accountAddress)
             if (this.stateManager.current.code === OrderState.INSUFFICIENT_TOKEN_ALLOWANCE) {
                 await this.stateManager.setInProgressState(OrderState.APPROVING_TOKEN, {token: this.order.sellToken}, true)
                 await approveZeroXAllowance(
@@ -140,11 +140,11 @@ export class OrderFactory {
         }
     }
 
-    async sendOrder() {
+    async sendOrder(order) {
 
     }
 
-    buildOrderDetails(sellAmount, buyAmount) {
+    async buildOrderDetails(sellAmount, buyAmount, accountAddress) {
 
     }
 

@@ -70,25 +70,22 @@
                 this.state.revenueLpShareContract = new MetricShare(this.metricShareVaultContract(), this.metricLpToken())
             },
             async onMounted() {
-                await this.updatePrices();
-                this.update()
-            },
-            async onBeforeUpdate() {
-                await this.updatePrices();
+                await this.updatePrices()
             },
             async updatePrices() {
                 await Promise.all([
                     this.state.revenueShareContract.refreshInfo(),
                     await this.state.revenueLpShareContract.refreshInfo()
                 ])
+                this.update()
             },
             async enterShare(contract, a, b) {
                 await contract.enter(a, b)
-                this.update()
+                await this.updatePrices()
             },
             async leaveShare(contract, a, b) {
                 await contract.leave(a, b)
-                this.update()
+                await this.updatePrices()
             }
         }
     </script>

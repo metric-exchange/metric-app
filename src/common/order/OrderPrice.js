@@ -154,8 +154,8 @@ export class OrderPrice {
         this.priceInversionObservers.unregister(observer)
     }
 
-    buyFeeAmountFor(amount, orderType) {
-        return amount.multipliedBy(this.tryMetricFee(orderType))
+    async buyFeeAmountFor(amount, orderType, accountAddress) {
+        return amount.multipliedBy(await this.tryMetricFee(orderType, accountAddress))
     }
 
     convertSellAmount(token, amount) {
@@ -166,7 +166,7 @@ export class OrderPrice {
         return this.convertTokenAmount(token, amount)
     }
 
-    tryMetricFee(orderType) {
+    async tryMetricFee(orderType, accountAddress) {
 
         if (orderType === Order.MarketOrderType &&
             this.routes.length === 1 &&
@@ -176,18 +176,18 @@ export class OrderPrice {
         }
 
         if (this.disableFee) {
-            return 0
+            return new BigNumber(0)
         }
 
         if (isWrapping(this.baseToken, this.quoteToken)) {
-            return 0
+            return new BigNumber(0)
         }
 
         if (isUnwrapping(this.baseToken, this.quoteToken)) {
-            return 0
+            return new BigNumber(0)
         }
 
-        return calculateMetricFee()
+        return await calculateMetricFee(accountAddress)
     }
 
     convertTokenAmount(token, amount) {

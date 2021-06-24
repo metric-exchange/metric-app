@@ -188,7 +188,7 @@ export class Order {
         return {
             sellAmount: sellAmount.multipliedBy(10 ** this.sellToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             buyAmount: buyAmount.multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
-            buyFeeAmount: await this.sellPrice.buyFeeAmountFor(buyAmount, this.type, accountAddress)
+            buyFeeAmount: (await this.sellPrice.buyFeeAmountFor(buyAmount, this.type, accountAddress))
                 .multipliedBy(10 ** this.buyToken.decimals).integerValue(BigNumber.ROUND_DOWN),
             feeRecipient: MetricReferralAddress
         }

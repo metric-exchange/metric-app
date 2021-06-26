@@ -9,10 +9,17 @@
         <div></div>
         <div class="input-token-balance">{ this.formatNumber(state.tokenBalance.toNumber()) }</div>
         <div class="order-input">
-            <input type="number" id={props.eid} oninput={ updateAmount } placeholder="{ state.tokenSymbol }" step="any"/>
+            <input
+                    if={ !props.disableInput }
+                    type="number"
+                    id={props.eid}
+                    oninput={ updateAmount }
+                    placeholder="{ state.tokenSymbol }"
+                    step="any"
+            />
         </div>
         <div class="order-input">
-            <div class="order-line max-amount" onclick={ setMaxAmount }>
+            <div class="order-line max-amount" onclick={ setMaxAmount } if={ !props.disableInput }>
                 { this.i18next.t('order.max_amount') }
             </div>
         </div>
@@ -61,9 +68,14 @@
                 this.update({ inputAmount: this.state.tokenBalance })
             },
             async submit() {
-                await this.props.submit(accountAddress(), this.state.inputAmount)
 
-                document.getElementById(this.props.eid).value = null
+                if (this.props.disableInput) {
+                    await this.props.submit(accountAddress(), this.state.tokenBalance)
+                } else {
+                    await this.props.submit(accountAddress(), this.state.inputAmount)
+                    document.getElementById(this.props.eid).value = null
+                }
+
                 this.update({ inputAmount: new BigNumber(NaN) })
 
                 await this.updateBalances()

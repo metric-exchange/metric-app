@@ -33,8 +33,14 @@ import * as Rollbar from "rollbar";
 import {
     isConnectedToBscMainNet,
     isConnectedToEthereumMainNet,
-    isConnectedToPolygonMainNet, isStakingEnabled,
-    isSupportedNetwork, metricLpToken, metricShareContract, metricShareVaultContract, metricToken
+    isConnectedToPolygonMainNet,
+    isStakingEnabled,
+    isSupportedNetwork,
+    metricLpToken,
+    metricShareContract,
+    metricShareVaultContract,
+    metricShareVaultV0Contract,
+    metricToken
 } from "./common/ChainHelpers";
 Rollbar.init(
     {
@@ -84,6 +90,7 @@ install(c => {
     c.isStakingEnabled = isStakingEnabled
     c.metricShareContract = metricShareContract
     c.metricShareVaultContract = metricShareVaultContract
+    c.metricShareVaultV0Contract = metricShareVaultV0Contract
     c.metricLpToken = metricLpToken
     c.metricToken = metricToken
 

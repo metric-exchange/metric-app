@@ -67,7 +67,8 @@ export let SupportedNetworks = [
         ],
         staking: {
             metricShare: "0xdBd974ec753054e78Aa8Eb959761e3d22C632490",
-            metricShareVault: "0x04d69Aec4eFdb5613120758d6c4cDB970f64a4E5",
+            metricShareVault: "0xAccbBaad2182FfA54996a480f70b2301cce7F5F7",
+            metricShareVaultV0: "0x04d69Aec4eFdb5613120758d6c4cDB970f64a4E5",
             metric: "0xefc1c73a3d8728dc4cf2a18ac5705fe93e5914ac",
             metricLp: "0xa7d707118c02dcd2bea94ff05664db51363c47bd"
         }

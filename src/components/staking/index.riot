@@ -13,6 +13,7 @@
                     eid="metric-stake"
                     token-address={ state.revenueShareContract.underlying }
                     action="enter"
+                    disable-input={false}
                     submit={ (a, b) => enterShare(state.revenueShareContract, a, b) }
             />
 
@@ -20,6 +21,7 @@
                     eid="xmetric-stake"
                     token-address={ state.revenueShareContract.address }
                     action="leave"
+                    disable-input={false}
                     submit={ (a, b) => leaveShare(state.revenueShareContract, a, b) }
             />
         </div>
@@ -27,23 +29,37 @@
         <div class="staking-body-section" if={ state.revenueLpShareContract }>
             <div>{ this.i18next.t('staking.staked') }: { this.formatNumber(state.revenueLpShareContract.staked) } UNI-V2</div>
             <div class="staking-share-price"> 1 xUNI-V2 = { this.formatNumber(state.revenueLpShareContract.sharePrice) } UNI-V2</div>
+
             <a class="add-liquidity"
                href="https://app.uniswap.org/#/add/v2/ETH/0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC" target="_blank"
             >
                 { this.i18next.t('staking.add_liquidity') }
             </a>
+
             <token-input
                     eid="metric-uni-stake"
                     token-address={ state.revenueLpShareContract.underlying }
                     action="enter"
+                    disable-input={false}
                     submit={ (a, b) => enterShare(state.revenueLpShareContract, a, b) }
             />
 
             <token-input
+                    if={ state.oldShareBalance.isZero() }
                     eid="xmetric-uni-stake"
                     token-address={ state.revenueLpShareContract.address }
                     action="leave"
+                    disable-input={false}
                     submit={ (a, b) => leaveShare(state.revenueLpShareContract, a, b) }
+            />
+
+            <token-input
+                    if={ state.oldShareBalance.isGreaterThan(0) }
+                    eid="xmetric-uni-stake-old"
+                    token-address={ state.revenueLpShareV0Contract.address }
+                    disable-input={true}
+                    action="leave"
+                    submit={ (a, b) => sweepShare(state.revenueLpShareV0Contract, a, b) }
             />
 
         </div>
@@ -56,6 +72,8 @@
         import {BigNumber} from "@0x/utils";
         import TokenInput from './tokenInput/index.riot'
         import './index.css'
+        import {Erc20ContractProxy} from "../../common/Erc20ContractProxy";
+        import {accountAddress} from "../../common/wallet/WalletManager";
 
         export default {
             components: {
@@ -63,27 +81,42 @@
             },
             state: {
                 sharePrice: new BigNumber(NaN),
-                lpSharePrice: new BigNumber(NaN)
+                lpSharePrice: new BigNumber(NaN),
+                oldShareBalance: new BigNumber(0)
             },
             onBeforeMount() {
                 this.state.revenueShareContract = new MetricShare(this.metricShareContract(), this.metricToken(), )
                 this.state.revenueLpShareContract = new MetricShare(this.metricShareVaultContract(), this.metricLpToken())
+                this.state.revenueLpShareV0Contract = new MetricShare(this.metricShareVaultV0Contract(), this.metricLpToken())
             },
             async onMounted() {
                 await this.updatePrices()
             },
             async updatePrices() {
                 await Promise.all([
+                    this.fetchOldShareBalance(),
                     this.state.revenueShareContract.refreshInfo(),
-                    await this.state.revenueLpShareContract.refreshInfo()
+                    this.state.revenueLpShareContract.refreshInfo(),
+                    this.state.revenueLpShareV0Contract.refreshInfo()
                 ])
                 this.update()
+            },
+            async fetchOldShareBalance() {
+                let token = Erc20ContractProxy.erc20Contract(this.state.revenueLpShareV0Contract.address)
+
+                this.state.oldShareBalance =
+                    await token.methods.balanceOf(accountAddress()).call()
+                        .then(b => new BigNumber(b).dividedBy(10 ** 18))
             },
             async enterShare(contract, a, b) {
                 await contract.enter(a, b)
                 await this.updatePrices()
             },
             async leaveShare(contract, a, b) {
+                await contract.leave(a, b)
+                await this.updatePrices()
+            },
+            async sweepShare(contract, a, b) {
                 await contract.leave(a, b)
                 await this.updatePrices()
             }

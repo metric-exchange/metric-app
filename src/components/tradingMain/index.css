@@ -57,3 +57,10 @@
 .active-dashboard svg path {
     fill: #60FFD9;
 }
+
+.unsupported-network {
+    padding: 20%;
+    font-size: 20px;
+    color: #8600ff;
+    text-align: center;
+}

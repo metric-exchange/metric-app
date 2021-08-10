@@ -52,7 +52,7 @@ export async function batchCancelOrders(orders) {
     if (hidingGameOrders.length > 0) {
         await contractWrapper
             .exchangeProxy
-            .batchCancelRfqOrders(v4Orders.map(o => o.order))
+            .batchCancelRfqOrders(hidingGameOrders.map(o => o.order))
             .awaitTransactionSuccessAsync({ from: accountAddress() })
     }
 

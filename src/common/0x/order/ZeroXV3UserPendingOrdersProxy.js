@@ -1,6 +1,6 @@
-import { HttpClient } from "@0x/connect"
 import {HidingGameProxy} from "./HidingGameProxy";
 import {ZeroXV4OrderProxy} from "./ZeroXV4OrderProxy";
+import {fetchJson} from "../../JsonApiFetch";
 
 export function userOrders() {
     return orders
@@ -26,10 +26,8 @@ async function retrieveUserOrders(address) {
 
     let hiddenOrders = await getHidingGameProxy().getOrders(address)
 
-    let zeroXV3Orders = await relay.getOrdersAsync({
-        makerAddress: address,
-        perPage: 100
-    }).then(r => r.records)
+    let v3Orders = await fetchJson(`https://api.0x.org/sra/v3/orders?makerAddress=${address}&&perPage=100`)
+    let zeroXV3Orders = v3Orders.records
 
     let zeroXV4Orders = await zeroXV4Proxy.getOrders(address)
 
@@ -55,7 +53,6 @@ export function getHidingGameProxy() {
     return hidingGameProxy
 }
 
-let relay = new HttpClient("https://api.0x.org/sra/v3")
 let hidingGameProxy = new HidingGameProxy()
 let orders = []
 let register = []

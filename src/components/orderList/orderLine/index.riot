@@ -90,7 +90,7 @@
             },
             makerTotalAmount(order) {
                 if (order.version === 3) {
-                    return order.order.makerAssetAmount.plus(order.order.makerFee)
+                    return new BigNumber(order.order.makerAssetAmount).plus(new BigNumber(order.order.makerFee))
                         .dividedBy(10**this.state.makerToken.decimals)
                 } else {
                     return new BigNumber(order.order.makerAmount)
@@ -99,7 +99,7 @@
             },
             makerAmount(order) {
                 if (order.version === 3) {
-                    return order.order.makerAssetAmount
+                    return new BigNumber(order.order.makerAssetAmount)
                         .dividedBy(10**this.state.makerToken.decimals)
                 } else {
                     return new BigNumber(order.order.makerAmount)
@@ -108,7 +108,7 @@
             },
             takerAmount(order) {
                 if (order.version === 3) {
-                    return order.order.takerAssetAmount
+                    return new BigNumber(order.order.takerAssetAmount)
                         .dividedBy(10**this.state.takerToken.decimals)
                 } else {
                     return new BigNumber(order.order.takerAmount)
@@ -118,10 +118,10 @@
             filledTakerPercentage(order) {
                 if (order.version === 3) {
                     let remaining = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
-                    return order.order.takerAssetAmount
+                    return new BigNumber(order.order.takerAssetAmount)
                         .minus(remaining)
                         .multipliedBy(100)
-                        .dividedBy(order.order.takerAssetAmount)
+                        .dividedBy(new BigNumber(order.order.takerAssetAmount))
                 } else {
                     return new BigNumber(order.order.takerAmount)
                                     .minus(order.metaData.remainingFillableAmount_takerToken)

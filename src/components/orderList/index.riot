@@ -111,21 +111,6 @@
                     someOrdersAreSelected: (this.state.selectedOrders.length > 0)
                 })
             },
-            toggleSelectAllOrders() {
-                if (this.state.selectedOrders.length === this.state.orders.length) {
-                    this.update({
-                        selectedOrders: [],
-                        allOrdersSelected: false,
-                        someOrdersAreSelected: false
-                    })
-                } else {
-                    this.update({
-                        selectedOrders: this.state.orders.map(o => o.metaData.orderHash),
-                        allOrdersSelected: true,
-                        someOrdersAreSelected: true
-                    })
-                }
-            },
             async cancelSelectedOrders() {
                 if (this.state.selectedOrders.length > 1) {
                     let ordersToCancel =

@@ -1,3 +1,4 @@
+import axios from "axios";
 
 export async function fetchJson(url) {
 
@@ -14,17 +15,11 @@ export async function fetchJson(url) {
 }
 
 export async function postJson(url, content) {
-
-    let headers = new Headers();
-
-    headers.set("Content-Type", "application/json")
-
-    return await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(content)
-        })
-        .then(handleErrors)
+    await axios({
+        method: 'POST',
+        url: url,
+        data: content
+    });
 }
 
 function handleErrors(response) {

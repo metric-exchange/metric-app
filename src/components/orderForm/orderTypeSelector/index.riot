@@ -1,9 +1,9 @@
 <order-type-selector>
 
-    <div class="order-type-selector" if={ this.isConnectedToEthereumMainNet() }>
+    <div class="order-type-selector" }>
         <div if={ currentOrderType() === config.LIMIT } onclick={ showOrderTypesList } >{ config.LIMIT }</div>
         <div if={ currentOrderType() === config.SWAP } onclick={ showOrderTypesList } >{ config.SWAP }</div>
-        <div if={ currentOrderType() === config.HIDING_GAME } onclick={ showOrderTypesList } >{ config.HIDING_GAME }</div>
+        <div if={ currentOrderType() === config.HIDING_GAME && this.isConnectedToEthereumMainNet() } onclick={ showOrderTypesList } >{ config.HIDING_GAME }</div>
         <svg width="8" height="10" viewBox="0 0 289 142" fill="none" xmlns="http://www.w3.org/2000/svg" onclick={ showOrderTypesList }>
             <path d="M8 8L147 134L281 8" stroke="black" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -21,7 +21,7 @@
                 { config.SWAP }
             </div>
             <div class="order-type"
-                 if={ currentOrderType() !== config.HIDING_GAME }
+                 if={ currentOrderType() !== config.HIDING_GAME && this.isConnectedToEthereumMainNet() }
                  onclick={ setHidingGameType }
             >
                 { config.HIDING_GAME }

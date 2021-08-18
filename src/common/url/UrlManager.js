@@ -2,8 +2,6 @@ import {findOrAddTokenWithAddress} from "../tokens/token_fetch";
 import {
     chainToken,
     getConnectedNetworkConfig,
-    isConnectedToBscMainNet,
-    isConnectedToEthereumMainNet
 } from "../ChainHelpers";
 
 export class UrlManager {

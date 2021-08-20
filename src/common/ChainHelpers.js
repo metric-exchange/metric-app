@@ -44,7 +44,11 @@ export function isUnwrapping(sellToken, buToken) {
 }
 
 export async function addChain(config) {
-    await web3ModalProvider.request({method: 'wallet_addEthereumChain', params:[config]})
+    if (config.chainId === '0x1') {
+        await web3ModalProvider.request({method: 'wallet_switchEthereumChain', params:[{chainId: '0x1'}]})
+    } else {
+        await web3ModalProvider.request({method: 'wallet_addEthereumChain', params:[config]})
+    }
 }
 
 export function isStakingEnabled() {

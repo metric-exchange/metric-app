@@ -1,9 +1,8 @@
 <chain-selection>
 
-    <!-- enable when https://github.com/ethereum/EIPs/pull/3326 is implemented -->
-<!--    <div onclick={ switchToEthereumMainnet }>Ethereum Mainnet</div>-->
     <div class="network-switch-title">Switch network</div>
     <div class="chain-list">
+        <div class="chain-selector ethereum-chain" onclick={ switchToEthereumMainnet } if={ !this.isConnectedToEthereumMainNet() }>Ethereum Mainnet</div>
         <div class="chain-selector binance-smart-chain" onclick={ switchToBscMainnet } if={ !this.isConnectedToBscMainNet() }>Binance Smart Chain</div>
         <div class="chain-selector polygon-chain"  onclick={ switchToPolygonMainnet } if={ !this.isConnectedToPolygonMainNet() }>Polygon Chain</div>
     </div>

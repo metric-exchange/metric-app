@@ -5,11 +5,13 @@
         <div class="chain-selector ethereum-chain" onclick={ switchToEthereumMainnet } if={ !this.isConnectedToEthereumMainNet() }>Ethereum Mainnet</div>
         <div class="chain-selector binance-smart-chain" onclick={ switchToBscMainnet } if={ !this.isConnectedToBscMainNet() }>Binance Smart Chain</div>
         <div class="chain-selector polygon-chain"  onclick={ switchToPolygonMainnet } if={ !this.isConnectedToPolygonMainNet() }>Polygon Chain</div>
+        <div class="chain-selector avalanche-chain"  onclick={ switchToAvalancheMainnet } if={ !this.isConnectedToAvalancheMainnet() }>Avalanche Chain</div>
     </div>
 
 
     <script>
         import {
+            AvalancheNetworkId,
             BinanceChainNetworkId,
             EthereumNetworkId,
             PolygonNetworkId,
@@ -27,6 +29,9 @@
             },
             async switchToPolygonMainnet() {
                 await this.switchToNetwork(PolygonNetworkId)
+            },
+            async switchToAvalancheMainnet() {
+                await this.switchToNetwork(AvalancheNetworkId)
             },
             async switchToNetwork(id) {
                 let network = SupportedNetworks.find(n => n.id === id)

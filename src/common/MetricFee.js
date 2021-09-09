@@ -1,5 +1,11 @@
 import {tokensList} from "./tokens/token_fetch";
-import {metricLpToken, metricShareContract, metricShareVaultContract, metricToken} from "./ChainHelpers";
+import {
+    isConnectedToEthereumMainNet,
+    metricLpToken,
+    metricShareContract,
+    metricShareVaultContract,
+    metricToken
+} from "./ChainHelpers";
 import {MetricShare} from "./staking/MetricShare";
 import {BigNumber} from "@0x/utils";
 import {Erc20ContractProxy} from "./Erc20ContractProxy";
@@ -7,6 +13,11 @@ import {Erc20ContractProxy} from "./Erc20ContractProxy";
 export let MetricReferralAddress = "0x52427b0035F494a21a0A4A1AbE04d679f789c821"
 
 export async function calculateMetricFee(accountAddress) {
+
+    if (!isConnectedToEthereumMainNet()) {
+        return 0.001;
+    }
+
     let balance  = await fetchFeeEligibleTokenBalance(accountAddress)
     return balance.isGreaterThan(200) ? 0.001 : 0.003
 }

@@ -23,6 +23,9 @@
     position: absolute;
     top: 36px;
     right: 54px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #60ffd9;
 }
 
 .identicon-address {

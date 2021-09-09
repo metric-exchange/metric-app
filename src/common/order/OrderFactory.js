@@ -31,7 +31,7 @@ export class OrderFactory {
 
     async refreshOrderState() {
         let metric = UrlManager.metricToken()
-        let metricWithBalance = tokensList().find(t => t.address.toLowerCase() === metric.address.toLowerCase())
+        let metricWithBalance = tokensList().find(t => metric && t.address.toLowerCase() === metric.address.toLowerCase())
 
         if (this.account === null || this.account === undefined) {
             await this.stateManager.setReadyState(OrderState.NO_WALLET_CONNECTION)

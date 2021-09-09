@@ -14,7 +14,7 @@
             <order-book order-factory={ state.orderFactory }/>
         </div>
 
-        <div id="trade-list" class="trade-list">
+        <div id="trade-list" class="trade-list" if={ this.isConnectedToEthereumMainNet() }>
             <trade-list
                     show-trades-list={ () => toggleItem("trade-list", false) }
                     hide-trades-list={ () => toggleItem("trade-list", true) }
@@ -154,6 +154,10 @@
 
                 let orderType =
                     localStorage.getItem('orderType') ? parseInt(localStorage.getItem('orderType')) : Order.LimitOrderType
+
+                if (this.isConnectedToAvalancheMainnet()) {
+                    orderType = Order.MarketOrderType;
+                }
 
                 if (orderType === Order.LimitOrderType) {
                     this.state.orderFactory =

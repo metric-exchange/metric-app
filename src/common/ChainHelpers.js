@@ -1,4 +1,10 @@
-import {BinanceChainNetworkId, EthereumNetworkId, PolygonNetworkId, SupportedNetworks} from "./constants";
+import {
+    AvalancheNetworkId,
+    BinanceChainNetworkId,
+    EthereumNetworkId,
+    PolygonNetworkId,
+    SupportedNetworks
+} from "./constants";
 import {ConnectedNetworkId} from "./wallet/WalletManager";
 import {web3ModalProvider} from "./wallet/Web3Modal";
 
@@ -19,10 +25,15 @@ export function isConnectedToPolygonMainNet() {
     return ConnectedNetworkId === PolygonNetworkId
 }
 
+export function isConnectedToAvalancheMainnet() {
+    return ConnectedNetworkId === AvalancheNetworkId
+}
+
 export function isSupportedNetwork() {
     return ConnectedNetworkId === EthereumNetworkId
         || ConnectedNetworkId === BinanceChainNetworkId
         || ConnectedNetworkId === PolygonNetworkId
+        || ConnectedNetworkId === AvalancheNetworkId
 }
 
 export function chainToken() {

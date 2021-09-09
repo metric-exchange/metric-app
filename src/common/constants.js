@@ -5,6 +5,7 @@ export let EthereumNetworkId = 1;
 
 export let BinanceChainNetworkId = 56;
 export let PolygonNetworkId = 137;
+export let AvalancheNetworkId = 43114;
 
 export let SupportedNetworks = [
     {
@@ -90,7 +91,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://bsc.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/pancakeswap/pancake-swap-interface/master/src/constants/token/pancakeswap.json"
+            tokens: "https://api.borgswap.exchange/tokens.json"
         },
         defaultTokens: [
             {
@@ -156,7 +157,7 @@ export let SupportedNetworks = [
         },
         defaultTokens: [
             {
-                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee".toLowerCase(),
+                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
                 decimals: 18,
                 symbol: "MATIC",
                 logoURI: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg?1612939050",
@@ -195,6 +196,75 @@ export let SupportedNetworks = [
                 disabled: false,
                 hasHidingGame: false
             }
+        ]
+    },
+    {
+        id: AvalancheNetworkId,
+        name: "Avalanche chain",
+        config: {
+            chainId: "0xA86A",
+            chainName: "Avalanche Mainnet",
+            nativeCurrency: {
+                "name": "Avalanche",
+                "symbol": "AVAX",
+                "decimals": 18
+            },
+            rpcUrls: [
+                "https://api.avax.network/ext/bc/C/rpc"
+            ],
+            blockExplorerUrls: [
+                "https://explorer.avax.network",
+                "https://cchain.explorer.avax.network"
+            ]
+        },
+        uris: {
+            zeroX: "https://avalanche.api.0x.org",
+            tokens: "https://raw.githubusercontent.com/pangolindex/tokenlists/main/defi.tokenlist.json"
+        },
+        defaultTokens: [
+            {
+                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                decimals: 18,
+                symbol: "AVAX",
+                logoURI: "https://raw.githubusercontent.com/ava-labs/bridge-tokens/main/avalanche-tokens/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7/logo.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                chainToken: true
+            },
+            {
+                address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+                decimals: 18,
+                name: "Wrapped AVAX",
+                symbol: "WAVAX",
+                logoURI: "https://raw.githubusercontent.com/ava-labs/bridge-tokens/main/avalanche-tokens/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7/logo.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                wrappedChainToken: true
+            },
+            {
+                address: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+                decimals: 6,
+                name: "Tether USD",
+                symbol: "USDT.e",
+                logoURI: "https://raw.githubusercontent.com/ava-labs/avalanche-bridge-resources/main/tokens/USDT/logo.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false
+            },
         ]
     }
 ];

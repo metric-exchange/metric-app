@@ -174,7 +174,7 @@ export function clearTokenList() {
 
 export async function loadTokenList()
 {
-    try {
+    // try {
         let url = "https://tokens.coingecko.com/uniswap/all.json"
 
         let connectedNetworkConfig = getConnectedNetworkConfig()
@@ -210,9 +210,9 @@ export async function loadTokenList()
 
         await triggerTokenListUpdateEvent()
 
-    } catch (e) {
-        console.error(`Token list fetch failed, search by address can still be used ${e}`)
-    }
+    // } catch (e) {
+    //     console.error(`Token list fetch failed, search by address can still be used ${e}`)
+    // }
 }
 
 export async function triggerTokenListUpdateEvent() {

@@ -39,7 +39,7 @@
                 if (token.address === this.props.orderFactory.order.sellToken.address) {
                     this.updateOnParamsChanges()
                 }
-                if (token.address === UrlManager.metricToken().address) {
+                if (UrlManager.metricToken() && token.address === UrlManager.metricToken().address) {
                     this.updateOnParamsChanges()
                 }
             },

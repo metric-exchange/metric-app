@@ -47,6 +47,7 @@
         import EthIcon from '../../common/tokens/eth.png'
         import BscIcon from '../../common/tokens/bnb.png'
         import PolygonIcon from '../../common/tokens/polygon.png'
+        import AvalancheIcon from '../../common/tokens/avalanche.svg'
         import {
             accountAddress,
             obfuscateAddress,
@@ -56,7 +57,8 @@
         import {
             isConnectedToBscMainNet,
             isConnectedToEthereumMainNet,
-            isConnectedToPolygonMainNet
+            isConnectedToPolygonMainNet,
+            isConnectedToAvalancheMainnet
         } from "../../common/ChainHelpers";
 
         let DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000"
@@ -72,6 +74,7 @@
                 ethIcon: EthIcon,
                 bscIcon: BscIcon,
                 polygonIcon: PolygonIcon,
+                avalancheIcon: AvalancheIcon,
                 dropDownClicked: false,
                 address: DEFAULT_ADDRESS,
                 blocky: null
@@ -119,6 +122,10 @@
 
                 if (isConnectedToPolygonMainNet()) {
                     return this.state.polygonIcon
+                }
+
+                if (isConnectedToAvalancheMainnet()) {
+                    return this.state.avalancheIcon
                 }
 
                 return null

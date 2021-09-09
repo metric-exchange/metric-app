@@ -31,6 +31,7 @@ if (process.env.NODE_ENV === 'production') {
 
 import * as Rollbar from "rollbar";
 import {
+    isConnectedToAvalancheMainnet,
     isConnectedToBscMainNet,
     isConnectedToEthereumMainNet,
     isConnectedToPolygonMainNet,
@@ -86,6 +87,7 @@ install(c => {
     c.isConnectedToEthereumMainNet = isConnectedToEthereumMainNet
     c.isConnectedToBscMainNet = isConnectedToBscMainNet
     c.isConnectedToPolygonMainNet = isConnectedToPolygonMainNet
+    c.isConnectedToAvalancheMainnet = isConnectedToAvalancheMainnet
     c.isSupportedNetwork = isSupportedNetwork
     c.isStakingEnabled = isStakingEnabled
     c.metricShareContract = metricShareContract

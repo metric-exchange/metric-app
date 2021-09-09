@@ -4,32 +4,11 @@
         <div class="slogan">Gas-less limit orders, Any pair</div>
         <div class="sub-slogan">Collect trading fees by holding <b class="token">$METRIC</b></div>
         <div class="board-selector trade-button" onclick={ props.routeToTrade } >TRADE</div>
-        <div class="volume-title">Last { state.fillsProxy.period } days trading volumes</div>
-        <total-volumes fills-proxy={ state.fillsProxy }/>
     </div>
 
     <script>
         import './index.css'
-        import {MetricTrackerFillsProxy} from "../../common/0x/fill/MetricTrackerFillsProxy";
-        import TotalVolumes from '../totalVolumes/index.riot'
 
-        export default {
-            components: {
-                TotalVolumes
-            },
-            state: {
-                fillsProxy: new MetricTrackerFillsProxy()
-            },
-            onMounted() {
-                this.state.fillsProxy.fetchFills()
-                this.state.fillsProxy.refreshFills()
-            },
-            onBeforeUnmount() {
-                if (this.state.fillsProxy) {
-                    this.state.fillsProxy.clear()
-                }
-            }
-        }
     </script>
 
 </board-selector>

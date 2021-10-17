@@ -42,7 +42,8 @@ import {
     metricShareContract,
     metricShareVaultContract,
     metricShareVaultV0Contract,
-    metricToken
+    metricToken,
+    isConnectedToFantomMainnet
 } from "./common/ChainHelpers";
 Rollbar.init(
     {
@@ -90,6 +91,7 @@ install(c => {
     c.isConnectedToPolygonMainNet = isConnectedToPolygonMainNet
     c.isConnectedToAvalancheMainnet = isConnectedToAvalancheMainnet
     c.isConnectedToCeloMainnet = isConnectedToCeloMainnet
+    c.isConnectedToFantomMainnet = isConnectedToFantomMainnet
     c.isSupportedNetwork = isSupportedNetwork
     c.isStakingEnabled = isStakingEnabled
     c.metricShareContract = metricShareContract

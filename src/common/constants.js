@@ -7,6 +7,7 @@ export let BinanceChainNetworkId = 56;
 export let PolygonNetworkId = 137;
 export let AvalancheNetworkId = 43114;
 export let CeloNetworkId = 42220;
+export let FantomNetworkId = 250;
 
 export let SupportedNetworks = [
     {
@@ -25,7 +26,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://api.0x.org",
-            tokens: "https://tokens.coingecko.com/uniswap/all.json"
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/ethereum.json"
         },
         defaultTokens: [
             {
@@ -92,7 +93,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://bsc.api.0x.org",
-            tokens: "https://api.borgswap.exchange/tokens.json"
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/bsc.json"
         },
         defaultTokens: [
             {
@@ -154,7 +155,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://polygon.api.0x.org",
-            tokens: "https://unpkg.com/quickswap-default-token-list@1.0.48/build/quickswap-default.tokenlist.json"
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/polygon.json"
         },
         defaultTokens: [
             {
@@ -165,7 +166,6 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false,
@@ -179,7 +179,6 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false,
@@ -220,7 +219,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://avalanche.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/pangolindex/tokenlists/main/defi.tokenlist.json"
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/avalanche.json"
         },
         defaultTokens: [
             {
@@ -231,7 +230,6 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false,
@@ -246,7 +244,6 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false,
@@ -261,7 +258,6 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false
@@ -288,7 +284,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://celo.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/Ubeswap/default-token-list/master/ubeswap.token-list.json"
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/celo.json"
         },
         defaultTokens: [
             {
@@ -300,7 +296,6 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
                 disabled: false,
@@ -316,9 +311,73 @@ export let SupportedNetworks = [
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,
-                    Erc20Proxy : NaN,
                     ExchangeProxyV4Address: NaN
                 },
+                disabled: false
+            },
+        ]
+    },
+    {
+        id: FantomNetworkId,
+        name: "Fantom chain",
+        config: {
+            chainId: "0xfa",
+            chainName: "Fantom Mainnet",
+            nativeCurrency: {
+                "name": "Fantom",
+                "symbol": "FTM",
+                "decimals": 18
+            },
+            rpcUrls: [
+                "https://rpc.ftm.tools"
+            ],
+            blockExplorerUrls: [
+                "https://ftmscan.com"
+            ]
+        },
+        uris: {
+            zeroX: "https://fantom.api.0x.org",
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/fantom.json"
+        },
+        defaultTokens: [
+            {
+                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                decimals: 18,
+                name: "Fantom",
+                symbol: "FTM",
+                logoURI: "https://assets.spookyswap.finance/tokens/FTM.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                chainToken: true
+            },
+            {
+                address: "0x049d68029688eabf473097a2fc38ef61633a3c7a",
+                decimals: 6,
+                name: "Fantom USDT",
+                symbol: "fUSDT",
+                logoURI: "https://assets.spookyswap.finance/tokens/fUSDT.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false
+            },
+            {
+                symbol: "WFTM",
+                address: "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
+                decimals: 18,
+                logoURI: "https://assets.spookyswap.finance/tokens/WFTM.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                wrappedChainToken: true,
                 disabled: false
             },
         ]

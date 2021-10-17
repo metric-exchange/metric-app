@@ -49,6 +49,8 @@
         import {Order} from "../../common/order/Order";
         import {OrderEventActions, OrderEventProperties, OrderEventSource} from "../../common/order/OrderEventSource";
         import {ZeroXOrderBook} from "../../common/0x/orderbook/ZeroXOrderBook";
+        import {ConnectedNetworkId} from "../../common/wallet/WalletManager";
+        import {EthereumNetworkId} from "../../common/constants";
 
         export default {
             components: {
@@ -78,7 +80,8 @@
             onBeforeMount() {
                 this.state.orderBook = new ZeroXOrderBook(
                     this.props.orderFactory.order.sellToken,
-                    this.props.orderFactory.order.buyToken
+                    this.props.orderFactory.order.buyToken,
+                    ConnectedNetworkId === EthereumNetworkId
                 )
 
                 this.state.orderBook.reset()

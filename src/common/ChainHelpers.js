@@ -4,7 +4,8 @@ import {
     EthereumNetworkId,
     PolygonNetworkId,
     CeloNetworkId,
-    SupportedNetworks
+    SupportedNetworks,
+    FantomNetworkId
 } from "./constants";
 import {ConnectedNetworkId} from "./wallet/WalletManager";
 import {web3ModalProvider} from "./wallet/Web3Modal";
@@ -34,12 +35,17 @@ export function isConnectedToCeloMainnet() {
     return ConnectedNetworkId === CeloNetworkId
 }
 
+export function isConnectedToFantomMainnet() {
+    return ConnectedNetworkId === FantomNetworkId
+}
+
 export function isSupportedNetwork() {
     return ConnectedNetworkId === EthereumNetworkId
         || ConnectedNetworkId === BinanceChainNetworkId
         || ConnectedNetworkId === PolygonNetworkId
         || ConnectedNetworkId === AvalancheNetworkId
         || ConnectedNetworkId === CeloNetworkId
+        || ConnectedNetworkId === FantomNetworkId
 }
 
 export function chainToken() {

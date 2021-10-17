@@ -3,9 +3,10 @@ import {ZeroXV3OrderBookProxy} from "./ZeroXV3OrderBookProxy";
 
 export class ZeroXOrderBook {
 
-    constructor(baseToken, quoteToken) {
+    constructor(baseToken, quoteToken, checkV3) {
         this.baseToken = baseToken
         this.quoteToken = quoteToken
+        this.checkV3 = checkV3
 
         this.orderBookV3Proxy = new ZeroXV3OrderBookProxy()
         this.orderBookV4Proxy = new ZeroXV4OrderBookProxy()
@@ -41,8 +42,15 @@ export class ZeroXOrderBook {
     async refresh() {
 
         try {
-            let orderBookUpdate =
-                await this.orderBookV3Proxy.getOrdersMatching(this.baseToken, this.quoteToken, false)
+
+            let orderBookUpdate = {
+                bids: [], asks: []
+            }
+
+            if (this.checkV3) {
+                orderBookUpdate =
+                    await this.orderBookV3Proxy.getOrdersMatching(this.baseToken, this.quoteToken, false)
+            }
 
             let orderBookV4Update =
                 await this.orderBookV4Proxy.getOrdersMatching(this.baseToken, this.quoteToken, false)

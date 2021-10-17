@@ -28,7 +28,7 @@
         import Loader from '../loader/index.riot'
         import OrderLine from './orderLine/index.riot'
         import {
-            accountAddress,
+            accountAddress, ConnectedNetworkId,
             isWalletConnected,
             registerForWalletChanges
         } from "../../common/wallet/WalletManager";
@@ -40,6 +40,7 @@
         } from "../../common/0x/order/ZeroXV3UserPendingOrdersProxy";
         import {registerForTokenListUpdate} from "../../common/tokens/token_fetch";
         import {batchCancelOrders, cancelOrder} from "../../common/0x/order/ZeroXOrderManagerProxy";
+        import {EthereumNetworkId} from "../../common/constants";
 
         export default {
             components: {
@@ -60,8 +61,8 @@
                 registerForWalletChanges(this)
                 if (isWalletConnected()) {
                     this.update({ isLoadingOrders: true })
-                    synchronizeUserOrders(accountAddress())
-                    this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress()), 30000)
+                    synchronizeUserOrders(accountAddress(), ConnectedNetworkId === EthereumNetworkId)
+                    this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress(), ConnectedNetworkId === EthereumNetworkId), 30000)
                 } else {
                     getHidingGameProxy().init()
                     this.toggleOrderList()
@@ -80,8 +81,8 @@
                 if (isWalletConnected()) {
                     this.update({isLoadingOrders: true})
                     clearInterval(this.state.orderSynchroHandle)
-                    synchronizeUserOrders(accountAddress())
-                    this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress()), 30000)
+                    synchronizeUserOrders(accountAddress(), ConnectedNetworkId === EthereumNetworkId)
+                    this.state.orderSynchroHandle = setInterval(() => synchronizeUserOrders(accountAddress(), ConnectedNetworkId === EthereumNetworkId), 30000)
                 } else {
                     this.toggleOrderList()
                 }

@@ -7,6 +7,7 @@
         <div class="chain-selector polygon-chain"  onclick={ switchToPolygonMainnet } if={ !this.isConnectedToPolygonMainNet() }>Polygon Chain</div>
         <div class="chain-selector avalanche-chain"  onclick={ switchToAvalancheMainnet } if={ !this.isConnectedToAvalancheMainnet() }>Avalanche Chain</div>
         <div class="chain-selector celo-chain"  onclick={ switchToCeloMainnet } if={ !this.isConnectedToCeloMainnet() }>Celo Chain</div>
+        <div class="chain-selector fantom-chain"  onclick={ switchToFantomMainnet } if={ !this.isConnectedToFantomMainnet() }>Fantom Chain</div>
     </div>
 
 
@@ -15,7 +16,7 @@
             AvalancheNetworkId,
             BinanceChainNetworkId,
             CeloNetworkId,
-            EthereumNetworkId,
+            EthereumNetworkId, FantomNetworkId,
             PolygonNetworkId,
             SupportedNetworks
         } from "../../common/constants";
@@ -37,6 +38,9 @@
             },
             async switchToCeloMainnet() {
                 await this.switchToNetwork(CeloNetworkId)
+            },
+            async switchToFantomMainnet() {
+                await this.switchToNetwork(FantomNetworkId)
             },
             async switchToNetwork(id) {
                 let network = SupportedNetworks.find(n => n.id === id)

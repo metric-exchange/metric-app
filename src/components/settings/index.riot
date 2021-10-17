@@ -49,6 +49,7 @@
         import PolygonIcon from '../../common/tokens/polygon.png'
         import AvalancheIcon from '../../common/tokens/avalanche.svg'
         import CeloIcon from '../../common/tokens/celo.png'
+        import FantomIcon from '../../common/tokens/fantom.png'
         import {
             accountAddress,
             obfuscateAddress,
@@ -60,7 +61,7 @@
             isConnectedToEthereumMainNet,
             isConnectedToPolygonMainNet,
             isConnectedToAvalancheMainnet,
-            isConnectedToCeloMainnet,
+            isConnectedToCeloMainnet, isConnectedToFantomMainnet
         } from "../../common/ChainHelpers";
 
         let DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000"
@@ -78,6 +79,7 @@
                 polygonIcon: PolygonIcon,
                 avalancheIcon: AvalancheIcon,
                 celoIcon: CeloIcon,
+                fantomIcon: FantomIcon,
                 dropDownClicked: false,
                 address: DEFAULT_ADDRESS,
                 blocky: null
@@ -133,6 +135,10 @@
 
                 if (isConnectedToCeloMainnet()) {
                     return this.state.celoIcon
+                }
+
+                if (isConnectedToFantomMainnet()) {
+                    return this.state.fantomIcon
                 }
 
                 return null

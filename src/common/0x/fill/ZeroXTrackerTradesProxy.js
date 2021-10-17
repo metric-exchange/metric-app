@@ -1,6 +1,8 @@
 import {ObservableValue} from "../../order/ObservableValue";
 import {fetchJson} from "../../JsonApiFetch";
 import Rollbar from "rollbar";
+import {ConnectedNetworkId} from "../../wallet/WalletManager";
+import {EthereumNetworkId} from "../../constants";
 
 export class ZeroXTrackerTradesProxy {
     constructor() {
@@ -18,17 +20,19 @@ export class ZeroXTrackerTradesProxy {
     }
 
     async fetchFills(source, address, page = 1) {
-        try {
-            let fills = await fetchJson(`https://api.0xtracker.com/fills?trader=${address.toLowerCase()}&page=${page}&limit=50`)
+        if (ConnectedNetworkId === EthereumNetworkId) {
+            try {
+                let fills = await fetchJson(`https://api.0xtracker.com/fills?trader=${address.toLowerCase()}&page=${page}&limit=50`)
 
-            await this.updateFills(source, address.toLowerCase(), fills.fills)
+                await this.updateFills(source, address.toLowerCase(), fills.fills)
 
-            if (page < fills.pageCount) {
-                await this.fetchFills(source, address.toLowerCase(),page + 1)
+                if (page < fills.pageCount) {
+                    await this.fetchFills(source, address.toLowerCase(),page + 1)
+                }
+
+            } catch (e) {
+                console.warn(`Failed to fetch order fills. ${e}`)
             }
-
-        } catch (e) {
-            console.warn(`Failed to fetch order fills. ${e}`)
         }
     }
 

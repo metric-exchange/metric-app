@@ -35,6 +35,7 @@ import {
     isConnectedToBscMainNet,
     isConnectedToEthereumMainNet,
     isConnectedToPolygonMainNet,
+    isConnectedToCeloMainnet,
     isStakingEnabled,
     isSupportedNetwork,
     metricLpToken,
@@ -88,6 +89,7 @@ install(c => {
     c.isConnectedToBscMainNet = isConnectedToBscMainNet
     c.isConnectedToPolygonMainNet = isConnectedToPolygonMainNet
     c.isConnectedToAvalancheMainnet = isConnectedToAvalancheMainnet
+    c.isConnectedToCeloMainnet = isConnectedToCeloMainnet
     c.isSupportedNetwork = isSupportedNetwork
     c.isStakingEnabled = isStakingEnabled
     c.metricShareContract = metricShareContract

@@ -10,6 +10,7 @@
     text-decoration: none;
     text-align: center;
     font-size: 12px;
+    font-weight: bold;
     color: var(--theme-switch-button-text-color);
     border: none;
     padding: 10px;
@@ -42,4 +43,10 @@
     background-color: #ff6200;
     color: white;
     border: 2px solid #ff6200;
+}
+
+.celo-chain {
+    background-color: white;
+    color: #71ea51;
+    border: 2px solid #71ea51;
 }

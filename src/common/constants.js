@@ -6,6 +6,7 @@ export let EthereumNetworkId = 1;
 export let BinanceChainNetworkId = 56;
 export let PolygonNetworkId = 137;
 export let AvalancheNetworkId = 43114;
+export let CeloNetworkId = 42220;
 
 export let SupportedNetworks = [
     {
@@ -257,6 +258,61 @@ export let SupportedNetworks = [
                 name: "Tether USD",
                 symbol: "USDT.e",
                 logoURI: "https://raw.githubusercontent.com/ava-labs/avalanche-bridge-resources/main/tokens/USDT/logo.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false
+            },
+        ]
+    },
+    {
+        id: CeloNetworkId,
+        name: "Celo chain",
+        config: {
+            chainId: "0xa4ec",
+            chainName: "Celo Mainnet",
+            nativeCurrency: {
+                "name": "Celo",
+                "symbol": "CELO",
+                "decimals": 18
+            },
+            rpcUrls: [
+                "https://forno.celo.org"
+            ],
+            blockExplorerUrls: [
+                "https://explorer.celo.org"
+            ]
+        },
+        uris: {
+            zeroX: "https://celo.api.0x.org",
+            tokens: "https://raw.githubusercontent.com/Ubeswap/default-token-list/master/ubeswap.token-list.json"
+        },
+        defaultTokens: [
+            {
+                address: "0x471EcE3750Da237f93B8E339c536989b8978a438",
+                decimals: 18,
+                name: "Celo",
+                symbol: "CELO",
+                logoURI: "https://raw.githubusercontent.com/ubeswap/default-token-list/master/assets/asset_CELO.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    Erc20Proxy : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                chainToken: true,
+                wrappedChainToken: true
+            },
+            {
+                address: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
+                decimals: 18,
+                name: "Celo Dollar",
+                symbol: "cUSD",
+                logoURI: "https://raw.githubusercontent.com/ubeswap/default-token-list/master/assets/asset_cUSD.png",
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,

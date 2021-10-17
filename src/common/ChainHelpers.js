@@ -3,6 +3,7 @@ import {
     BinanceChainNetworkId,
     EthereumNetworkId,
     PolygonNetworkId,
+    CeloNetworkId,
     SupportedNetworks
 } from "./constants";
 import {ConnectedNetworkId} from "./wallet/WalletManager";
@@ -29,11 +30,16 @@ export function isConnectedToAvalancheMainnet() {
     return ConnectedNetworkId === AvalancheNetworkId
 }
 
+export function isConnectedToCeloMainnet() {
+    return ConnectedNetworkId === CeloNetworkId
+}
+
 export function isSupportedNetwork() {
     return ConnectedNetworkId === EthereumNetworkId
         || ConnectedNetworkId === BinanceChainNetworkId
         || ConnectedNetworkId === PolygonNetworkId
         || ConnectedNetworkId === AvalancheNetworkId
+        || ConnectedNetworkId === CeloNetworkId
 }
 
 export function chainToken() {

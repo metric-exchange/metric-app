@@ -1,7 +1,9 @@
 import {findOrAddTokenWithAddress} from "../tokens/token_fetch";
 import {
     chainToken,
-    getConnectedNetworkConfig, isConnectedToAvalancheMainnet, wrappedChainToken,
+    getConnectedNetworkConfig,
+    isConnectedToAvalancheMainnet,
+    isConnectedToCeloMainnet,
 } from "../ChainHelpers";
 
 export class UrlManager {
@@ -51,6 +53,9 @@ export class UrlManager {
     static defaultBuyToken() {
         if (isConnectedToAvalancheMainnet()) {
             return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "usdt.e");
+        }
+        if (isConnectedToCeloMainnet()) {
+            return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "cusd");
         }
         return this.metricToken()
     }

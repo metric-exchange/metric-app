@@ -12,7 +12,7 @@ export class ZeroXV4OrderBookProxy extends OrderBookProxy {
     async getOrdersAsync(baseToken, quoteToken) {
         let networkConfig = getConnectedNetworkConfig()
         return await fetchJson(
-            `${networkConfig.uris.zeroX}/sra/v4/orderbook?perPage=500&baseToken=${baseToken.address.toLowerCase()}&quoteToken=${quoteToken.address.toLowerCase()}`
+            `${networkConfig.uris.zeroX}/orderbook/v1?perPage=500&baseToken=${baseToken.address.toLowerCase()}&quoteToken=${quoteToken.address.toLowerCase()}`
         )
     }
 

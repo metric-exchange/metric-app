@@ -10,7 +10,7 @@ export class ZeroXV4OrderProxy {
 
     constructor() {
         let networkConfig = getConnectedNetworkConfig()
-        this.url = `${networkConfig.uris.zeroX}/sra/v4`
+        this.url = `${networkConfig.uris.zeroX}/orderbook/v1`
     }
 
     async sendOrder(order) {
@@ -36,14 +36,9 @@ export class ZeroXV4OrderProxy {
         });
 
         const signature = await order.getSignatureWithProviderAsync(
-            getProvider()
+            getProvider(),
+            SignatureType.EIP712,
         );
-
-        // to activate when this is released: https://github.com/MetaMask/metamask-extension/pull/11064
-        // const signature = await order.getSignatureWithProviderAsync(
-        //     getProvider(),
-        //     SignatureType.EIP712,
-        // );
 
         return {
             ...order,

@@ -49,13 +49,8 @@ export class HidingGameProxy {
 
         const signature = await order.getSignatureWithProviderAsync(
             getProvider(),
+            SignatureType.EIP712,
         );
-
-        // to activate when this is released: https://github.com/MetaMask/metamask-extension/pull/11064
-        // const signature = await order.getSignatureWithProviderAsync(
-        //     getProvider(),
-        //     SignatureType.EIP712,
-        // );
 
         return {
             maker: order.maker,

@@ -39,13 +39,16 @@ export function isConnectedToFantomMainnet() {
     return ConnectedNetworkId === FantomNetworkId
 }
 
-export function isSupportedNetwork() {
-    return ConnectedNetworkId === EthereumNetworkId
-        || ConnectedNetworkId === BinanceChainNetworkId
-        || ConnectedNetworkId === PolygonNetworkId
-        || ConnectedNetworkId === AvalancheNetworkId
-        || ConnectedNetworkId === CeloNetworkId
-        || ConnectedNetworkId === FantomNetworkId
+export function isSupportedNetwork(id) {
+
+    let networkId = id ? id : ConnectedNetworkId
+
+    return networkId === EthereumNetworkId
+        || networkId === BinanceChainNetworkId
+        || networkId === PolygonNetworkId
+        || networkId === AvalancheNetworkId
+        // || networkId === CeloNetworkId
+        // || networkId === FantomNetworkId
 }
 
 export function chainToken() {

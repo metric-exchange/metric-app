@@ -73,10 +73,9 @@
 
 .footer-links {
     display: grid;
-    grid-template-columns: 32% 32% 32%;
-    grid-gap: 2%;
+    grid-gap: 10px;
     color: var(--token-selector-table-text-color);
-    place-items: center;
+    padding-left: 25px;
 }
 
 .footer-social-media-links a svg path {
@@ -89,7 +88,6 @@
 
 .footer-links a, .footer-links a:hover, .footer-links a:visited {
     color: var(--token-selector-table-text-color);
-    font-size: 12px;
     margin: 0 5px;
 }
 
@@ -115,13 +113,6 @@
 
     .sub-slogan {
         grid-area: unset;
-    }
-
-    .footer-links {
-        display: grid;
-        grid-template-columns: auto;
-        grid-gap: 30px;
-        justify-items: center;
     }
 
 }

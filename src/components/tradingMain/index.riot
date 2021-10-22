@@ -5,19 +5,20 @@
     </div>
 
     <div class="unsupported-network" if={ !this.isSupportedNetwork() }>
-        UNSUPPORTED NETWORK, PLEASE CONNECT TO
-        ETHEREUM MAINNET, BINANCE SMART CHAIN OR POLYGON
+        <chain-selection/>
     </div>
 
     <script>
         import './index.css'
         import OrderDashboard from '../orderDashboard/index.riot'
+        import ChainSelection from '../chainSelection/index.riot'
         import {initWeb3, registerForNetworkChanges, registerForWalletChanges} from "../../common/wallet/WalletManager";
         import {clearTokenList, resetTokenList} from "../../common/tokens/token_fetch";
 
         export default {
             components: {
-                OrderDashboard
+                OrderDashboard,
+                ChainSelection
             },
             onBeforeMount() {
                 this.props.urlManager.setBase("trade")

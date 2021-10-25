@@ -51,6 +51,14 @@ export function isSupportedNetwork(id) {
         // || networkId === FantomNetworkId
 }
 
+export function isLimitOrderSupported(id) {
+
+    let networkId = id ? id : ConnectedNetworkId
+
+    return isSupportedNetwork(id) &&
+        networkId === EthereumNetworkId
+}
+
 export function chainToken() {
     let chain = getConnectedNetworkConfig()
     return chain.defaultTokens.find(t => t.chainToken)

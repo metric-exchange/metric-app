@@ -10,7 +10,7 @@
             />
         </div>
 
-        <div class="order-book" if={ state.orderFactory && state.orderFactory.order.isLimitOrder() && !state.orderFactory.order.isHidingGameOrder()}>
+        <div class="order-book" if={ this.isLimitOrderSupported() && state.orderFactory && state.orderFactory.order.isLimitOrder() && !state.orderFactory.order.isHidingGameOrder()}>
             <order-book order-factory={ state.orderFactory }/>
         </div>
 
@@ -21,7 +21,7 @@
             />
         </div>
 
-        <div id="order-list" class="order-list" if={ state.orderFactory && state.orderFactory.order.isLimitOrder() }>
+        <div id="order-list" class="order-list" if={ this.isLimitOrderSupported() && state.orderFactory && state.orderFactory.order.isLimitOrder() }>
             <order-list
                     show-orders-list={ () => toggleItem("order-list", false) }
                     hide-orders-list={ () => toggleItem("order-list", true) }
@@ -154,7 +154,7 @@
                 let orderType =
                     localStorage.getItem('orderType') ? parseInt(localStorage.getItem('orderType')) : Order.LimitOrderType
 
-                if (this.isConnectedToAvalancheMainnet()) {
+                if (!this.isLimitOrderSupported()) {
                     orderType = Order.MarketOrderType;
                 }
 

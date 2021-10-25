@@ -43,7 +43,8 @@ import {
     metricShareVaultContract,
     metricShareVaultV0Contract,
     metricToken,
-    isConnectedToFantomMainnet
+    isConnectedToFantomMainnet,
+    isLimitOrderSupported
 } from "./common/ChainHelpers";
 Rollbar.init(
     {
@@ -87,6 +88,7 @@ install(c => {
     c.supportedLanguages = supportedLanguages
 
     c.isConnectedToEthereumMainNet = isConnectedToEthereumMainNet
+    c.isLimitOrderSupported = isLimitOrderSupported
     c.isConnectedToBscMainNet = isConnectedToBscMainNet
     c.isConnectedToPolygonMainNet = isConnectedToPolygonMainNet
     c.isConnectedToAvalancheMainnet = isConnectedToAvalancheMainnet

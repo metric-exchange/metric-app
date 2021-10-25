@@ -31,7 +31,7 @@
             </div>
         </div>
         <order-type-selector
-                if={ !this.isConnectedToAvalancheMainnet() }
+                if={ this.isLimitOrderSupported() }
                 order-factory={ props.orderFactory }
                 set-market-order-type={ props.setMarketOrderType }
                 set-limit-order-type={ props.setLimitOrderType }

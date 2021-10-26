@@ -11,7 +11,7 @@ import Rollbar from "rollbar";
 import {BigNumber} from "@0x/utils";
 import {
     chainToken,
-    getConnectedNetworkConfig,
+    getConnectedNetworkConfig, isConnectedToEthereumMainNet,
     isConnectedToFantomMainnet,
     isConnectedToPolygonMainNet
 } from "../ChainHelpers";
@@ -59,7 +59,12 @@ export function tokensList() { return tokens }
 
 export async function fetchTokensInfo(address) {
     console.debug("Token Balances/allowances update starting")
-    await executeBatch(address, 0, 100, 500)
+    await executeBatch(
+        address,
+        0,
+        isConnectedToEthereumMainNet() ? 100 : 5,
+        500
+    )
 }
 
 export async function updateTokenBalance(token, address) {

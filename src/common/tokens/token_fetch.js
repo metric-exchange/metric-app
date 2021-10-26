@@ -9,7 +9,12 @@ import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
 import Rollbar from "rollbar";
 import {BigNumber} from "@0x/utils";
-import {chainToken, getConnectedNetworkConfig, isConnectedToPolygonMainNet} from "../ChainHelpers";
+import {
+    chainToken,
+    getConnectedNetworkConfig,
+    isConnectedToFantomMainnet,
+    isConnectedToPolygonMainNet
+} from "../ChainHelpers";
 
 export function resetTokensInfo() {
     tokens.forEach(t => {
@@ -118,11 +123,11 @@ async function updateBalance(token, address, balance) {
         }
 
         if (token.balance.isGreaterThan(0) && token.address !== chainToken().address) {
-            await fetchAllowance(token, address, ExchangeProxyV4Address)
+            await fetchAllowance(token, address, ExchangeProxyV4Address())
         } else {
             let allowance = token.address !== chainToken().address ? 0 : 1e27
-            if (token.allowance[ExchangeProxyV4Address] !== allowance) {
-                token.allowance[ExchangeProxyV4Address] = allowance
+            if (token.allowance[ExchangeProxyV4Address()] !== allowance) {
+                token.allowance[ExchangeProxyV4Address()] = allowance
             }
         }
 
@@ -327,4 +332,9 @@ let tokenListInitialized = false
 
 export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
 
-export let ExchangeProxyV4Address = "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
+export function ExchangeProxyV4Address() {
+    if (isConnectedToFantomMainnet()) {
+        return "0xdef189deaef76e379df891899eb5a00a94cbc250"
+    }
+    return "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
+}

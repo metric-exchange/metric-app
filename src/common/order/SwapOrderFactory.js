@@ -15,7 +15,7 @@ export class SwapOrderFactory extends OrderFactory {
         super(
             order,
             stateManager,
-            ExchangeProxyV4Address,
+            ExchangeProxyV4Address(),
             accountAddress
         );
         this.slippagePercentage = getSlippageConfig()

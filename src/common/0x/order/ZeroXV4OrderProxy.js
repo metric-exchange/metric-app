@@ -29,7 +29,7 @@ export class ZeroXV4OrderProxy {
             takerAmount: orderParams.takerAmount,
             pool: "0x0000000000000000000000000000000000000000000000000000000000000037",
             salt: generatePseudoRandom256BitNumber(),
-            verifyingContract: ExchangeProxyV4Address.toLowerCase(),
+            verifyingContract: ExchangeProxyV4Address().toLowerCase(),
             expiry: orderParams.expiry,
             takerTokenFeeAmount: orderParams.takerFeeAmount,
             feeRecipient: MetricReferralAddress.toLowerCase()

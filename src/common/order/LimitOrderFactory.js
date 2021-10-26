@@ -14,7 +14,7 @@ export class LimitOrderFactory extends OrderFactory {
         super(
             order,
             stateManager,
-            ExchangeProxyV4Address,
+            ExchangeProxyV4Address(),
             accountAddress
         );
         this.expiryTime = moment().add(7, 'days').format("yyyy-MM-DDTHH:mm")

@@ -47,8 +47,8 @@ export function isSupportedNetwork(id) {
         || networkId === BinanceChainNetworkId
         || networkId === PolygonNetworkId
         || networkId === AvalancheNetworkId
+        || networkId === FantomNetworkId
         // || networkId === CeloNetworkId
-        // || networkId === FantomNetworkId
 }
 
 export function isLimitOrderSupported(id) {

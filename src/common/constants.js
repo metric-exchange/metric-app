@@ -380,6 +380,18 @@ export let SupportedNetworks = [
                 wrappedChainToken: true,
                 disabled: false
             },
+            {
+                address: "0x44293e446d4fe519f177ee221055cb9e5dc4ac5b".toLowerCase(),
+                decimals: 18,
+                symbol: "METRIC",
+                logoURI: "https://etherscan.io/token/images/metric_32.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                hasHidingGame: false
+            }
         ]
     }
 ];

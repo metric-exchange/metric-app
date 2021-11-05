@@ -73,7 +73,9 @@ export let SupportedNetworks = [
             metricShareVault: "0xAccbBaad2182FfA54996a480f70b2301cce7F5F7",
             metricShareVaultV0: "0x04d69Aec4eFdb5613120758d6c4cDB970f64a4E5",
             metric: "0xefc1c73a3d8728dc4cf2a18ac5705fe93e5914ac",
-            metricLp: "0xa7d707118c02dcd2bea94ff05664db51363c47bd"
+            metricLp: "0xa7d707118c02dcd2bea94ff05664db51363c47bd",
+            metricLpSymbol: "UNI-V2",
+            addLiquidityLink: "https://app.uniswap.org/#/add/v2/ETH/0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
         }
     },
     {
@@ -392,6 +394,13 @@ export let SupportedNetworks = [
                 disabled: false,
                 hasHidingGame: false
             }
-        ]
+        ],
+        staking: {
+            metricShareVault: "0x82cA10068757B1Df291e5cD050314E0104419AF9",
+            metric: "0x44293E446D4fE519f177ee221055CB9e5DC4aC5B",
+            metricLp: "0xe02f47ed61363c971b011b8585037b78a04580df",
+            metricLpSymbol: "SPIRIT-LP",
+            addLiquidityLink: "https://swap.spiritswap.finance/#/add/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75/0x44293E446D4fE519f177ee221055CB9e5DC4aC5B"
+        }
     }
 ];

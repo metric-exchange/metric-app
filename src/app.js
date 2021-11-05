@@ -44,7 +44,9 @@ import {
     metricShareVaultV0Contract,
     metricToken,
     isConnectedToFantomMainnet,
-    isLimitOrderSupported
+    isLimitOrderSupported,
+    addMetricLiquidityLink,
+    metricLpSymbol
 } from "./common/ChainHelpers";
 Rollbar.init(
     {
@@ -101,6 +103,8 @@ install(c => {
     c.metricShareVaultV0Contract = metricShareVaultV0Contract
     c.metricLpToken = metricLpToken
     c.metricToken = metricToken
+    c.addMetricLiquidityLink = addMetricLiquidityLink
+    c.metricLpSymbol = metricLpSymbol
 
     c.obfuscateAddress = obfuscateAddress
 

@@ -129,3 +129,13 @@ export function metricToken() {
     let chain = getConnectedNetworkConfig()
     return chain.staking.metric
 }
+
+export function addMetricLiquidityLink() {
+    let chain = getConnectedNetworkConfig()
+    return chain.staking.addLiquidityLink
+}
+
+export function metricLpSymbol() {
+    let chain = getConnectedNetworkConfig()
+    return chain.staking.metricLpSymbol
+}

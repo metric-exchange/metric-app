@@ -151,8 +151,7 @@ export let SupportedNetworks = [
                     decimals: 18
                 },
             rpcUrls: [
-                "https://rpc-mainnet.matic.network",
-                "wss://ws-mainnet.matic.network"
+                "https://polygon-rpc.com/"
             ]
         },
         uris: {

@@ -115,6 +115,23 @@
     color: var(--main-text-color);
 }
 
+.token a {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--main-text-color);
+}
+
+.token a:visited {
+    text-decoration: none;
+}
+
+.token a:hover {
+    text-decoration: underline;
+}
+
+.token a:active {
+    text-decoration: underline;
+}
 
 @media(max-width: 1000px){
     .board-selectors {

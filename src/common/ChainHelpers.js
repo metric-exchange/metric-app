@@ -56,7 +56,11 @@ export function isLimitOrderSupported(id) {
     let networkId = id ? id : ConnectedNetworkId
 
     return isSupportedNetwork(id) &&
-        networkId === EthereumNetworkId
+        (
+            networkId === EthereumNetworkId ||
+            networkId === BinanceChainNetworkId ||
+            networkId === PolygonNetworkId
+        )
 }
 
 export function chainToken() {

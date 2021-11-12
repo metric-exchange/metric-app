@@ -6,7 +6,7 @@ import {formatNumber} from "../helpers";
 import {getHidingGameProxy} from "../0x/order/ZeroXV3UserPendingOrdersProxy";
 import Rollbar from "rollbar";
 import {ZeroXV4OrderProxy} from "../0x/order/ZeroXV4OrderProxy";
-import {Order} from "./Order";
+import {ConnectedNetworkId} from "../wallet/WalletManager";
 
 export class LimitOrderFactory extends OrderFactory {
 
@@ -60,10 +60,10 @@ export class LimitOrderFactory extends OrderFactory {
         if (this.order.useHidingGame.value) {
             let hiddenOrder = await getHidingGameProxy().buildSignedOrder(order)
             await getHidingGameProxy().sendOrder(hiddenOrder)
-            Rollbar.info("Hiding Game: limit order submitted successfully")
+            Rollbar.info(`Hiding Game: limit order submitted successfully on chain ${ConnectedNetworkId}`)
         } else {
             await this.zeroxProxy.sendOrder(order)
-            Rollbar.info("limit order submitted successfully")
+            Rollbar.info(`limit order submitted successfully on chain ${ConnectedNetworkId}`)
         }
 
     }

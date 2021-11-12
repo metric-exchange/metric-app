@@ -7,7 +7,7 @@ import {BigNumber} from "@0x/utils";
 import {getSlippageConfig, setSlippageConfig} from "./SlippageConfig";
 import Rollbar from "rollbar";
 import {isUnwrapping, isWrapping} from "../ChainHelpers";
-import {Order} from "./Order";
+import {ConnectedNetworkId} from "../wallet/WalletManager";
 
 export class SwapOrderFactory extends OrderFactory {
 
@@ -50,11 +50,11 @@ export class SwapOrderFactory extends OrderFactory {
         await window.web3Modal.eth.sendTransaction(quote);
 
         if (isWrapping(sellToken, buyToken)) {
-            Rollbar.info("Wrap succeeded")
+            Rollbar.info(`Wrap succeeded on chain ${ConnectedNetworkId}`)
         } else if (isUnwrapping(sellToken, buyToken)) {
-            Rollbar.info("UnWrap succeeded")
+            Rollbar.info(`UnWrap succeeded on chain ${ConnectedNetworkId}`)
         } else {
-            Rollbar.info("Swap succeeded")
+            Rollbar.info(`Swap succeeded on chain ${ConnectedNetworkId}`)
         }
     }
 

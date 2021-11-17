@@ -13,7 +13,7 @@ import {
     chainToken,
     getConnectedNetworkConfig, isConnectedToEthereumMainNet,
     isConnectedToFantomMainnet,
-    isConnectedToPolygonMainNet
+    isConnectedToPolygonMainNet, nativeToken
 } from "../ChainHelpers";
 
 export function resetTokensInfo() {
@@ -127,10 +127,10 @@ async function updateBalance(token, address, balance) {
             )
         }
 
-        if (token.balance.isGreaterThan(0) && token.address !== chainToken().address) {
+        if (token.balance.isGreaterThan(0) && token.address !== nativeToken()?.address) {
             await fetchAllowance(token, address, ExchangeProxyV4Address())
         } else {
-            let allowance = token.address !== chainToken().address ? 0 : 1e27
+            let allowance = token.address !== nativeToken()?.address ? 0 : 1e27
             if (token.allowance[ExchangeProxyV4Address()] !== allowance) {
                 token.allowance[ExchangeProxyV4Address()] = allowance
             }

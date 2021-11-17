@@ -48,7 +48,7 @@ export function isSupportedNetwork(id) {
         || networkId === PolygonNetworkId
         || networkId === AvalancheNetworkId
         || networkId === FantomNetworkId
-        // || networkId === CeloNetworkId
+        || networkId === CeloNetworkId
 }
 
 export function isLimitOrderSupported(id) {
@@ -64,6 +64,15 @@ export function isLimitOrderSupported(id) {
 }
 
 export function chainToken() {
+    let chain = getConnectedNetworkConfig()
+    return chain.defaultTokens.find(t => t.chainToken)
+}
+
+export function nativeToken() {
+    if (isConnectedToCeloMainnet()) {
+        return undefined
+    }
+
     let chain = getConnectedNetworkConfig()
     return chain.defaultTokens.find(t => t.chainToken)
 }

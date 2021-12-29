@@ -7,12 +7,11 @@ import {Erc20Abi, Erc20ContractProxy} from "../Erc20ContractProxy";
 import {fetchJson} from "../JsonApiFetch";
 import {CustomTokenManager} from "./CustomsTokenManager";
 import {Token} from "./token";
-import Rollbar from "rollbar";
 import {BigNumber} from "@0x/utils";
 import {
     chainToken,
     getConnectedNetworkConfig, isConnectedToEthereumMainNet,
-    isConnectedToFantomMainnet,
+    isConnectedToFantomMainnet, isConnectedToOptimismMainnet,
     isConnectedToPolygonMainNet, nativeToken
 } from "../ChainHelpers";
 
@@ -340,6 +339,9 @@ export let METRIC_TOKEN_ADDRESS = "0xEfc1C73A3D8728Dc4Cf2A18ac5705FE93E5914AC"
 export function ExchangeProxyV4Address() {
     if (isConnectedToFantomMainnet()) {
         return "0xdef189deaef76e379df891899eb5a00a94cbc250"
+    }
+    if (isConnectedToOptimismMainnet()) {
+        return "0xdef1abe32c034e558cdd535791643c58a13acc10"
     }
     return "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
 }

@@ -3,7 +3,7 @@ import {
     chainToken,
     getConnectedNetworkConfig,
     isConnectedToAvalancheMainnet,
-    isConnectedToCeloMainnet, isConnectedToFantomMainnet,
+    isConnectedToCeloMainnet, isConnectedToOptimismMainnet,
 } from "../ChainHelpers";
 
 export class UrlManager {
@@ -56,6 +56,9 @@ export class UrlManager {
         }
         if (isConnectedToCeloMainnet()) {
             return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "cusd");
+        }
+        if (isConnectedToOptimismMainnet()) {
+            return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "usdc");
         }
         return this.metricToken()
     }

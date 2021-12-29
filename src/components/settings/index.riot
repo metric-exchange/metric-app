@@ -61,9 +61,9 @@
         import AvalancheIcon from '../../common/tokens/avalanche.svg'
         import CeloIcon from '../../common/tokens/celo.png'
         import FantomIcon from '../../common/tokens/fantom.png'
+        import OptimismIcon from '../../common/tokens/optimism.png'
         import {
             accountAddress,
-            ConnectedNetworkId,
             registerForWalletChanges
         } from "../../common/wallet/WalletManager";
         import makeBlockie from 'ethereum-blockies-base64';
@@ -72,7 +72,7 @@
             isConnectedToEthereumMainNet,
             isConnectedToPolygonMainNet,
             isConnectedToAvalancheMainnet,
-            isConnectedToCeloMainnet, isConnectedToFantomMainnet
+            isConnectedToCeloMainnet, isConnectedToFantomMainnet, isConnectedToOptimismMainnet
         } from "../../common/ChainHelpers";
 
         let DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000"
@@ -91,6 +91,7 @@
                 avalancheIcon: AvalancheIcon,
                 celoIcon: CeloIcon,
                 fantomIcon: FantomIcon,
+                optimismIcon: OptimismIcon,
                 dropDownClicked: false,
                 address: DEFAULT_ADDRESS,
                 blocky: null
@@ -150,6 +151,10 @@
 
                 if (isConnectedToFantomMainnet()) {
                     return this.state.fantomIcon
+                }
+
+                if (isConnectedToOptimismMainnet()) {
+                    return this.state.optimismIcon
                 }
 
                 return null

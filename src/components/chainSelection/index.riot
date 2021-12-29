@@ -8,6 +8,7 @@
         <div class="chain-selector avalanche-chain"  onclick={ switchToAvalancheMainnet } if={ !this.isConnectedToAvalancheMainnet() }>Avalanche Chain</div>
         <div class="chain-selector celo-chain"  onclick={ switchToCeloMainnet } if={ !this.isConnectedToCeloMainnet() && this.isCeloActivated()}>Celo Chain</div>
         <div class="chain-selector fantom-chain"  onclick={ switchToFantomMainnet } if={ !this.isConnectedToFantomMainnet() && this.isFantomActivated() }>Fantom Chain</div>
+        <div class="chain-selector optimism-chain"  onclick={ switchToOptimismMainnet } if={ !this.isConnectedToOptimismMainnet() && this.isOptimismActivated() }>Optimism Chain</div>
     </div>
 
 
@@ -16,7 +17,7 @@
             AvalancheNetworkId,
             BinanceChainNetworkId,
             CeloNetworkId,
-            EthereumNetworkId, FantomNetworkId,
+            EthereumNetworkId, FantomNetworkId, OptimismNetworkId,
             PolygonNetworkId,
             SupportedNetworks
         } from "../../common/constants";
@@ -42,6 +43,9 @@
             async switchToFantomMainnet() {
                 await this.switchToNetwork(FantomNetworkId)
             },
+            async switchToOptimismMainnet() {
+                await this.switchToNetwork(OptimismNetworkId)
+            },
             async switchToNetwork(id) {
                 let network = SupportedNetworks.find(n => n.id === id)
                 await addChain(network.config)
@@ -51,6 +55,9 @@
             },
             isFantomActivated() {
                 return this.isSupportedNetwork(FantomNetworkId)
+            },
+            isOptimismActivated() {
+                return this.isSupportedNetwork(OptimismNetworkId)
             }
         }
     </script>

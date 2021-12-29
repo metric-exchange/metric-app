@@ -218,11 +218,11 @@
             },
             switchToUnwrappedTokenIfNeeded() {
                 let wrappedToken = wrappedChainToken()
-                if (this.state.orderFactory.order.buyToken.symbol === wrappedToken.symbol) {
+                if (this.state.orderFactory.order.buyToken.symbol === wrappedToken?.symbol) {
                     this.state.orderFactory.order.setTokens(this.state.orderFactory.order.sellToken, chainToken())
                     this.refreshUrl()
                 }
-                if (this.state.orderFactory.order.sellToken.symbol === wrappedToken.symbol) {
+                if (this.state.orderFactory.order.sellToken.symbol === wrappedToken?.symbol) {
                     this.state.orderFactory.order.setTokens(chainToken(), this.state.orderFactory.order.buyToken)
                     this.refreshUrl()
                 }

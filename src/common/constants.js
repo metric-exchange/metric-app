@@ -8,6 +8,7 @@ export let PolygonNetworkId = 137;
 export let AvalancheNetworkId = 43114;
 export let CeloNetworkId = 42220;
 export let FantomNetworkId = 250;
+export let OptimismNetworkId = 10;
 
 export let SupportedNetworks = [
     {
@@ -401,5 +402,58 @@ export let SupportedNetworks = [
             metricLpSymbol: "SPIRIT-LP",
             addLiquidityLink: "https://swap.spiritswap.finance/#/add/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75/0x44293E446D4fE519f177ee221055CB9e5DC4aC5B"
         }
+    },
+    {
+        id: OptimismNetworkId,
+        name: "Optimism Ethereum",
+        config: {
+            chainId: "0xa",
+            chainName: "Optimism Ethereum",
+            nativeCurrency: {
+                "name": "Optimism Eth",
+                "symbol": "OETH",
+                "decimals": 18
+            },
+            rpcUrls: [
+                "https://mainnet.optimism.io/"
+            ],
+            blockExplorerUrls: [
+                "https://optimistic.etherscan.io/"
+            ]
+        },
+        uris: {
+            zeroX: "https://optimism.api.0x.org",
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/optimism.json"
+        },
+        defaultTokens: [
+            {
+                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                decimals: 18,
+                name: "Optimism ETH",
+                symbol: "ETH",
+                logoURI: EthIcon,
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                wrappedChainToken: true,
+                chainToken: true
+            },
+            {
+                address: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+                decimals: 6,
+                name: "USD Coin",
+                symbol: "USDC",
+                logoURI: "https://ethereum-optimism.github.io/logos/USDC.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false
+            }
+        ]
     }
 ];

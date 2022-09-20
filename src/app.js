@@ -46,7 +46,7 @@ import {
     isConnectedToFantomMainnet,
     isLimitOrderSupported,
     addMetricLiquidityLink,
-    metricLpSymbol, isConnectedToOptimismMainnet
+    metricLpSymbol, isConnectedToOptimismMainnet, isConnectedToArbitrumMainnet
 } from "./common/ChainHelpers";
 Rollbar.init(
     {
@@ -97,6 +97,7 @@ install(c => {
     c.isConnectedToCeloMainnet = isConnectedToCeloMainnet
     c.isConnectedToFantomMainnet = isConnectedToFantomMainnet
     c.isConnectedToOptimismMainnet = isConnectedToOptimismMainnet
+    c.isConnectedToArbitrumMainnet = isConnectedToArbitrumMainnet
     c.isSupportedNetwork = isSupportedNetwork
     c.isStakingEnabled = isStakingEnabled
     c.metricShareContract = metricShareContract

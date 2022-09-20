@@ -5,7 +5,9 @@ import {
     PolygonNetworkId,
     CeloNetworkId,
     SupportedNetworks,
-    FantomNetworkId, OptimismNetworkId
+    FantomNetworkId,
+    OptimismNetworkId,
+    ArbitrumNetworkId
 } from "./constants";
 import {ConnectedNetworkId} from "./wallet/WalletManager";
 import {web3ModalProvider} from "./wallet/Web3Modal";
@@ -43,6 +45,10 @@ export function isConnectedToOptimismMainnet() {
     return ConnectedNetworkId === OptimismNetworkId
 }
 
+export function isConnectedToArbitrumMainnet() {
+    return ConnectedNetworkId === ArbitrumNetworkId
+}
+
 export function isSupportedNetwork(id) {
 
     let networkId = id ? id : ConnectedNetworkId
@@ -54,6 +60,7 @@ export function isSupportedNetwork(id) {
         || networkId === FantomNetworkId
         || networkId === CeloNetworkId
         || networkId === OptimismNetworkId
+        || networkId === ArbitrumNetworkId
 }
 
 export function isLimitOrderSupported(id) {

@@ -62,6 +62,7 @@
         import CeloIcon from '../../common/tokens/celo.png'
         import FantomIcon from '../../common/tokens/fantom.png'
         import OptimismIcon from '../../common/tokens/optimism.png'
+        import ArbitrumIcon from '../../common/tokens/arbitrum.png'
         import {
             accountAddress,
             registerForWalletChanges
@@ -72,7 +73,10 @@
             isConnectedToEthereumMainNet,
             isConnectedToPolygonMainNet,
             isConnectedToAvalancheMainnet,
-            isConnectedToCeloMainnet, isConnectedToFantomMainnet, isConnectedToOptimismMainnet
+            isConnectedToCeloMainnet,
+            isConnectedToFantomMainnet,
+            isConnectedToOptimismMainnet,
+            isConnectedToArbitrumMainnet
         } from "../../common/ChainHelpers";
 
         let DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000"
@@ -92,6 +96,7 @@
                 celoIcon: CeloIcon,
                 fantomIcon: FantomIcon,
                 optimismIcon: OptimismIcon,
+                arbitrumIcon: ArbitrumIcon,
                 dropDownClicked: false,
                 address: DEFAULT_ADDRESS,
                 blocky: null
@@ -155,6 +160,10 @@
 
                 if (isConnectedToOptimismMainnet()) {
                     return this.state.optimismIcon
+                }
+
+                if (isConnectedToArbitrumMainnet()) {
+                    return this.state.arbitrumIcon
                 }
 
                 return null

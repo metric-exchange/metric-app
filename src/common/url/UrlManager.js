@@ -1,7 +1,7 @@
 import {findOrAddTokenWithAddress} from "../tokens/token_fetch";
 import {
     chainToken,
-    getConnectedNetworkConfig,
+    getConnectedNetworkConfig, isConnectedToArbitrumMainnet,
     isConnectedToAvalancheMainnet,
     isConnectedToCeloMainnet, isConnectedToOptimismMainnet,
 } from "../ChainHelpers";
@@ -58,6 +58,9 @@ export class UrlManager {
             return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "cusd");
         }
         if (isConnectedToOptimismMainnet()) {
+            return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "usdc");
+        }
+        if (isConnectedToArbitrumMainnet()) {
             return getConnectedNetworkConfig().defaultTokens.find(t => t.symbol.toLowerCase() === "usdc");
         }
         return this.metricToken()

@@ -9,6 +9,7 @@ export let AvalancheNetworkId = 43114;
 export let CeloNetworkId = 42220;
 export let FantomNetworkId = 250;
 export let OptimismNetworkId = 10;
+export let ArbitrumNetworkId = 42161;
 
 export let SupportedNetworks = [
     {
@@ -447,6 +448,71 @@ export let SupportedNetworks = [
                 name: "USD Coin",
                 symbol: "USDC",
                 logoURI: "https://ethereum-optimism.github.io/logos/USDC.png",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false
+            }
+        ]
+    },
+    {
+        id: ArbitrumNetworkId,
+        name: "Arbitrum One",
+        config: {
+            chainId: "0xa4b1",
+            chainName: "Arbitrum One",
+            nativeCurrency: {
+                "name": "Arbitrum Eth",
+                "symbol": "AETH",
+                "decimals": 18
+            },
+            rpcUrls: [
+                "https://arb1.arbitrum.io/rpc"
+            ],
+            blockExplorerUrls: [
+                "https://explorer.arbitrum.io"
+            ]
+        },
+        uris: {
+            zeroX: "https://arbitrum.api.0x.org",
+            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/arbitrum.json"
+        },
+        defaultTokens: [
+            {
+                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                decimals: 18,
+                name: "Arbitrum ETH",
+                symbol: "ETH",
+                logoURI: EthIcon,
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                disabled: false,
+                chainToken: true
+            },
+            {
+                symbol: "WETH",
+                address: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+                decimals: 18,
+                logoURI: "https://raw.githubusercontent.com/sushiswap/icons/master/token/eth.jpg",
+                balance: new BigNumber(NaN),
+                allowance: {
+                    ExchangeProxyAllowanceTarget : NaN,
+                    ExchangeProxyV4Address: NaN
+                },
+                wrappedChainToken: true,
+                disabled: false
+            },
+            {
+                address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+                decimals: 6,
+                name: "USD Coin",
+                symbol: "USDC",
+                logoURI: "https://raw.githubusercontent.com/sushiswap/icons/master/token/usdc.jpg",
                 balance: new BigNumber(NaN),
                 allowance: {
                     ExchangeProxyAllowanceTarget : NaN,

@@ -28,7 +28,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/ethereum.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/ethereum.json"
         },
         defaultTokens: [
             {
@@ -97,7 +97,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://bsc.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/bsc.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/bsc.json"
         },
         defaultTokens: [
             {
@@ -158,7 +158,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://polygon.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/polygon.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/polygon.json"
         },
         defaultTokens: [
             {
@@ -222,7 +222,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://avalanche.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/avalanche.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/avalanche.json"
         },
         defaultTokens: [
             {
@@ -287,7 +287,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://celo.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/celo.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/celo.json"
         },
         defaultTokens: [
             {
@@ -340,7 +340,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://fantom.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/fantom.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/fantom.json"
         },
         defaultTokens: [
             {
@@ -424,7 +424,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://optimism.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/optimism.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/optimism.json"
         },
         defaultTokens: [
             {
@@ -477,7 +477,7 @@ export let SupportedNetworks = [
         },
         uris: {
             zeroX: "https://arbitrum.api.0x.org",
-            tokens: "https://raw.githubusercontent.com/build-finance/metric-token-lists/main/tokenLists/arbitrum.json"
+            tokens: "https://raw.githubusercontent.com/metric-exchange/token-lists/main/tokenLists/arbitrum.json"
         },
         defaultTokens: [
             {

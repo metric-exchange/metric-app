@@ -13,13 +13,7 @@ import {Erc20ContractProxy} from "./Erc20ContractProxy";
 export let MetricReferralAddress = "0x52427b0035F494a21a0A4A1AbE04d679f789c821"
 
 export async function calculateMetricFee(accountAddress) {
-
-    if (!isConnectedToEthereumMainNet()) {
-        return 0.001;
-    }
-
-    let balance  = await fetchFeeEligibleTokenBalance(accountAddress)
-    return balance.isGreaterThan(200) ? 0.001 : 0.003
+    return 0;
 }
 
 async function fetchFeeEligibleTokenBalance(accountAddress) {

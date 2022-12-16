@@ -20,16 +20,6 @@ import i18next from "i18next";
 import {formatNumber} from "./common/helpers";
 import {supportedLanguages} from "./common/localization/localize";
 
-import LogRocket from 'logrocket';
-/*
-if (process.env.NODE_ENV === 'production') {
-    LogRocket.init('5xh2hd/metric', {
-        shouldCaptureIP: false
-    });
-}
-*/
-
-import * as Rollbar from "rollbar";
 import {
     isConnectedToAvalancheMainnet,
     isConnectedToBscMainNet,
@@ -48,22 +38,6 @@ import {
     addMetricLiquidityLink,
     metricLpSymbol, isConnectedToOptimismMainnet, isConnectedToArbitrumMainnet
 } from "./common/ChainHelpers";
-Rollbar.init(
-    {
-        accessToken: "b317442394e7414b92fabd9608992313",
-        captureUncaught: true,
-        captureUnhandledRejections: true,
-        payload: {
-            enabled: true,
-            captureIp: 'anonymize',
-            environment: process.env.NODE_ENV
-        }
-    }
-)
-
-Rollbar.configure({
-    verbose: process.env.NODE_ENV !== 'production'
-});
 
 console.info(`Environment: ${process.env.NODE_ENV}`)
 

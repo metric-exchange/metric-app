@@ -1,5 +1,4 @@
 import {fetchJson, postJson} from "../../JsonApiFetch";
-import Rollbar from "rollbar";
 import {RfqOrder, SignatureType} from "@0x/protocol-utils";
 import {generatePseudoRandom256BitNumber} from '@0x/utils'
 import {ObservableValue} from "../../order/ObservableValue";
@@ -23,7 +22,7 @@ export class HidingGameProxy {
                 this.taker = info.result.orderDetails.taker
                 this.verifyingContract = info.result.orderDetails.verifyingContract
             } catch (e) {
-                Rollbar.error(`Failed to initialize hidingGame info, ${e}`)
+                console.error(`Failed to initialize hidingGame info, ${e}`)
             }
         }
     }

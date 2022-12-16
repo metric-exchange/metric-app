@@ -1,6 +1,5 @@
 import {ObservableValue} from "../../order/ObservableValue";
 import {fetchJson} from "../../JsonApiFetch";
-import Rollbar from "rollbar";
 import {ConnectedNetworkId} from "../../wallet/WalletManager";
 import {EthereumNetworkId} from "../../constants";
 

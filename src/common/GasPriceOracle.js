@@ -1,5 +1,4 @@
 import {fetchJson} from "./JsonApiFetch";
-import Rollbar from "rollbar";
 
 export async function getFastGasPriceInWei() {
     let fastGasPrice = await getEtherChainFasGasPriceInWei()

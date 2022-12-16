@@ -4,8 +4,6 @@ import {getSwapPrice, getSwapPriceForBuy} from "../0x/swap/ZeroXSwapProxy";
 import {ObservationRegister} from "./ObservationRegister";
 import {OrderEventActions, OrderEventProperties, OrderEventSource} from "./OrderEventSource";
 import {BigNumber} from "@0x/utils";
-import moment from "moment";
-import {CoinPriceProxy} from "../tokens/CoinGeckoProxy";
 import {isUnwrapping, isWrapping} from "../ChainHelpers";
 import {Order} from "./Order";
 
@@ -21,6 +19,7 @@ export class OrderPrice {
 
         this.gasCost = new BigNumber(0)
         this.routes = []
+        this.priceImpact = 0
 
         this.priceInversionObservers = new ObservationRegister()
     }
@@ -97,6 +96,7 @@ export class OrderPrice {
 
         this.gasCost = price.gasCost
         this.routes = price.routes
+        this.priceImpact = price.priceImpact
 
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,
@@ -109,33 +109,12 @@ export class OrderPrice {
 
         this.gasCost = price.gasCost
         this.routes = price.routes
+        this.priceImpact = price.priceImpact
 
         await this.price.set(
             source === null ? new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Refresh) : source,
             price.price
         )
-    }
-
-    async fetchDisplayMarketPrice() {
-        let price = await this.fetchPrice()
-        if (this.inverted && price.isGreaterThan(0)) {
-            return new BigNumber(1).dividedBy(price)
-        } else {
-            return price
-        }
-    }
-
-    async fetchPrice() {
-        let basTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.baseToken.address, moment())
-        let quoteTokenUsdPrice = await CoinPriceProxy.fetchCoinPriceAt(this.quoteToken.address, moment())
-
-        let price = BigNumber(basTokenUsdPrice / quoteTokenUsdPrice )
-        if (price.isNaN() || price.isEqualTo(0)) {
-            let quote = await getSwapPrice(this.baseToken, this.quoteToken)
-            price = quote.price
-        }
-
-        return price
     }
 
     displayPrice() {

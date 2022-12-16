@@ -27,7 +27,7 @@
         <div class="order-input" if={ props.orderFactory.order.isMarketOrder() }>
             <div class="input-sticky-placeholder" if={ !props.orderFactory.order.sellPrice.price.value.isNaN() }>{ this.i18next.t('order.price_direction', props.orderFactory.order.sellPrice.priceTokens()) }</div>
             <div id="market-price">
-                { props.orderFactory.order.sellPrice.displayPrice().toFixed(4) } ({ this.displayPriceImpact() ? state.priceImpact.toFixed(2) : '0'}%)
+                { props.orderFactory.order.sellPrice.displayPrice().toFixed(4) } {this.priceImpactDisplay()}
             </div>
         </div>
         <order-type-selector
@@ -57,9 +57,6 @@
             config: {
                 event: new OrderEventSource(OrderEventProperties.Price, OrderEventActions.Input)
             },
-            state: {
-                priceImpact: 0
-            },
             onMounted() {
                 this.props.orderFactory.order.sellPrice.price.observe(this, 'onPriceChange')
                 this.refreshMarketPrice()
@@ -80,7 +77,7 @@
                             }
                         }
                     } else {
-                        this.setPriceImpact()
+                        this.update()
                     }
                 }
             },
@@ -99,18 +96,9 @@
                 if (this.props.orderFactory.order.isLimitOrder()) {
                     document.getElementById("order-price-input").value =
                         this.props.orderFactory.order.sellPrice.displayPrice().toFixed(4)
-                this.update()
-                } else {
-                    this.setPriceImpact()
                 }
-            },
-            async setPriceImpact() {
-                let marketPrice = await this.props.orderFactory.order.sellPrice.fetchDisplayMarketPrice()
-                let quotePrice = this.props.orderFactory.order.sellPrice.displayPrice()
 
-                let priceImpact = quotePrice.minus(marketPrice).multipliedBy(100).dividedBy(marketPrice)
-
-                this.update({ priceImpact: priceImpact })
+                this.update()
             },
             async refreshMarketPrice() {
                 if (this.props.orderFactory.order.isMarketOrder() || this.props.orderFactory.order.sellPrice.price.value.isNaN()) {
@@ -118,6 +106,27 @@
                         this.props.orderFactory.order.sellAmount.value
                     )
                 }
+            },
+            priceImpactDisplay() {
+                let priceImpact = this.props.orderFactory.order.sellPrice.priceImpact;
+                if (priceImpact === 0) {
+                    return '';
+                }
+
+                if (!this.displayPriceImpact()) {
+                    return ''
+                }
+
+                let sign = '-';
+                let price = +this.props.orderFactory.order.sellPrice.price.value
+
+                if (this.props.orderFactory.order.sellPrice.inverted) {
+                    const basePrice = 1 / (price * ( 1 - priceImpact / 100))
+                    sign = '';
+                    priceImpact = priceImpact * basePrice * price
+                }
+
+                return `(${sign}${priceImpact.toFixed(2)}%)`
             }
         }
 

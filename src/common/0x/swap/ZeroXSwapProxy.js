@@ -28,7 +28,8 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = new Big
                     .dividedBy(correctedAmount)
                 ,
                 gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
-                routes: extractRoutes(quote)
+                routes: extractRoutes(quote),
+                priceImpact: +quote?.estimatedPriceImpact,
             }
         }
     } catch (e) {
@@ -63,7 +64,8 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
                     .multipliedBy(10 ** inputToken.decimals)
                 ,
                 gasCost: new BigNumber(quote.gas).multipliedBy(quote.gasPrice).dividedBy(10 ** 18),
-                routes: extractRoutes(quote)
+                routes: extractRoutes(quote),
+                priceImpact: +quote?.estimatedPriceImpact,
             }
         }
     } catch (e) {

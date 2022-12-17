@@ -9,13 +9,6 @@
         <div class="staking-body-section" if={ state.revenueShareContract }>
             <div>{ this.i18next.t('staking.staked') }: { this.formatNumber(state.revenueShareContract.staked) } METRIC</div>
             <div class="staking-share-price"> 1 xMETRIC = { this.formatNumber(state.revenueShareContract.sharePrice) } METRIC</div>
-            <token-input
-                    eid="metric-stake"
-                    token-address={ state.revenueShareContract.underlying }
-                    action="enter"
-                    disable-input={false}
-                    submit={ (a, b) => enterShare(state.revenueShareContract, a, b) }
-            />
 
             <token-input
                     eid="xmetric-stake"
@@ -35,14 +28,6 @@
             >
                 { this.i18next.t('staking.add_liquidity') }
             </a>
-
-            <token-input
-                    eid="metric-uni-stake"
-                    token-address={ state.revenueLpShareContract.underlying }
-                    action="enter"
-                    disable-input={false}
-                    submit={ (a, b) => enterShare(state.revenueLpShareContract, a, b) }
-            />
 
             <token-input
                     eid="xmetric-uni-stake"

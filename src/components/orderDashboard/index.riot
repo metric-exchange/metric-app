@@ -14,13 +14,6 @@
             <order-book order-factory={ state.orderFactory }/>
         </div>
 
-        <div id="trade-list" class="trade-list" if={ this.isConnectedToEthereumMainNet() }>
-            <trade-list
-                    show-trades-list={ () => toggleItem("trade-list", false) }
-                    hide-trades-list={ () => toggleItem("trade-list", true) }
-            />
-        </div>
-
         <div id="order-list" class="order-list" if={ this.isLimitOrderSupported() && state.orderFactory && state.orderFactory.order.isLimitOrder() }>
             <order-list
                     show-orders-list={ () => toggleItem("order-list", false) }
@@ -40,7 +33,6 @@
         import OrderForm from '../orderForm/index.riot'
         import OrderBook from '../orderBook/index.riot'
         import OrderList from '../orderList/index.riot'
-        import TradeList from '../tradeList/index.riot'
         import Staking from '../staking/index.riot'
         import {
             registerForTokenListUpdate,
@@ -68,7 +60,6 @@
                 OrderForm,
                 OrderBook,
                 OrderList,
-                TradeList,
                 Staking
             },
             state: {

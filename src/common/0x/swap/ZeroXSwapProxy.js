@@ -18,7 +18,8 @@ export async function getSwapPrice(inputToken, outputToken, sellAmount = new Big
             intentOnFilling: false,
             skipValidation: true,
             buyTokenPercentageFee: await calculateMetricFee(accountAddress()),
-            feeRecipient : MetricReferralAddress
+            feeRecipient : MetricReferralAddress,
+            affiliateAddress: MetricReferralAddress,
         })
 
         if (quote.price !== null) {
@@ -54,7 +55,8 @@ export async function getSwapPriceForBuy(inputToken, outputToken, buyAmount = 1)
             intentOnFilling: false,
             skipValidation: true,
             buyTokenPercentageFee: await calculateMetricFee(accountAddress()),
-            feeRecipient : MetricReferralAddress
+            feeRecipient : MetricReferralAddress,
+            affiliateAddress: MetricReferralAddress,
         })
 
         if (quote.price !== null) {

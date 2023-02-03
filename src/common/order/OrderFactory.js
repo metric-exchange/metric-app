@@ -101,7 +101,6 @@ export class OrderFactory {
                     this.order.sellToken,
                     this.allowanceAddress,
                     async () => {
-                        console.debug(`${this.order.sellToken.symbol} allowance approved`)
                         try {
                             await this.sendOrder(order)
                             this.stateManager.unlock()

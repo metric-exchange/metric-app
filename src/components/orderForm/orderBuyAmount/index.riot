@@ -2,7 +2,7 @@
 
     <div class="order-line exchange-amount">
         <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) && !props.orderFactory.order.isHidingGameOrder()}>
-            { this.i18next.t('order.you_get') } { this.i18next.t('order.with_fee', {amount: state.feeAmount}) }
+            { this.i18next.t('order.you_get') } { state.feeAmount > 0 ? this.i18next.t('order.with_fee', {amount: state.feeAmount}) : '' }
         </div>
         <div class="input-sticky-placeholder" if={ !isNaN(props.orderFactory.order.buyAmount.value) && props.orderFactory.order.isHidingGameOrder()}>
             { this.i18next.t('order.you_get') }

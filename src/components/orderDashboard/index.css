@@ -10,6 +10,13 @@
     margin-right: 25%;
 }
 
+.dashboard-single {
+    display: grid;
+    grid-template-columns: auto;
+    place-items: stretch;
+    place-content: space-evenly;
+}
+
 .order-form {
     display: grid;
     color: var(--token-selector-table-text-color);

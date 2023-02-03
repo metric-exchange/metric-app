@@ -47,14 +47,6 @@ export class SwapOrderFactory extends OrderFactory {
         )
 
         await window.web3Modal.eth.sendTransaction(quote);
-
-        if (isWrapping(sellToken, buyToken)) {
-            console.info(`Wrap succeeded on chain ${ConnectedNetworkId}`)
-        } else if (isUnwrapping(sellToken, buyToken)) {
-            console.info(`UnWrap succeeded on chain ${ConnectedNetworkId}`)
-        } else {
-            console.info(`Swap succeeded on chain ${ConnectedNetworkId}`)
-        }
     }
 
     async buildOrderDetails(sellAmount, buyAmount, accountAddress) {

@@ -57,7 +57,6 @@ export function findTokenWithAddress(address) {
 export function tokensList() { return tokens }
 
 export async function fetchTokensInfo(address) {
-    console.debug("Token Balances/allowances update starting")
     await executeBatch(
         address,
         0,
@@ -107,8 +106,6 @@ async function executeBatch(address, batchIndex, batchSize, throttleInterval) {
         }
 
         setTimeout(() => executeBatch(address, batchIndex+1, batchSize, throttleInterval), throttleInterval)
-    } else {
-        console.debug("Token Balances/allowances update finished")
     }
 }
 
@@ -117,9 +114,6 @@ async function updateBalance(token, address, balance) {
     if (isWalletConnected() && address === accountAddress() && isNaN(balance) === false) {
         let newBalance = new BigNumber(balance).dividedBy(10 ** token.decimals)
         if (!newBalance.isEqualTo(token.balance)) {
-            if (!isNaN(token.balance) || newBalance.isGreaterThan(0)) {
-                console.debug(`update balance of ${token.symbol} to ${newBalance.toString()}`)
-            }
             token.balance = newBalance
             await Promise.all(
                 balancesRegister.map(item => item.onTokenBalancesUpdate(token))
@@ -165,7 +159,6 @@ export async function updateAllowance(token, target, allowance) {
     if (isNaN(allowance) === false) {
         let newAllowance = allowance / (10 ** token.decimals)
         if (newAllowance !== token.allowance[target]) {
-            console.debug(`update allowance to trade ${token.symbol} to ${newAllowance} for ${target}`)
             token.allowance[target] = newAllowance
         }
     }

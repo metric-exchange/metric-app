@@ -1,6 +1,6 @@
 <order-dashboard>
 
-    <div class={displayOrderBook() || this.isStakingEnabled() ? "dashboard" : "dashboard-single" }>
+    <div class={displayOrderBook() ? "dashboard" : "dashboard-single" }>
 
         <div class="order-form">
             <order-form
@@ -19,10 +19,6 @@
                     show-orders-list={ () => toggleItem("order-list", false) }
                     hide-orders-list={ () => toggleItem("order-list", true) }
             />
-        </div>
-
-        <div class="staking" if={ this.isWalletConnected() && this.isStakingEnabled() }>
-            <staking/>
         </div>
 
     </div>

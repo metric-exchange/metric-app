@@ -80,8 +80,7 @@
             onBeforeMount() {
                 this.state.orderBook = new ZeroXOrderBook(
                     this.props.orderFactory.order.sellToken,
-                    this.props.orderFactory.order.buyToken,
-                    ConnectedNetworkId === EthereumNetworkId
+                    this.props.orderFactory.order.buyToken
                 )
 
                 this.state.orderBook.reset()

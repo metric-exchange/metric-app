@@ -1,14 +1,10 @@
 import {ZeroXV4OrderBookProxy} from "./ZeroXV4OrderBookProxy";
-import {ZeroXV3OrderBookProxy} from "./ZeroXV3OrderBookProxy";
 
 export class ZeroXOrderBook {
 
-    constructor(baseToken, quoteToken, checkV3) {
+    constructor(baseToken, quoteToken) {
         this.baseToken = baseToken
         this.quoteToken = quoteToken
-        this.checkV3 = checkV3
-
-        this.orderBookV3Proxy = new ZeroXV3OrderBookProxy()
         this.orderBookV4Proxy = new ZeroXV4OrderBookProxy()
 
         this.bids = []
@@ -45,11 +41,6 @@ export class ZeroXOrderBook {
 
             let orderBookUpdate = {
                 bids: [], asks: []
-            }
-
-            if (this.checkV3) {
-                orderBookUpdate =
-                    await this.orderBookV3Proxy.getOrdersMatching(this.baseToken, this.quoteToken, false)
             }
 
             let orderBookV4Update =
